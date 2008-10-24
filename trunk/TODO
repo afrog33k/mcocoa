@@ -1,0 +1,49 @@
+set a symbolic breakpoint at -[NSException raise]
+
+* Add the new projects to google.
+* Generate partial classes:
+	- probably want GetHashCode, Equals, ToString
+	- use xml or some simple file format to define the frameworks to process
+	- print generate time, may want to compile regexen
+	- need a black list for methods to be hand coded or skipped
+	- skip NSObject.h
+	- may want to be able to list methods that should be properties
+	- how do we handle enums? Enums.NSUTF8StringEncoding? NSString.NSUTF8StringEncoding?
+	- hand code functions?
+* Remove the old google projects.
+* Use tar --exclude \*/.svn --exclude \*/.svn/\*
+* Make sure inner inner exceptions work.
+* Get rid of Ignore.
+* Structs needs Equals and GetHashCode.
+* Add one or two more of Apple's sample apps.
+* Probably should add interfaces for protocols.
+* Menu handlers seem to work a bit differently than in objc. In objc exceptions
+  seem to be logged, but in objc3-sharp the app terminates with an unhandled
+  exception.
+* Work on Natty:
+	- order in transcript whenever its visible and we get new output
+	- prefs could be used to save fonts, colors, editor, global vars
+	- need to support stdin (important for install or removing files
+	  generated under sudo)
+	- make files should default to RELEASE
+	- would be nice to support nant
+	- might be neat to have a lookup error command
+* Release checklist:
+	- search for TODO
+	- run smoke
+	- make clean
+	- make sure examples work in debug
+	- make clean
+	- make sure examples work in release
+	- make clean
+	- review tar target
+	- make sure everything is checked in
+	- use svn log -r 7:HEAD > CHANGE_LOG
+	- update CHANGES file
+	- update version and build numbers 
+	- install
+	- update README and wiki
+	- upload a new version to googlecode
+	- send an announcement
+	- make sure everything is checked in
+
