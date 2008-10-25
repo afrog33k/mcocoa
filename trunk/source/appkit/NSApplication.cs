@@ -52,7 +52,7 @@ namespace MCocoa
 			// Load our nib. This will instantiate all of the native objects and wire them together.
 			// The C# objects will be created the first time a managed method is called.
 			NSMutableDictionary dict = new NSMutableDictionary();					
-			bool loaded = NSBundle.mainBundle().loadNibFileExternalNameTableWithZone(
+			bool loaded = NSBundle.mainBundle().loadNibFileExternalNameTableWithZone_i(
 				new NSString(nibName), dict, IntPtr.Zero);
 							
 			if (!loaded)

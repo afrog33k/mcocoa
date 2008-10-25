@@ -380,7 +380,7 @@ internal sealed class DocWindowController : NSWindowController
 			{
 				m_errorWindow.Value.setTitle(new NSString(string.Format("{0} {1} Errors", DoGetTitle(), m_doc.Target)));
 				m_errorWindow.Value.makeKeyAndOrderFront(this);
-				m_errorTable.Value.selectRowByExtendingSelection(0, false);
+				m_errorTable.Value.selectRowIndexesByExtendingSelection(NSIndexSet.indexSetWithIndex(0), false);
 			}
 		}
 		

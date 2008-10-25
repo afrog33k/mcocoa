@@ -30,6 +30,30 @@ internal sealed class Generate
 	public Generate(ObjectModel objects)
 	{
 		m_objects = objects;
+
+		foreach (NativeFile file in m_objects.Files)
+		{
+			foreach (NativeInterface ni in file.Interfaces)
+			{
+				NativeInterface ri = ni;
+				
+				if (ni.Category == null)
+				{
+					DoAddMethods(ri, ni.Methods);
+				}
+				else if (ni.Name != "CIColor" && ni.Name != "CIImage")
+				{
+					ri = m_objects.FindInterface(ni.Name);
+					DoAddMethods(ri, ni.Methods);
+				}
+									
+				foreach (string p in ni.Protocols)
+				{
+					NativeProtocol pp = m_objects.FindProtocol(p);
+					DoAddMethods(ri, pp.Methods);
+				}
+			}
+		}
 	}
 					
 	public void Code(string outDir, Blacklist[] blacklist)
@@ -143,217 +167,24 @@ internal sealed class Generate
 		}
 	}
 	
-	private string DoMapEnumValue(string value)
-	{
-		switch (value)
-		{
-			case "CFByteOrderUnknown":
-				return "0";
-
-			case "CFByteOrderLittleEndian":
-				return "1";
-
-			case "CFByteOrderBigEndian":
-				return "2";
-
-			case "kCFCalendarUnitEra":
-				return "(1 << 1)";
-
-			case "kCFCalendarUnitYear":
-				return "(1 << 2)";
-
-			case "kCFCalendarUnitMonth":
-				return "(1 << 3)";
-
-			case "kCFCalendarUnitDay":
-				return "(1 << 4)";
-
-			case "kCFCalendarUnitHour":
-				return "(1 << 5)";
-
-			case "kCFCalendarUnitMinute":
-				return "(1 << 6)";
-
-			case "kCFCalendarUnitSecond":
-				return "(1 << 7)";
-
-			case "kCFCalendarUnitWeek":
-				return "(1 << 8)";
-
-			case "kCFCalendarUnitWeekday":
-				return "(1 << 9)";
-
-			case "kCFCalendarUnitWeekdayOrdinal":
-				return "(1 << 10)";
-
-			case "kCFCalendarComponentsWrap":
-				return "(1 << 0)";
-
-			case "kCFDateFormatterNoStyle":
-				return "0";
-
-			case "kCFDateFormatterShortStyle":
-				return "1";
-
-			case "kCFDateFormatterMediumStyle":
-				return "2";
-
-			case "kCFDateFormatterLongStyle":
-				return "3";
-
-			case "kCFDateFormatterFullStyle":
-				return "4";
-
-			case "kCFNumberFormatterNoStyle":
-				return "0";
-
-			case "kCFNumberFormatterDecimalStyle":
-				return "1";
-
-			case "kCFNumberFormatterCurrencyStyle":
-				return "2";
-
-			case "kCFNumberFormatterPercentStyle":
-				return "3";
-
-			case "kCFNumberFormatterScientificStyle":
-				return "4";
-
-			case "kCFNumberFormatterSpellOutStyle":
-				return "5";
-
-			case "kCFNumberFormatterPadBeforePrefix":
-				return "0";
-
-			case "kCFNumberFormatterPadAfterPrefix":
-				return "1";
-
-			case "kCFNumberFormatterPadBeforeSuffix":
-				return "2";
-
-			case "kCFNumberFormatterPadAfterSuffix":
-				return "3";
-
-			case "kCFNumberFormatterRoundCeiling":
-				return "0";
-
-			case "kCFNumberFormatterRoundFloor":
-				return "1";
-
-			case "kCFNumberFormatterRoundDown":
-				return "2";
-
-			case "kCFNumberFormatterRoundUp":
-				return "3";
-
-			case "kCFNumberFormatterRoundHalfEven":
-				return "4";
-
-			case "kCFNumberFormatterRoundHalfDown":
-				return "5";
-
-			case "kCFNumberFormatterRoundHalfUp":
-				return "6";
-
-			case "kCFPropertyListImmutable":
-				return "0";
-
-			case "kCFPropertyListMutableContainers":
-				return "1";
-
-			case "kCFPropertyListMutableContainersAndLeaves":
-				return "2";
-
-			case "kCFPropertyListOpenStepFormat":
-				return "1";
-
-			case "kCFPropertyListXMLFormat_v1_0":
-				return "100";
-
-			case "kCFPropertyListBinaryFormat_v1_0":
-				return "200";
-
-			case "NSIntegerMax":
-				return "int.MaxValue";
-				
-			case "NX_TABLET_POINTER_UNKNOWN":
-				return "0";
-
-			case "NX_TABLET_POINTER_PEN":
-				return "1";
-
-			case "NX_TABLET_POINTER_CURSOR":
-				return "2";
-
-			case "NX_TABLET_POINTER_ERASER":
-				return "3";
-
-			case "NX_TABLET_BUTTON_PENTIPMASK":
-				return "0x0001";
-
-			case "NX_TABLET_BUTTON_PENLOWERSIDEMASK":
-				return "0x0002";
-
-			case "NX_TABLET_BUTTON_PENUPPERSIDEMASK":
-				return "0x0004";
-
-			case "NX_SUBTYPE_DEFAULT":
-				return "0";
-
-			case "NX_SUBTYPE_TABLET_POINT":
-				return "1";
-
-			case "NX_SUBTYPE_TABLET_PROXIMITY":
-				return "2";
-		}
-		
-		return value;
-	}
-		
 	private void DoInterfaces(StringBuilder buffer, NativeFile file)
 	{
 		for (int i = 0; i < file.Interfaces.Count; ++i)
 		{			
-			m_buffer = new StringBuilder();
-			if (i > 0)	
-				DoWrite();
-
 			m_interface = file.Interfaces[i];
 			
-			DoWriteInterfaceHeader();	
-			DoGenerateMethods1();
-			DoWriteInterfaceTrailer();
-			
-			if (m_interface.Category != null)
+			if (m_interface.Category == null || m_interface.Category != "NSDeprecated")
 			{
-				if (m_interface.Methods.Any(m => m.IsClass))
-				{
-					if (m_interface.Name != "NSObject")
-					{
-						NativeInterface ni = m_objects.FindInterface(m_interface.Name);
+				m_buffer = new StringBuilder();
+				if (i > 0)	
+					DoWrite();
+
+				DoWriteInterfaceHeader();	
+				DoGenerateMethods();
+				DoWriteInterfaceTrailer();
 						
-						DoWrite();
-						DoWrite("	public partial class {0} : {1}", ni.Name, ni.BaseName);
-						DoWrite("	{");
-						DoGenerateMethods2();
-						DoWrite("	}");
-					}
-					else
-					{
-						for (int j = 0; j < m_interface.Methods.Count; ++j)
-						{
-							NativeMethod method = m_interface.Methods[j];
-							if (method.IsClass)
-							{
-								DoWrite("		// skipping NSObject class category method {0}", method.Name);
-								Console.Error.WriteLine("found NSObject class category method {0}::{1}", m_interface.Name, method.Name);
-							}
-						}
-					}
-				}
+				buffer.Append(m_buffer.ToString());
 			}
-			
-			buffer.Append(m_buffer.ToString());
 		}
 	}
 		
@@ -361,8 +192,26 @@ internal sealed class Generate
 	{		
 		if (m_interface.Category != null)
 		{
-			DoWrite("	public static class {0}For{1}Category", m_interface.Category, m_interface.Name);
-			DoWrite("	{");
+			if (m_interface.Name == "CIColor" || m_interface.Name == "CIImage")
+			{
+				DoWrite("	// {0} category", m_interface.Category);
+				DoWrite("	public partial class {0} : {1}", m_interface.Name, "NSObject");
+				DoWrite("	{");
+			}
+			else if (m_interface.Name == "NSObject")
+			{
+				DoWrite("	// {0} category", m_interface.Category);
+				DoWrite("	public static class {0}ForNSObject", m_interface.Category);
+				DoWrite("	{");
+			}
+			else
+			{
+				NativeInterface ri = m_objects.FindInterface(m_interface.Name);
+	
+				DoWrite("	// {0} category", m_interface.Category);
+				DoWrite("	public partial class {0} : {1}", m_interface.Name, ri.BaseName);
+				DoWrite("	{");
+			}
 		}
 		else
 		{
@@ -411,40 +260,38 @@ internal sealed class Generate
 		DoWrite("	}");
 	}
 	
-	private int DoGenerateMethods1()	
+	private int DoGenerateMethods()	
 	{
 		int numMethods = 0;
 		
 		if (m_interface.Methods.Count > 0 && m_interface.Category == null)
 			DoWrite();
-
-		var names = new List<string>();
-		names.Add("init");
-		names.Add("description");
-		names.Add("isProxy");
-		names.Add("zone");
 		
 		bool writeBlank = false;
+		List<string> names = new List<string>();
 		for (int i = 0; i < m_interface.Methods.Count; ++i)
 		{
 			NativeMethod method = m_interface.Methods[i];
 
-			if (!method.IsClass || m_interface.Category == null)
+			if (names.IndexOf(method.Name) < 0)
 			{
-				if (names.IndexOf(method.Name) < 0)
+				if (DoGenerateMethod(method, writeBlank, null))
 				{
-					if (DoGenerateMethod(method, writeBlank))
-					{
-						++numMethods;
+					++numMethods;
+					writeBlank = true;
+					
+					if (method.Name == "layoutControlGlyphForLineFragment:")	// these are declared twice in NSSimpleHorizontalTypesetter.h
 						names.Add(method.Name);
-						writeBlank = true;
-					}
+					else if (method.Name == "layoutTab")	
+						names.Add(method.Name);
+					else if (method.Name == "QTMovie")							// these are also declared twice but under two different defines
+						names.Add(method.Name);
+					else if (method.Name == "initWithMovie:")	
+						names.Add(method.Name);
 				}
-				else
-					DoWrite("		// skipping {0} (it's already defined)", method.Name);				
 			}
 		}
-				
+		
 		foreach (string protocol in m_interface.Protocols)
 			if (!DoHasProtocol(m_interface.BaseName, protocol))
 				if (protocol != "NSObject")
@@ -452,44 +299,7 @@ internal sealed class Generate
 					
 		return numMethods;
 	}
-	
-	private int DoGenerateMethods2()	
-	{
-		int numMethods = 0;
 		
-		if (m_interface.Methods.Count > 0 && m_interface.Category == null)
-			DoWrite();
-
-		var names = new List<string>();
-		names.Add("init");
-		names.Add("description");
-		names.Add("isProxy");
-		names.Add("zone");
-		
-		bool writeBlank = false;
-		for (int i = 0; i < m_interface.Methods.Count; ++i)
-		{
-			NativeMethod method = m_interface.Methods[i];
-
-			if (names.IndexOf(method.Name) < 0)
-			{
-				if (method.IsClass && m_interface.Category != null)
-				{
-					if (DoGenerateMethod(method, writeBlank))
-					{
-						++numMethods;
-						names.Add(method.Name);
-						writeBlank = true;
-					}
-				}
-			}
-			else
-				DoWrite("		// skipping {0} (it's already defined)", method.Name);				
-		}
-									
-		return numMethods;
-	}
-	
 	private bool DoHasProtocol(string iname, string pname)
 	{
 		bool has = false;
@@ -516,14 +326,16 @@ internal sealed class Generate
 		for (int i = 0; i < protocol.Methods.Count; ++i)
 		{
 			NativeMethod method = protocol.Methods[i];
-			if (names.IndexOf(method.Name) < 0)
+			if (names.IndexOf(method.Name + method.IsClass) < 0 && !DoInterfaceHasMethod(method.Name, method.IsClass))
 			{
-				if (DoGenerateMethod(method, writeBlank))
+				if (DoGenerateMethod(method, writeBlank, protocol))
 				{
-					names.Add(method.Name);
+					names.Add(method.Name + method.IsClass);
 					writeBlank = true;
 				}
 			}
+			else
+				DoWrite("		// skipping {0} (it's already defined)", method.Name);
 		}
 			
 		foreach (string p2 in protocol.Protocols)
@@ -533,11 +345,37 @@ internal sealed class Generate
 		DoWrite("		#endregion");
 	}
 	
-	private bool DoGenerateMethod(NativeMethod nm, bool writeBlank)	
+	private bool DoGenerateMethod(NativeMethod nm, bool writeBlank, NativeProtocol protocol)	
 	{		
 		bool wrote = false;
 		
-		if (!DoBaseHasMethod(m_interface.BaseName, nm.Name))
+		bool defined = false;
+		if (protocol != null)
+		{
+			defined = DoPriorProtocolHasMethod(protocol, nm.Name, nm.IsClass);
+
+			if (!defined)
+				defined = DoInterfaceHasMethod(nm.Name, nm.IsClass);
+
+			if (!defined)
+				defined = DoBaseHasMethod(m_interface.BaseName, nm.Name, nm.IsClass);
+		}
+		else if (m_interface.Category != null)
+		{
+			defined = DoInterfaceHasMethod(nm.Name, nm.IsClass);
+
+			if (!defined && m_interface.Name != "NSOject" && m_interface.Name != "CIColor" && m_interface.Name != "CIImage")
+			{
+				NativeInterface ri = m_objects.FindInterface(m_interface.Name);
+				defined = DoBaseHasMethod(ri.BaseName, nm.Name, nm.IsClass);
+			}
+		}
+		else
+		{
+			defined = DoBaseHasMethod(m_interface.BaseName, nm.Name, nm.IsClass);
+		}
+		
+		if (!defined)
 		{
 			Blacklist black = m_blacklist.SingleOrDefault(b => b.Interface == m_interface.Name && b.Method == nm.Name);
 			if (black == null)
@@ -551,6 +389,11 @@ internal sealed class Generate
 				{
 					DoWrite("		// skipping function pointer {0}", nm.Name);
 					Console.Error.WriteLine("found function pointer {0}::{1}", m_interface.Name, nm.Name);
+				}
+				else if (m_interface.Category != null && m_interface.Name == "NSObject" && nm.IsClass)
+				{
+					DoWrite("		// skipping {0} (can't have NSObject class category methods)", nm.Name);
+					Console.Error.WriteLine("found NSObject class category {0}::{1}", m_interface.Name, nm.Name);
 				}
 				else
 				{
@@ -567,33 +410,16 @@ internal sealed class Generate
 			}
 		}
 		else
-			DoWrite("		// skipping {0} (it's declared in a base class)", nm.Name);
+			DoWrite("		// skipping {0} (it's already defined)", nm.Name);
 		
 		return wrote;
-	}
-	
-	private bool DoBaseHasMethod(string iname, string mname)
-	{
-		bool has = false;
-		
-		if (iname != null && iname != "NSObject")
-		{
-			NativeInterface ni = m_objects.FindInterface(iname);
-			if (ni.Methods.Count > 0)
-				has = ni.Methods.Any(m => m.Name == mname);
-			
-			if (!has)
-				has = DoBaseHasMethod(ni.BaseName, mname);
-		}
-		
-		return has;
 	}
 	
 	private void DoWriteMethod(NativeMethod method)
 	{		
 		// signature		
 		m_buffer.Append("		public ");
-		if (method.IsClass || m_interface.Category != null)
+		if (method.IsClass || (m_interface.Category != null && m_interface.Name == "NSObject"))
 			m_buffer.Append("static ");
 			
 		if (method.ReturnType == "IBAction")
@@ -601,13 +427,11 @@ internal sealed class Generate
 			
 		DoWriteType(method.ReturnType);
 		m_buffer.Append(" ");
-		DoWriteMethodName(method.Name);
+		DoWriteMethodName(method.Name, DoGetMethodSuffix(method));
 		m_buffer.Append("(");
-		if (m_interface.Category != null && !method.IsClass)
+		if (m_interface.Category != null && m_interface.Name == "NSObject")
 		{
-			m_buffer.Append("this ");
-			m_buffer.Append(m_interface.Name);
-			m_buffer.Append(" _instance");
+			m_buffer.Append("this NSObject _instance");
 			if (method.ArgNames.Length > 0)
 				m_buffer.Append(", ");
 		}
@@ -638,7 +462,7 @@ internal sealed class Generate
 			m_buffer.Append(") ");
 		}
 		
-		if (m_interface.Category != null && !method.IsClass)
+		if (m_interface.Category != null && m_interface.Name == "NSObject")
 			m_buffer.Append("_instance.");
 		else if (method.IsClass)
 			m_buffer.Append("ms_class.");
@@ -663,6 +487,96 @@ internal sealed class Generate
 		
 		// trailer
 		DoWrite("		}");
+	}
+	
+	// Checks the interface methods, but not categories, protocols, or bases.
+	private bool DoInterfaceHasMethod(string mname, bool isClass)
+	{
+		bool has = false;
+		
+		if (m_interface.Name != "NSObject" && m_interface.Name != "CIColor" && m_interface.Name != "CIImage")
+		{
+			NativeInterface ni = m_objects.FindInterface(m_interface.Name);
+			if (ni.Methods.Count > 0)
+				has = ni.Methods.Any(m => m.Name == mname && m.IsClass == isClass);
+		}
+				
+		return has;
+	}
+	
+	// Checks protocol methods before protocol.
+	private bool DoPriorProtocolHasMethod(NativeProtocol protocol, string mname, bool isClass)
+	{
+		bool has = false;
+		
+		for (int i = 0; i < m_interface.Protocols.Length && m_interface.Protocols[i] != protocol.Name && !has; ++i)
+		{
+			NativeProtocol p = m_objects.FindProtocol(m_interface.Protocols[i]);
+			if (p.Methods.Count > 0)
+				has = p.Methods.Any(m => m.Name == mname && m.IsClass == isClass);
+		}
+		
+		return has;
+	}
+	
+	// Checks interface, category, and protocol methods for iname and its base interfaces.
+	private bool DoBaseHasMethod(string iname, string mname, bool isClass)
+	{
+		bool has = false;
+		
+		if (iname != null && iname != "NSObject" && iname != "CIColor" && iname != "CIImage")
+		{
+			NativeInterface ni = m_objects.FindInterface(iname);
+			List<NativeMethod> methods = m_methods[ni];
+			if (methods.Count > 0)
+				has = methods.Any(m => m.Name == mname && m.IsClass == isClass);
+			
+			if (!has)
+				has = DoBaseHasMethod(ni.BaseName, mname, isClass);
+		}
+		
+		if (!has)
+		{
+			switch (mname)
+			{
+				case "description":
+				case "hash":
+				case "init":
+				case "isProxy":
+				case "zone":
+					has = true;
+					break;
+			}
+		}
+		
+		return has;
+	}
+	
+	private string DoGetMethodSuffix(NativeMethod method)
+	{
+		string suffix = string.Empty;
+		
+		if (m_interface.Name != "NSObject" && m_interface.Name != "CIColor" && m_interface.Name != "CIImage")
+		{
+			NativeInterface ri = m_objects.FindInterface(m_interface.Name);
+			
+			List<NativeMethod> methods;
+			if (m_methods.TryGetValue(ri, out methods))
+			{
+				if (method.IsClass)
+				{
+					if (DoBaseHasMethod(ri.Name, method.Name, false))
+						suffix = "_c";
+				}
+				else
+				{
+					if (DoBaseHasMethod(ri.Name, method.Name, true))
+						suffix = "_i";
+				}
+			}
+		}
+		
+		return suffix;
 	}
 	
 	private bool DoIsCastable(string type)
@@ -703,7 +617,7 @@ internal sealed class Generate
 		return false;
 	}
 	
-	private void DoWriteMethodName(string name)
+	private void DoWriteMethodName(string name, string suffix)
 	{
 		if (name == "delegate")
 		{
@@ -741,6 +655,7 @@ internal sealed class Generate
 					m_buffer.Append(parts[i].Substring(1));
 			}
 		}
+		m_buffer.Append(suffix);
 	}
 	
 	private void DoWriteType(string type)
@@ -1026,10 +941,190 @@ internal sealed class Generate
 		m_buffer.AppendLine(string.Format(format, args));
 	}
 	
+	private void DoAddMethods(NativeInterface ni, List<NativeMethod> methods)
+	{
+		List<NativeMethod> m;
+		if (!m_methods.TryGetValue(ni, out m))
+		{
+			m = new List<NativeMethod>();
+			m_methods.Add(ni, m);
+		}
+		
+		m.AddRange(methods);
+	}
+		
+	private string DoMapEnumValue(string value)
+	{
+		switch (value)
+		{
+			case "CFByteOrderUnknown":
+				return "0";
+
+			case "CFByteOrderLittleEndian":
+				return "1";
+
+			case "CFByteOrderBigEndian":
+				return "2";
+
+			case "kCFCalendarUnitEra":
+				return "(1 << 1)";
+
+			case "kCFCalendarUnitYear":
+				return "(1 << 2)";
+
+			case "kCFCalendarUnitMonth":
+				return "(1 << 3)";
+
+			case "kCFCalendarUnitDay":
+				return "(1 << 4)";
+
+			case "kCFCalendarUnitHour":
+				return "(1 << 5)";
+
+			case "kCFCalendarUnitMinute":
+				return "(1 << 6)";
+
+			case "kCFCalendarUnitSecond":
+				return "(1 << 7)";
+
+			case "kCFCalendarUnitWeek":
+				return "(1 << 8)";
+
+			case "kCFCalendarUnitWeekday":
+				return "(1 << 9)";
+
+			case "kCFCalendarUnitWeekdayOrdinal":
+				return "(1 << 10)";
+
+			case "kCFCalendarComponentsWrap":
+				return "(1 << 0)";
+
+			case "kCFDateFormatterNoStyle":
+				return "0";
+
+			case "kCFDateFormatterShortStyle":
+				return "1";
+
+			case "kCFDateFormatterMediumStyle":
+				return "2";
+
+			case "kCFDateFormatterLongStyle":
+				return "3";
+
+			case "kCFDateFormatterFullStyle":
+				return "4";
+
+			case "kCFNumberFormatterNoStyle":
+				return "0";
+
+			case "kCFNumberFormatterDecimalStyle":
+				return "1";
+
+			case "kCFNumberFormatterCurrencyStyle":
+				return "2";
+
+			case "kCFNumberFormatterPercentStyle":
+				return "3";
+
+			case "kCFNumberFormatterScientificStyle":
+				return "4";
+
+			case "kCFNumberFormatterSpellOutStyle":
+				return "5";
+
+			case "kCFNumberFormatterPadBeforePrefix":
+				return "0";
+
+			case "kCFNumberFormatterPadAfterPrefix":
+				return "1";
+
+			case "kCFNumberFormatterPadBeforeSuffix":
+				return "2";
+
+			case "kCFNumberFormatterPadAfterSuffix":
+				return "3";
+
+			case "kCFNumberFormatterRoundCeiling":
+				return "0";
+
+			case "kCFNumberFormatterRoundFloor":
+				return "1";
+
+			case "kCFNumberFormatterRoundDown":
+				return "2";
+
+			case "kCFNumberFormatterRoundUp":
+				return "3";
+
+			case "kCFNumberFormatterRoundHalfEven":
+				return "4";
+
+			case "kCFNumberFormatterRoundHalfDown":
+				return "5";
+
+			case "kCFNumberFormatterRoundHalfUp":
+				return "6";
+
+			case "kCFPropertyListImmutable":
+				return "0";
+
+			case "kCFPropertyListMutableContainers":
+				return "1";
+
+			case "kCFPropertyListMutableContainersAndLeaves":
+				return "2";
+
+			case "kCFPropertyListOpenStepFormat":
+				return "1";
+
+			case "kCFPropertyListXMLFormat_v1_0":
+				return "100";
+
+			case "kCFPropertyListBinaryFormat_v1_0":
+				return "200";
+
+			case "NSIntegerMax":
+				return "int.MaxValue";
+				
+			case "NX_TABLET_POINTER_UNKNOWN":
+				return "0";
+
+			case "NX_TABLET_POINTER_PEN":
+				return "1";
+
+			case "NX_TABLET_POINTER_CURSOR":
+				return "2";
+
+			case "NX_TABLET_POINTER_ERASER":
+				return "3";
+
+			case "NX_TABLET_BUTTON_PENTIPMASK":
+				return "0x0001";
+
+			case "NX_TABLET_BUTTON_PENLOWERSIDEMASK":
+				return "0x0002";
+
+			case "NX_TABLET_BUTTON_PENUPPERSIDEMASK":
+				return "0x0004";
+
+			case "NX_SUBTYPE_DEFAULT":
+				return "0";
+
+			case "NX_SUBTYPE_TABLET_POINT":
+				return "1";
+
+			case "NX_SUBTYPE_TABLET_PROXIMITY":
+				return "2";
+		}
+		
+		return value;
+	}
+		
 	private string m_inPath;
 	private ObjectModel m_objects;
 	private StringBuilder m_buffer;
 	private NativeInterface m_interface;
 	private Blacklist[] m_blacklist;
+	private Dictionary<NativeInterface, List<NativeMethod>> m_methods = new Dictionary<NativeInterface, List<NativeMethod>>();
 }
 
