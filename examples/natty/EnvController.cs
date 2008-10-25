@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Cocoa3;
-using Objc3;
+using MCocoa;
+using MObjc;
 using System;
 using System.Collections.Generic;
 
@@ -38,17 +38,17 @@ internal sealed class EnvController : NSObject
 		m_doc = doc;
 		m_vars = new List<KeyValuePair<string, string>>(m_doc.Variables);
 
-		m_sheet.Value.Delegate = this;
-		m_table.Value.DataSource = this;
-		NSApplication.Shared.BeginSheet(m_sheet.Value, window, this);
+		m_sheet.Value.setDelegate(this);
+		m_table.Value.setDataSource(this);
+		NSApplication.sharedApplication().beginSheetModalForWindowModalDelegateDidEndSelectorContextInfo(m_sheet.Value, window, this, null, IntPtr.Zero);
     }
 
 	#region Action Handlers
 	[NewMethod("envOK:")]		
 	public void EnvOK(NSObject sender)
 	{
-		NSApplication.Shared.EndSheet(m_sheet.Value);
-		m_sheet.Value.OrderOut();
+		NSApplication.sharedApplication().endSheet(m_sheet.Value);
+		m_sheet.Value.orderOut(this);
 		
 		m_doc.Variables.Clear();
 		m_doc.Variables.AddRange(m_vars);
@@ -57,8 +57,8 @@ internal sealed class EnvController : NSObject
 	[NewMethod("envCancel:")]		
 	public void EnvCancel(NSObject sender)
 	{
-		NSApplication.Shared.EndSheet(m_sheet.Value);
-		m_sheet.Value.OrderOut();
+		NSApplication.sharedApplication().endSheet(m_sheet.Value);
+		m_sheet.Value.orderOut(this);
    	}
 	#endregion
 	
@@ -74,7 +74,7 @@ internal sealed class EnvController : NSObject
 	{
 		KeyValuePair<string, string> entry = m_vars[row];
 	
-		if (column.Identifier == "1")
+		if (column.identifier().ToString() == "1")
 			return new NSString(entry.Key);
 		else 
 			return new NSString(entry.Value);
@@ -83,7 +83,7 @@ internal sealed class EnvController : NSObject
 	[NewMethod("tableView:setObjectValue:forTableColumn:row:")]		
 	public void SetCell(NSTableView table, NSObject v, NSTableColumn column, int row)
 	{
-		DBC.Pre(column.Identifier == "2", "id is {0}", column.Identifier);
+		DBC.Pre(column.identifier().ToString() == "2", "id is {0}", column.identifier());
 		
 		string key = m_vars[row].Key;
 		string value = new NSString(v).ToString();

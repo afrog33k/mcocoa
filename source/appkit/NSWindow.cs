@@ -19,26 +19,22 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using MCocoa;
 using MObjc;
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
-// http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/NSApplication_Class/Reference/Reference.html#//apple_ref/doc/uid/20000012-BAJFJIIB
-[ExportClass("AppDelegate", "NSObject")]
-internal sealed class AppDelegate : NSObject
-{
-	private AppDelegate(IntPtr instance) : base(instance)
-	{
-	}
-	
-	#region Delegate Methods
-	[NewMethod("applicationDidFinishLaunching:")]		
-	public void ApplicationDidFinishLaunching(NSObject notification)
+namespace MCocoa
+{ 
+	public partial class NSWindow : NSResponder 
 	{		
-		NSDocumentController controller = NSDocumentController.sharedDocumentController();
-		controller.openDocument(this);
+		public NSView contentView()
+		{
+			return Call("contentView").To<NSView>();
+		}
+
+		public NSWindowController windowController()
+		{
+			return Call("windowController").To<NSWindowController>();
+		}
 	}
-	#endregion	
 }

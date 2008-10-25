@@ -51,7 +51,7 @@ run: $(app-path)
 # Binary targets 	
 
 # assembly 
-gmcs-resources := $(bin-path)/objc3-sharp.dll,$(bin-path)/cocoa3-sharp.dll
+gmcs-resources := $(bin-path)/mobjc.dll,$(bin-path)/mcocoa.dll
 gmcs-files := $(shell echo $(gmcs-resources) | sed "s/,/ /g")
 source-files := *.cs
 
@@ -62,7 +62,7 @@ $(exe-path): $(bin-path)/csc_flags $(gmcs-files) $(source-files)
 localized-resources := MainMenu.nib,Document.nib,Environment.nib,Flags.nib
 localized-files := $(shell echo $(localized-resources) | sed "s/,/ /g")
 
-other-resources := AppIcon.icns,Build.png,Cancel.png,$(bin-path)/objc3-glue.dylib
+other-resources := AppIcon.icns,Build.png,Cancel.png,$(bin-path)/mobjc-glue.dylib
 other-files := $(shell echo $(other-resources) | sed "s/,/ /g")
 
 $(app-path): $(exe-path) Info.plist $(other-files) $(localized-files)

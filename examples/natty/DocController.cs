@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Cocoa3;
-using Objc3;
+using MCocoa;
+using MObjc;
 using System;
 using System.IO;
 
@@ -31,17 +31,17 @@ internal sealed class DocController : NSDocumentController
 	{
 	}
 			
-	#region Overrides
+	#region Overrides ---------------------------------------------------------
 	[OverrideMethod("runModalOpenPanel:forTypes:")]		
 	public int RunModalOpenPanelForTypes(NSOpenPanel openPanel, NSObject extensions)
 	{		
-		openPanel.Delegate = this;
+		openPanel.setDelegate(this);
 		
 		return (int) SuperCall("runModalOpenPanel:forTypes:", openPanel, extensions);
 	}
 	#endregion	
 
-	#region Delegate Methods
+	#region Delegate Methods --------------------------------------------------
 	[NewMethod("panel:shouldShowFilename:")]		
 	public bool PanelShouldShowFilename(NSObject sender, NSString fileName)
 	{		
