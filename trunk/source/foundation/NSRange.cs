@@ -24,6 +24,11 @@ using System;
 
 namespace MCocoa
 {
+	public static partial class Enums
+	{
+		public const int NSNotFound = 0x7fffffff;
+	}
+	
 	[DisableRule("R1016", "Const2")]	
 	[Register("_NSRange")]
 	public struct NSRange
@@ -44,7 +49,5 @@ namespace MCocoa
 		{
 			return string.Format("[{0}, {1})", location, location + length);
 		}
-
-		public const int NSNotFound = 0x7fffffff;
 	}
 }

@@ -320,10 +320,38 @@ internal sealed class Generate
 
 			m_interface = file.Interfaces[i];
 			
-			DoWriteInterfaceHeader();
-			
-			DoGenerateMethods();
+			DoWriteInterfaceHeader();	
+			DoGenerateMethods1();
 			DoWriteInterfaceTrailer();
+			
+			if (m_interface.Category != null)
+			{
+				if (m_interface.Methods.Any(m => m.IsClass))
+				{
+					if (m_interface.Name != "NSObject")
+					{
+						NativeInterface ni = m_objects.FindInterface(m_interface.Name);
+						
+						DoWrite();
+						DoWrite("	public partial class {0} : {1}", ni.Name, ni.BaseName);
+						DoWrite("	{");
+						DoGenerateMethods2();
+						DoWrite("	}");
+					}
+					else
+					{
+						for (int j = 0; j < m_interface.Methods.Count; ++j)
+						{
+							NativeMethod method = m_interface.Methods[j];
+							if (method.IsClass)
+							{
+								DoWrite("		// skipping NSObject class category method {0}", method.Name);
+								Console.Error.WriteLine("found NSObject class category method {0}::{1}", m_interface.Name, method.Name);
+							}
+						}
+					}
+				}
+			}
 			
 			buffer.Append(m_buffer.ToString());
 		}
@@ -383,7 +411,7 @@ internal sealed class Generate
 		DoWrite("	}");
 	}
 	
-	private int DoGenerateMethods()	
+	private int DoGenerateMethods1()	
 	{
 		int numMethods = 0;
 		
@@ -396,23 +424,25 @@ internal sealed class Generate
 		names.Add("isProxy");
 		names.Add("zone");
 		
+		bool writeBlank = false;
 		for (int i = 0; i < m_interface.Methods.Count; ++i)
 		{
 			NativeMethod method = m_interface.Methods[i];
 
-			if (names.IndexOf(method.Name) < 0)
+			if (!method.IsClass || m_interface.Category == null)
 			{
-				if (DoGenerateMethod(method))
+				if (names.IndexOf(method.Name) < 0)
 				{
-					++numMethods;
-					names.Add(method.Name);
+					if (DoGenerateMethod(method, writeBlank))
+					{
+						++numMethods;
+						names.Add(method.Name);
+						writeBlank = true;
+					}
 				}
+				else
+					DoWrite("		// skipping {0} (it's already defined)", method.Name);				
 			}
-			else
-				DoWrite("		// skipping {0} (it's already defined)", method.Name);				
-							
-			if (i + 1 < m_interface.Methods.Count)
-				DoWrite();
 		}
 				
 		foreach (string protocol in m_interface.Protocols)
@@ -420,6 +450,43 @@ internal sealed class Generate
 				if (protocol != "NSObject")
 					DoGenerateProtocolMethods(names, protocol);
 					
+		return numMethods;
+	}
+	
+	private int DoGenerateMethods2()	
+	{
+		int numMethods = 0;
+		
+		if (m_interface.Methods.Count > 0 && m_interface.Category == null)
+			DoWrite();
+
+		var names = new List<string>();
+		names.Add("init");
+		names.Add("description");
+		names.Add("isProxy");
+		names.Add("zone");
+		
+		bool writeBlank = false;
+		for (int i = 0; i < m_interface.Methods.Count; ++i)
+		{
+			NativeMethod method = m_interface.Methods[i];
+
+			if (names.IndexOf(method.Name) < 0)
+			{
+				if (method.IsClass && m_interface.Category != null)
+				{
+					if (DoGenerateMethod(method, writeBlank))
+					{
+						++numMethods;
+						names.Add(method.Name);
+						writeBlank = true;
+					}
+				}
+			}
+			else
+				DoWrite("		// skipping {0} (it's already defined)", method.Name);				
+		}
+									
 		return numMethods;
 	}
 	
@@ -444,16 +511,19 @@ internal sealed class Generate
 		DoWrite();
 		DoWrite("		#region {0} Methods", pname);
 		
+		bool writeBlank = false;
 		NativeProtocol protocol = m_objects.FindProtocol(pname);		
 		for (int i = 0; i < protocol.Methods.Count; ++i)
 		{
 			NativeMethod method = protocol.Methods[i];
 			if (names.IndexOf(method.Name) < 0)
-				if (DoGenerateMethod(method))
+			{
+				if (DoGenerateMethod(method, writeBlank))
+				{
 					names.Add(method.Name);
-			
-			if (i + 1 < protocol.Methods.Count)
-				DoWrite();
+					writeBlank = true;
+				}
+			}
 		}
 			
 		foreach (string p2 in protocol.Protocols)
@@ -463,7 +533,7 @@ internal sealed class Generate
 		DoWrite("		#endregion");
 	}
 	
-	private bool DoGenerateMethod(NativeMethod nm)	
+	private bool DoGenerateMethod(NativeMethod nm, bool writeBlank)	
 	{		
 		bool wrote = false;
 		
@@ -484,6 +554,9 @@ internal sealed class Generate
 				}
 				else
 				{
+					if (writeBlank)
+						DoWrite();
+					
 					DoWriteMethod(nm);
 					wrote = true;
 				}
@@ -530,7 +603,7 @@ internal sealed class Generate
 		m_buffer.Append(" ");
 		DoWriteMethodName(method.Name);
 		m_buffer.Append("(");
-		if (m_interface.Category != null)
+		if (m_interface.Category != null && !method.IsClass)
 		{
 			m_buffer.Append("this ");
 			m_buffer.Append(m_interface.Name);
@@ -556,8 +629,16 @@ internal sealed class Generate
 			m_buffer.Append("			Unused.Value = ");
 		else
 			m_buffer.Append("			return ");
-
-		if (m_interface.Category != null)
+			
+		string rtype = DoMapType(method.ReturnType);
+		if (DoIsCastable(rtype))
+		{
+			m_buffer.Append("(");
+			m_buffer.Append(rtype);
+			m_buffer.Append(") ");
+		}
+		
+		if (m_interface.Category != null && !method.IsClass)
 			m_buffer.Append("_instance.");
 		else if (method.IsClass)
 			m_buffer.Append("ms_class.");
@@ -572,16 +653,54 @@ internal sealed class Generate
 			m_buffer.Append(DoSanitize(method.ArgNames[i]));
 		}
 		m_buffer.Append(")");
-		if (method.ReturnType != "void")
+		if (rtype != "void" && !DoIsCastable(rtype))
 		{
 			m_buffer.Append(".To<");
-			DoWriteType(method.ReturnType);
+			m_buffer.Append(rtype);
 			m_buffer.Append(">()");
 		}
 		m_buffer.AppendLine(";");
 		
 		// trailer
 		DoWrite("		}");
+	}
+	
+	private bool DoIsCastable(string type)
+	{
+		switch (type)
+		{
+			case "bool":
+			case "Boolean":
+			case "byte":
+			case "Byte":
+			case "char":
+			case "Char":
+			case "short":
+			case "Int16":
+			case "int":
+			case "Int32":
+			case "long":
+			case "Int64":
+			case "sbyte":
+			case "ushort":
+			case "UInt16":
+			case "uint":
+			case "UInt32":
+			case "ulong":
+			case "Uint64":
+			case "float":
+			case "Single":
+			case "double":
+			case "Double":
+			case "IntPtr":
+			case "Class":
+			case "Selector":
+			case "string":
+			case "String":
+				return true;
+		}
+		
+		return false;
 	}
 	
 	private void DoWriteMethodName(string name)
@@ -626,39 +745,39 @@ internal sealed class Generate
 	
 	private void DoWriteType(string type)
 	{
+		type = DoMapType(type);
+		m_buffer.Append(type);		
+	}
+	
+	private string DoMapType(string type)
+	{
 		type = m_objects.MapType(type);				// note that this is word to word with no spaces in the words
 
 		switch (type)
 		{
 			case "BOOL":
 			case "Boolean":
-				m_buffer.Append("bool");	
-				break;
+				return "bool";
 				
 			case "unsigned char":
 			case "uint8_t":
-				m_buffer.Append("byte");
-				break;
+				return "byte";
 				
 			case "unichar":
-				m_buffer.Append("char");
-				break;
+				return "char";
 				
 			case "double":
-				m_buffer.Append("double");
-				break;
+				return "double";
 				
 			case "CGFloat":
 			case "float":
-				m_buffer.Append("float");
-				break;
+				return "float";
 				
 			case "AEReturnID":
 			case "AESendPriority":
 			case "OSErr":
 			case "short":
-				m_buffer.Append("Int16");
-				break;
+				return "Int16";
 				
 			case "AESendMode":
 			case "AETransactionID":
@@ -671,14 +790,12 @@ internal sealed class Generate
 			case "OSStatus":
 			case "SInt32":
 			case "SRefCon":
-				m_buffer.Append("Int32");
-				break;
+				return "Int32";
 				
 			case "int64_t":
 			case "long":
 			case "long long":
-				m_buffer.Append("Int64");
-				break;
+				return "Int64";
 				
 			case "CFRunLoopRef":
 			case "CGColorSpaceRef":
@@ -703,8 +820,7 @@ internal sealed class Generate
 			case "unichar *":
 			case "va_list":
 			case "void *":
-				m_buffer.Append("IntPtr");
-				break;
+				return "IntPtr";
 				
 			case "CIColor *":
 			case "CIImage *":
@@ -712,39 +828,31 @@ internal sealed class Generate
 			case "NSEntityDescription *":
 			case "NSFetchRequest *":
 			case "NSManagedObjectContext *":
-				m_buffer.Append("NSObject");
-				break;
+				return "NSObject";
 																
 			case "CGPoint":
-				m_buffer.Append("NSPoint");
-				break;
+				return "NSPoint";
 																
 			case "CGRect":
-				m_buffer.Append("NSRect");
-				break;
+				return "NSRect";
 																
 			case "CGSize":
-				m_buffer.Append("NSSize");
-				break;
+				return "NSSize";
 																
 			case "AEArrayType":
 			case "signed char":
-				m_buffer.Append("sbyte");
-				break;
+				return "sbyte";
 				
 			case "SEL":
-				m_buffer.Append("Selector");
-				break;
+				return "Selector";
 				
 			case "const char *":
 			case "const unichar *":
-				m_buffer.Append("string");
-				break;
+				return "string";
 				
 			case "uint16_t":
 			case "unsigned short":
-				m_buffer.Append("UInt16");
-				break;
+				return "UInt16";
 				
 			case "AEEventClass":
 			case "AEEventID":
@@ -762,13 +870,11 @@ internal sealed class Generate
 			case "unsigned":
 			case "unsigned int":
 			case "UTF32Char":
-				m_buffer.Append("UInt32");
-				break;
+				return "UInt32";
 				
 			case "unsigned long":
 			case "unsigned long long":
-				m_buffer.Append("UInt64");
-				break;
+				return "UInt64";
 				
 			default:
 				if (type.StartsWith("const "))
@@ -776,11 +882,11 @@ internal sealed class Generate
 					
 				if (type.EndsWith("**") || type.StartsWith("inout ") || type.Contains("["))
 				{
-					m_buffer.Append("IntPtr");
+					return "IntPtr";
 				}
 				else if (type.Contains("<") && type.Contains(">"))
 				{
-					m_buffer.Append("NSObject");		// TODO: should probably add interfaces for protocols
+					return "NSObject";		// TODO: should probably add interfaces for protocols
 				}
 				else if (type.EndsWith("*"))
 				{
@@ -789,19 +895,18 @@ internal sealed class Generate
 
 					if (type.StartsWith("NS") && type != "NSInteger" && type != "NSUInteger")
 					{
-						m_buffer.Append(type);
+						return type;
 					}
 					else
 					{
-						m_buffer.Append("IntPtr");
+						return "IntPtr";
 					}
 				}
 				else
 				{
 					type = m_objects.MapType(type);
-					m_buffer.Append(type);
+					return type;
 				}					
-				break;
 		}		
 	}
 	

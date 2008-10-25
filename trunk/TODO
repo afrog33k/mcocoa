@@ -1,20 +1,24 @@
 set a symbolic breakpoint at -[NSException raise]
 
-* Add the new projects to google.
+* Check in generator?
+* Might want to figure out all the methods an interface contains and then write them out:
+	- so don't need extension classes
+	- but we want to keep the file associations
+	- would be nice to add a comment for classes generated for a category
+	- how to handle class and instance methods with the same name? rename them both?
+* Add a simple foundation unit test.
+* Generated a method named fileURLWithPathIsDirectoryAVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER
+* See if natty works.
+* Maybe we should generate string overloads for methods taking an NSString? Or just
+  take an NSString?
+* Update makefile for natty.
+* Use tar --exclude \*/.svn --exclude \*/.svn/\*
 * Generate partial classes:
 	- probably want GetHashCode, Equals, ToString
-	- use xml or some simple file format to define the frameworks to process
-	- print generate time, may want to compile regexen
-	- need a black list for methods to be hand coded or skipped
-	- skip NSObject.h
-	- may want to be able to list methods that should be properties
-	- how do we handle enums? Enums.NSUTF8StringEncoding? NSString.NSUTF8StringEncoding?
-	- hand code functions?
 * Remove the old google projects.
-* Use tar --exclude \*/.svn --exclude \*/.svn/\*
-* Make sure inner inner exceptions work.
 * Get rid of Ignore.
 * Structs needs Equals and GetHashCode.
+* Animatin views has a bad menu name.
 * Add one or two more of Apple's sample apps.
 * Probably should add interfaces for protocols.
 * Menu handlers seem to work a bit differently than in objc. In objc exceptions

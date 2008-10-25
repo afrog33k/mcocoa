@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Cocoa3;
-using Objc3;
+using MCocoa;
+using MObjc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -70,7 +70,7 @@ internal sealed class Document : NSDocument
 		
 	public string Path
 	{
-		get {return FileUrl.Path;}
+		get {return fileURL().path().ToString();}
 	}
 	
 	public int ExitCode
@@ -91,9 +91,9 @@ internal sealed class Document : NSDocument
 			StateChanged(this, EventArgs.Empty); 
 			
 		m_exitCode = 0;
-		NSApplication app = NSApplication.Shared;
+		NSApplication app = NSApplication.sharedApplication();
 		
-		m_process = m_builder.Build(FileUrl.Path, m_target, m_vars, m_flags);
+		m_process = m_builder.Build(fileURL().path().ToString(), m_target, m_vars, m_flags);
 		m_process.EnableRaisingEvents = true;
 		m_process.Exited += (s, e) => {app.BeginInvoke(this.DoProcessExited);};
 		m_process.StartInfo.RedirectStandardOutput = true;
@@ -119,7 +119,7 @@ internal sealed class Document : NSDocument
 			StateChanged(this, EventArgs.Empty);
 	}
 	
-	#region Overrides
+	#region Overrides ---------------------------------------------------------
 	[OverrideMethod("readFromData:ofType:error:")]		
 	public bool ReadFromDataOfTypeError(NSData data, NSString typeName, IntPtr outError)
 	{
@@ -127,7 +127,8 @@ internal sealed class Document : NSDocument
 		
 		try
 		{
-			string contents = data.AsUTF8() ?? string.Empty;
+			IntPtr buffer = data.bytes();
+			string contents = Marshal.PtrToStringAuto(buffer);
 			
 			m_builder = new MakeBuilder(contents);
 			m_target = m_builder.Default;
@@ -144,10 +145,11 @@ internal sealed class Document : NSDocument
 		catch (Exception e)
 		{
 			NSMutableDictionary userInfo = new NSMutableDictionary();
-			userInfo.Add(NSError.NSLocalizedDescriptionKey, new NSString("Couldn't read the document."));
-			userInfo.Add(NSError.NSLocalizedFailureReasonErrorKey, new NSString(e.Message));
+			userInfo.setObjectForKey(new NSString("Couldn't read the document."), Externs.NSLocalizedDescriptionKey);
+			userInfo.setObjectForKey(new NSString(e.Message), Externs.NSLocalizedFailureReasonErrorKey);
 			
-			NSError error = new NSError(NSError.Cocoa3Domain, 1, userInfo);
+			NSError error = new NSError(NSError.alloc().initWithDomainCodeUserInfo(
+				Externs.Cocoa3Domain, 1, userInfo));
 			Marshal.WriteIntPtr(outError, (IntPtr) error);
 
 			read = false;
@@ -160,16 +162,16 @@ internal sealed class Document : NSDocument
 	public void MakeWindowControllers()
 	{
 		DocWindowController controller = new DocWindowController("Document");
-		Add(controller);
+		addWindowController(controller);
 	}
 	#endregion	
 
-	#region Private Methods
+	#region Private Methods ---------------------------------------------------
 	private void DoGotStdoutData(object sender, DataReceivedEventArgs e)
 	{
 		if (StdoutData != null)
 		{
-			NSApplication app = NSApplication.Shared;
+			NSApplication app = NSApplication.sharedApplication();
 			app.BeginInvoke(() => StdoutData(this, e.Data + Environment.NewLine));
 		}
 	}
@@ -178,7 +180,7 @@ internal sealed class Document : NSDocument
 	{
 		if (StderrData != null)
 		{
-			NSApplication app = NSApplication.Shared;
+			NSApplication app = NSApplication.sharedApplication();
 			app.BeginInvoke(() => StderrData(this, e.Data + Environment.NewLine));
 		}
 	}
@@ -197,7 +199,7 @@ internal sealed class Document : NSDocument
 	}
 	#endregion	
 	
-	#region Fields
+	#region Fields ------------------------------------------------------------
 	private MakeBuilder m_builder;
 	private string m_target;
 	private State m_state;

@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Cocoa3;
-using Objc3;
+using MCocoa;
+using MObjc;
 using System;
 using System.Collections.Generic;
 
@@ -37,10 +37,10 @@ internal sealed class FlagsController : NSObject
 		m_doc = doc;
 		m_flags = new Dictionary<string, int>(m_doc.Flags);
 		
-		NSView[] views = m_sheet.Value.ContentView.Subviews;
+		NSView[] views = m_sheet.Value.contentView().subviews();
 		for (int i = 0; i < views.Length; ++i)
 		{
-			if (views[i].RespondsTo(new Selector("title")))
+			if (views[i].respondsToSelector("title"))
 			{
 				string title = new NSString(views[i].Call("title")).ToString();
 				if (m_flags.ContainsKey(title))
@@ -48,15 +48,15 @@ internal sealed class FlagsController : NSObject
 			}
 		}
 
-		m_sheet.Value.Delegate = this;
-		NSApplication.Shared.BeginSheet(m_sheet.Value, window, this);
+		m_sheet.Value.setDelegate(this);
+		NSApplication.sharedApplication().beginSheetModalForWindowModalDelegateDidEndSelectorContextInfo(m_sheet.Value, window, this, null, IntPtr.Zero);
     }
 
 	#region Action Handlers
 	[NewMethod("toggle:")]		
 	public void Toggle(NSButton sender)
 	{
-		m_flags[sender.Title] = sender.State;
+		m_flags[sender.title().ToString()] = sender.state();
     }
 
 	[NewMethod("flagsOK:")]		
@@ -66,15 +66,15 @@ internal sealed class FlagsController : NSObject
 			m_doc.Flags[entry.Key] = entry.Value;
 		m_flags.Clear();
 			
-		NSApplication.Shared.EndSheet(m_sheet.Value);
-		m_sheet.Value.OrderOut();
+		NSApplication.sharedApplication().endSheet(m_sheet.Value);
+		m_sheet.Value.orderOut(this);
     }
 
 	[NewMethod("flagsCancel:")]		
 	public void FlagsCancel(NSObject sender)
 	{
-		NSApplication.Shared.EndSheet(m_sheet.Value);
-		m_sheet.Value.OrderOut();
+		NSApplication.sharedApplication().endSheet(m_sheet.Value);
+		m_sheet.Value.orderOut(this);
    	}
 	#endregion
 		

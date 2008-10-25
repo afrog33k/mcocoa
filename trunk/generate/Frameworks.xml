@@ -40,8 +40,11 @@
 		<Blacklist>
 			<Method interface = "NSApplication" method = "run" reason = "because there is a hand-written version"/>
 			<Method interface = "NSApplication" method = "windows" reason = "because there is a hand-written version"/>
+			<Method interface = "NSDocumentController" method = "sharedDocumentController" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "subviews" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "setSubviews:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSWindow" method = "contentView" reason = "because there is a hand-written version"/>
+			<Method interface = "NSWindow" method = "windowController" reason = "because there is a hand-written version"/>
 
 			<Method interface = "NSAlert" method = "alertWithMessageText:defaultButton:alternateButton:otherButton:informativeTextWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSGradient" method = "initWithColorsAndLocations:" reason = "because it is variadic"/>

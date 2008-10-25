@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Cocoa3;
-using Objc3;
+using MCocoa;
+using MObjc;
 using System;
 
 internal static class Program
@@ -29,8 +29,13 @@ internal static class Program
 	{	
 		try
 		{			
+			// We don't dynamically load any assemblies with mobjc types so we
+			// can initialize mobjc as soon as we start up.
+			Registrar.CanInit = true;
+			
+			// Load the nib and run the main event loop.
 			NSApplication app = new NSApplication("MainMenu.nib");
-			app.Run();
+			app.run();
 		}
 		catch (Exception e)
 		{

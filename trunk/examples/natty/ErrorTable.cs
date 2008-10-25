@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Cocoa3;
-using Objc3;
+using MCocoa;
+using MObjc;
 using System;
 
 [ExportClass("ErrorTable", "NSTableView")]
@@ -38,7 +38,7 @@ internal sealed class ErrorTable : NSTableView
 	[OverrideMethod("mouseDown:")]		
 	public void MouseDown(NSEvent evt)
 	{
-		if (evt.ClickCount == 2)
+		if (evt.clickCount() == 2)
 			DoOpen();
 		else
 			SuperCall("mouseDown:", evt);
@@ -47,19 +47,24 @@ internal sealed class ErrorTable : NSTableView
 	[OverrideMethod("keyDown:")]		
 	public void KeyDown(NSEvent evt)
 	{
-		if (evt.KeyCode == NSEvent.NSTabFunctionKey)
+		NSString chars = evt.characters();
+		
+		if (chars.length() == 1 && chars.characterAtIndex(0) == '\t')
 		{
-			int row = SelectedRow;
+			int row = selectedRow();
 			
-			if ((evt.Modifiers & ModifierFlags.Shift) == ModifierFlags.Shift)
+			if ((evt.modifierFlags() & Enums.NSShiftKeyMask) == Enums.NSShiftKeyMask)
 				--row;
 			else
 				++row;
 				
-			if (row >= 0 && row < NumberOfRows)
-				SelectedRow = row;
+			if (row >= 0 && row < numberOfRows())
+			{
+				NSTableView thisPtr = this;
+				thisPtr.selectRowByExtendingSelection(row, false);
+			}
 		}
-		else if (evt.KeyCode == NSEvent.NSReturnFunctionKey || evt.KeyCode == NSEvent.NSEnterFunctionKey)
+		else if (chars.length() == 1 && chars.characterAtIndex(0) == '\r')
 		{
 			DoOpen();
 		}
@@ -72,13 +77,13 @@ internal sealed class ErrorTable : NSTableView
 	
 	private void DoOpen()
 	{
-		NSIndexSet indexes = SelectedRowIndexes;
+		NSIndexSet indexes = selectedRowIndexes();
 		
-		int index = indexes.FirstIndex;
-		while (index != NSRange.NSNotFound)
+		uint index = indexes.firstIndex();
+		while (index != Enums.NSNotFound)
 		{
-			DataSource.Call("openFile:", index);
-			index = indexes.IndexGreaterThanIndex(index);
+			dataSource().Call("openFile:", index);
+			index = indexes.indexGreaterThanIndex(index);
 		}
 	}
 }
