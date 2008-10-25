@@ -1,0 +1,121 @@
+// Copyright (C) 2008 Jesse Jones
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using MObjc;
+using System;
+using System.Runtime.InteropServices;
+
+// http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Miscellaneous/AppKit_Functions/Reference/reference.html#//apple_ref/doc/uid/TP40004154-I1-DontLinkElementID_61
+namespace MCocoa
+{
+	public static partial class NSFunctions
+	{
+		public static void Beep()
+		{
+			NSBeep();
+		}
+
+		#region Framing Rectangles --------------------------------------------
+		public static void FrameRect(NSRect rect)
+		{
+			NSFrameRect(rect);
+		}
+
+		public static void FrameRect(NSRect rect, float width)
+		{
+			NSFrameRectWithWidth(rect, width);
+		}
+
+		public static void FrameRect(NSRect rect, float width, int op)
+		{
+			NSFrameRectWithWidthUsingOperation(rect, width, op);
+		}
+		#endregion
+
+		#region Filling Rectangles --------------------------------------------
+		public static void RectFill(NSRect rect)
+		{
+			NSRectFill(rect);
+		}
+
+		public static void RectFill(NSRect[] rects)
+		{
+			NSRectFillList(rects, rects.Length);
+		}
+
+		public static void RectFill(NSRect[] rects, int op)
+		{
+			NSRectFillListUsingOperation(rects, rects.Length, op);
+		}
+
+		public static void RectFill(NSRect[] rects, NSColor[] colors)
+		{
+			DBC.Pre(rects.Length == colors.Length, "rects and colors have different lengths");
+			
+			NSRectFillListWithColors(rects, colors, rects.Length);
+		}
+
+		public static void RectFill(NSRect[] rects, NSColor[] colors, int op)
+		{
+			DBC.Pre(rects.Length == colors.Length, "rects and colors have different lengths");
+			
+			NSRectFillListWithColorsUsingOperation(rects, colors, rects.Length, op);
+		}
+
+		public static void RectFill(NSRect rect, int op)
+		{
+			NSRectFillUsingOperation(rect, op);
+		}
+		#endregion
+
+		#region P/Invokes -----------------------------------------------------
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSBeep();
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSFrameRect(NSRect rect);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSFrameRectWithWidth(NSRect rect, float width);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSFrameRectWithWidthUsingOperation(NSRect rect, float width, int op);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSRectFill(NSRect rect);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSRectFillList(NSRect[] rects, int count);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSRectFillListUsingOperation(NSRect[] rects, int count, int op);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors, int count);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int count, int op);
+
+		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+		private extern static void NSRectFillUsingOperation(NSRect rect, int op);
+		#endregion
+	}
+}

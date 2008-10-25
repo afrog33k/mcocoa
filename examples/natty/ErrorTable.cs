@@ -59,10 +59,7 @@ internal sealed class ErrorTable : NSTableView
 				++row;
 				
 			if (row >= 0 && row < numberOfRows())
-			{
-				NSTableView thisPtr = this;
-				thisPtr.selectRowByExtendingSelection(row, false);
-			}
+				selectRowIndexesByExtendingSelection(NSIndexSet.indexSetWithIndex((uint) row), false);
 		}
 		else if (chars.length() == 1 && chars.characterAtIndex(0) == '\r')
 		{
