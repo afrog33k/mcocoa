@@ -1,19 +1,10 @@
 set a symbolic breakpoint at -[NSException raise]
 
-* NSIndexSet has bad result types.
-* Add a simple foundation unit test.
-* Generated a method named fileURLWithPathIsDirectoryAVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER
-* See if natty works.
-* Maybe we should generate string overloads for methods taking an NSString? Or just
-  take an NSString?
-* Update makefile for natty.
-* Use tar --exclude \*/.svn --exclude \*/.svn/\*
 * Generate partial classes:
-	- probably want GetHashCode, Equals, ToString
+	- NSObject should have equals and hash
 * Remove the old google projects.
 * Get rid of Ignore.
 * Structs needs Equals and GetHashCode.
-* Animatin views has a bad menu name.
 * Add one or two more of Apple's sample apps.
 * Probably should add interfaces for protocols.
 * Menu handlers seem to work a bit differently than in objc. In objc exceptions

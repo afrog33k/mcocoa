@@ -1,3 +1,6 @@
+# natty-ignore: install uninstall keys tar help
+# natty-default: lib
+
 # ------------------
 # Public variables
 CSC ?= gmcs
@@ -137,5 +140,5 @@ uninstall:
 	-rm $(pc_file)
 
 tar:
-	tar --create --compress --file=mcocoa-$(version).tar.gz AUTHORS Dictionary.txt MIT.X11 Makefile README examples gen_version.sh get_version.sh source
+	tar --create --compress --exclude \*/.svn --exclude \*/.svn/\* --file=mcocoa-$(version).tar.gz AUTHORS Dictionary.txt MIT.X11 Makefile README examples gen_version.sh get_version.sh source
 
