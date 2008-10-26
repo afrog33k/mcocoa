@@ -423,10 +423,11 @@ internal sealed class Generate
 			m_buffer.Append("static ");
 		
 		string rtype = m_objects.MapResult(m_interface.Name, method.Name, method.ReturnType);
+		rtype = DoMapType(rtype);
 		if (rtype == "IBAction")
 			rtype = "void";
 						
-		DoWriteType(rtype);
+		m_buffer.Append(rtype);
 		m_buffer.Append(" ");
 		DoWriteMethodName(method.Name, DoGetMethodSuffix(method));
 		m_buffer.Append("(");
@@ -455,7 +456,6 @@ internal sealed class Generate
 		else
 			m_buffer.Append("			return ");
 			
-		rtype = DoMapType(rtype);
 		if (DoIsCastable(rtype))
 		{
 			m_buffer.Append("(");
@@ -475,14 +475,28 @@ internal sealed class Generate
 		for (int i = 0; i < method.ArgNames.Length; ++i)
 		{
 			m_buffer.Append(", ");
-			m_buffer.Append(DoSanitize(method.ArgNames[i]));
+			if (method.ArgTypes[i] == "NSString *")
+			{
+				m_buffer.Append("new NSString(");
+				m_buffer.Append(DoSanitize(method.ArgNames[i]));
+				m_buffer.Append(")");
+			}
+			else
+				m_buffer.Append(DoSanitize(method.ArgNames[i]));
 		}
 		m_buffer.Append(")");
 		if (rtype != "void" && !DoIsCastable(rtype))
-		{
-			m_buffer.Append(".To<");
-			m_buffer.Append(rtype);
-			m_buffer.Append(">()");
+		{			
+			if (rtype == "string" && method.ReturnType == "NSString *")
+			{
+				m_buffer.Append(".To<NSString>().ToString()");
+			}
+			else
+			{
+				m_buffer.Append(".To<");
+				m_buffer.Append(rtype);
+				m_buffer.Append(">()");
+			}
 		}
 		m_buffer.AppendLine(";");
 		
@@ -610,8 +624,6 @@ internal sealed class Generate
 			case "IntPtr":
 			case "Class":
 			case "Selector":
-			case "string":
-			case "String":
 				return true;
 		}
 		
@@ -764,6 +776,7 @@ internal sealed class Generate
 				
 			case "const char *":
 			case "const unichar *":
+			case "NSString *":
 				return "string";
 				
 			case "uint16_t":

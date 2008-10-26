@@ -47,9 +47,9 @@ internal sealed class ErrorTable : NSTableView
 	[OverrideMethod("keyDown:")]		
 	public void KeyDown(NSEvent evt)
 	{
-		NSString chars = evt.characters();
+		string chars = evt.characters();
 		
-		if (chars.length() == 1 && chars.characterAtIndex(0) == '\t')
+		if (chars.Length == 1 && chars[0] == '\t')
 		{
 			int row = selectedRow();
 			
@@ -61,7 +61,7 @@ internal sealed class ErrorTable : NSTableView
 			if (row >= 0 && row < numberOfRows())
 				selectRowIndexesByExtendingSelection(NSIndexSet.indexSetWithIndex((uint) row), false);
 		}
-		else if (chars.length() == 1 && chars.characterAtIndex(0) == '\r')
+		else if (chars.Length == 1 && chars[0] == '\r')
 		{
 			DoOpen();
 		}
