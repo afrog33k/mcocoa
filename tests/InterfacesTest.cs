@@ -219,12 +219,16 @@ enum {
 - (NSUInteger)length;			
 - (void)getCharacters:(unichar *)buffer DEPRECATED_IN_MAC_OS_X_VERSION_10_4_AND_LATER;
 - (void)getCharacters:(unichar *)buffer range:(NSRange)aRange DEPRECATED_IN_MAC_OS_X_VERSION_10_4_AND_LATER;
++ (id)fileURLWithPath:(NSString *)path isDirectory:(BOOL) isDir AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER;
 @end");				
 		NativeInterface ni = parser.Interface;
-		Assert.AreEqual(1, ni.Methods.Count);
+		Assert.AreEqual(2, ni.Methods.Count);
 		
 		Assert.AreEqual("length", ni.Methods[0].Name);
 		Assert.AreEqual("NSUInteger", ni.Methods[0].ReturnType);
 		Assert.AreEqual(0, ni.Methods[0].ArgNames.Length);
+		
+		Assert.AreEqual("fileURLWithPath:isDirectory:", ni.Methods[1].Name);
+		Assert.AreEqual("id", ni.Methods[1].ReturnType);
 	}
 }

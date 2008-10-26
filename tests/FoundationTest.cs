@@ -19,22 +19,31 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using MCocoa;
 using MObjc;
+using NUnit.Framework;
 using System;
-using System.Runtime.InteropServices;
 
-namespace MCocoa
-{ 
-	public partial class NSWindow : NSResponder 
-	{		
-		public NSView contentView()
-		{
-			return Call("contentView").To<NSView>();
-		}
+// Simple smoke test to verify that the wrappers are not completely hosed.
+[TestFixture]
+public class FoundationTest 	
+{
+	[Test]
+	public void Array()	
+	{
+		Registrar.CanInit = true;
+		NSObject pool = (NSObject) Native.Call("[[NSAutoreleasePool alloc] init]");
+		
+		NSMutableArray array = new NSMutableArray(NSMutableArray.alloc().initWithCapacity(3));
+		array.addObject(NSNumber.numberWithInt(100));
+		array.addObject(NSNumber.numberWithBool(true));
+		array.addObject(new NSString("hmm"));
 
-		public NSWindowController windowController()
-		{
-			return Call("windowController").To<NSWindowController>();
-		}
+		Assert.AreEqual(3, array.count());
+		Assert.AreEqual(100, (int) array.objectAtIndex(0).Call("intValue"));
+		Assert.AreEqual(true, (bool) array.objectAtIndex(1).Call("boolValue"));
+		Assert.AreEqual("hmm", array.objectAtIndex(2).ToString());
+
+		pool.release();
 	}
 }

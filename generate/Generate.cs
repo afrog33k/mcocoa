@@ -421,11 +421,12 @@ internal sealed class Generate
 		m_buffer.Append("		public ");
 		if (method.IsClass || (m_interface.Category != null && m_interface.Name == "NSObject"))
 			m_buffer.Append("static ");
-			
-		if (method.ReturnType == "IBAction")
-			method.ReturnType = "void";
-			
-		DoWriteType(method.ReturnType);
+		
+		string rtype = m_objects.MapResult(m_interface.Name, method.Name, method.ReturnType);
+		if (rtype == "IBAction")
+			rtype = "void";
+						
+		DoWriteType(rtype);
 		m_buffer.Append(" ");
 		DoWriteMethodName(method.Name, DoGetMethodSuffix(method));
 		m_buffer.Append("(");
@@ -449,12 +450,12 @@ internal sealed class Generate
 		DoWrite("		{");
 		
 		// body
-		if (method.ReturnType == "void")
+		if (rtype == "void")
 			m_buffer.Append("			Unused.Value = ");
 		else
 			m_buffer.Append("			return ");
 			
-		string rtype = DoMapType(method.ReturnType);
+		rtype = DoMapType(rtype);
 		if (DoIsCastable(rtype))
 		{
 			m_buffer.Append("(");

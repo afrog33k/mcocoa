@@ -55,7 +55,7 @@ cocoa_files := $(strip $(shell find source -name "*.cs" -print))
 bin/cocoa_files: $(cocoa_files)
 	@echo "$(cocoa_files)" > bin/cocoa_files
 		
-bin/generate.exe: generate/*.cs bin/csc_flags 
+bin/generate.exe: generate/*.cs generate/Frameworks.xml bin/csc_flags 
 	$(CSC) -out:bin/generate.exe $(CSC_FLAGS) -target:exe generate/*.cs
 		
 bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
@@ -63,7 +63,7 @@ bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
 	$(CSC) -out:bin/mcocoa.dll $(CSC_FLAGS) -keyfile:keys -target:library -reference:bin/mobjc.dll @bin/cocoa_files
 
 bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs
-	$(CSC) -out:bin/tests.dll $(CSC_FLAGS) -pkg:mono-nunit -target:library tests/*.cs generate/*.cs
+	$(CSC) -out:bin/tests.dll $(CSC_FLAGS) -pkg:mono-nunit -target:library tests/*.cs generate/*.cs -reference:bin/mobjc.dll -reference:bin/mcocoa.dll
 
 # ------------------
 # Misc targets
