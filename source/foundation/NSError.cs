@@ -27,21 +27,21 @@ namespace MCocoa
 	public static partial class Externs
 	{
 		// standard error domains
-		public static readonly NSString NSPOSIXErrorDomain = new NSString("NSPOSIXErrorDomain");
-		public static readonly NSString NSOSStatusErrorDomain = new NSString("NSOSStatusErrorDomain");
-		public static readonly NSString NSMachErrorDomain = new NSString("NSMachErrorDomain");
-		public static readonly NSString Cocoa3Domain = new NSString("Cocoa3Domain");
+		public static readonly string NSPOSIXErrorDomain = "NSPOSIXErrorDomain";
+		public static readonly string NSOSStatusErrorDomain = "NSOSStatusErrorDomain";
+		public static readonly string NSMachErrorDomain = "NSMachErrorDomain";
+		public static readonly string Cocoa3Domain = "Cocoa3Domain";
 
 		// standard userInfo keys
-		public static readonly NSString NSLocalizedDescriptionKey = new NSString("NSLocalizedDescription").retain();
-		public static readonly NSString NSErrorFailingURLStringKey = new NSString("NSErrorFailingURLStringKey").retain();
-		public static readonly NSString NSFilePathErrorKey = new NSString("NSFilePath").retain();
-		public static readonly NSString NSStringEncodingErrorKey = new NSString("NSStringEncoding").retain();
-		public static readonly NSString NSUnderlyingErrorKey = new NSString("NSUnderlyingError").retain();
-		public static readonly NSString NSURLErrorKey = new NSString("NSURL").retain();
-		public static readonly NSString NSLocalizedFailureReasonErrorKey = new NSString("NSLocalizedFailureReason").retain();
-		public static readonly NSString NSLocalizedRecoverySuggestionErrorKey = new NSString("NSLocalizedRecoverySuggestion").retain();
-		public static readonly NSString NSLocalizedRecoveryOptionsErrorKey = new NSString("NSLocalizedRecoveryOptions").retain();
-		public static readonly NSString NSRecoveryAttempterErrorKey = new NSString("NSRecoveryAttempter").retain();
+		public static readonly string NSLocalizedDescriptionKey = "NSLocalizedDescription";
+		public static readonly string NSErrorFailingURLStringKey = "NSErrorFailingURLStringKey";
+		public static readonly string NSFilePathErrorKey = "NSFilePath";
+		public static readonly string NSStringEncodingErrorKey = "NSStringEncoding";
+		public static readonly string NSUnderlyingErrorKey = "NSUnderlyingError";
+		public static readonly string NSURLErrorKey = "NSURL";
+		public static readonly string NSLocalizedFailureReasonErrorKey = "NSLocalizedFailureReason";
+		public static readonly string NSLocalizedRecoverySuggestionErrorKey = "NSLocalizedRecoverySuggestion";
+		public static readonly string NSLocalizedRecoveryOptionsErrorKey = "NSLocalizedRecoveryOptions";
+		public static readonly string NSRecoveryAttempterErrorKey = "NSRecoveryAttempter";
 	}
 }

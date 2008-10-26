@@ -145,8 +145,8 @@ internal sealed class Document : NSDocument
 		catch (Exception e)
 		{
 			NSMutableDictionary userInfo = new NSMutableDictionary();
-			userInfo.setObjectForKey(new NSString("Couldn't read the document."), Externs.NSLocalizedDescriptionKey);
-			userInfo.setObjectForKey(new NSString(e.Message), Externs.NSLocalizedFailureReasonErrorKey);
+			userInfo.setObjectForKey(new NSString("Couldn't read the document."), new NSString(Externs.NSLocalizedDescriptionKey));
+			userInfo.setObjectForKey(new NSString(e.Message), new NSString(Externs.NSLocalizedFailureReasonErrorKey));
 			
 			NSError error = new NSError(NSError.alloc().initWithDomainCodeUserInfo(
 				Externs.Cocoa3Domain, 1, userInfo));
