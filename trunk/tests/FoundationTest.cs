@@ -32,7 +32,7 @@ public class FoundationTest
 	public void Array()	
 	{
 		Registrar.CanInit = true;
-		NSObject pool = (NSObject) Native.Call("[[NSAutoreleasePool alloc] init]");
+		NSObject pool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
 		
 		NSMutableArray array = new NSMutableArray(NSMutableArray.alloc().initWithCapacity(3));
 		array.addObject(NSNumber.numberWithInt(100));

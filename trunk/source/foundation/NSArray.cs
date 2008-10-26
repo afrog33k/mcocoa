@@ -54,7 +54,7 @@ namespace MCocoa
 			GCHandle handle = GCHandle.Alloc(ptrs, GCHandleType.Pinned);
 			IntPtr objects = handle.AddrOfPinnedObject();
 
-			return (IntPtr) Native.Call("[NSArray arrayWithObjects:{0} count:{1}]", objects, args.Length);
+			return (IntPtr) new Class("NSArray").Call("arrayWithObjects:count:", objects, args.Length);
 		}
 		#endregion
 	}
