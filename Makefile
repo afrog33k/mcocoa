@@ -31,7 +31,7 @@ all: animating-views natty
 
 lib: bin/mcocoa.dll
 
-check: bin/tests.dll
+check: bin/tests.dll bin/mcocoa.dll
 	cd bin && "$(NUNIT)" tests.dll -nologo
 
 generate: bin/generate.exe

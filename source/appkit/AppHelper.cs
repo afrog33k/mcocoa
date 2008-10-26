@@ -30,7 +30,7 @@ namespace MCocoa
 	[ExportClass("AppHelper", "NSObject")]
 	internal sealed class AppHelper : NSObject
 	{
-		public AppHelper() : base(Native.Call("[[AppHelper alloc] init]"))
+		public AppHelper() : base(new Class("AppHelper").Call("alloc").Call("init"))
 		{
 			m_thread = new Thread(this.DoThread);
 			m_thread.IsBackground = true;
@@ -170,8 +170,7 @@ namespace MCocoa
 		{
 			if (!o.nextResponder().IsNil())
 				DoDump(o.nextResponder(), ref indent);
-				
-			if (o.nextResponder().IsNil())
+			else
 				DoDump1(NSApplication.sharedApplication(), ref indent);
 
 			DoDump1(o, ref indent);
@@ -209,7 +208,7 @@ namespace MCocoa
 		private void DoThread()
 		{
 			Selector selector = new Selector("Execute:");		
-			NSObject pool = (NSObject) Native.Call("[[NSAutoreleasePool alloc] init]");
+			NSObject pool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
 			Unused.Value = pool;		// shut compiler up
 
 			while (true)

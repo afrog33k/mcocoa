@@ -38,8 +38,8 @@ namespace MCocoa
 		{
 		}
 
-		public NSMenuItem(string title, string selector, string charCode, NSObject target) : base(Native.Call(
-			"[[NSMenuItem alloc] initWithTitle:{0} action:{1} keyEquivalent:{2}]", 
+		public NSMenuItem(string title, string selector, string charCode, NSObject target) : base(new Class("NSMenuItem").Call(
+			"alloc").Call("initWithTitle:action:keyEquivalent:", 
 				new NSString(title), selector != null ? new Selector(selector) : null, new NSString(charCode)))
 		{
 			autorelease();			

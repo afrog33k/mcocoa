@@ -26,8 +26,8 @@ namespace MCocoa
 {
 	public partial class NSMenu : NSObject
 	{
-		public NSMenu(string title) : base(Native.Call(
-			"[[NSMenu alloc] initWithTitle:{0}]", new NSString(title)))
+		public NSMenu(string title) : base(new Class("NSMenu").Call(
+			"alloc").Call("initWithTitle:", new NSString(title)))
 		{
 			autorelease();
 		}

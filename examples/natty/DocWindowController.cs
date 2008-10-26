@@ -29,7 +29,7 @@ using System.IO;
 [ExportClass("DocWindowController", "NSWindowController", IVars = "flagsSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
 internal sealed class DocWindowController : NSWindowController
 {
-	public DocWindowController(string nibName) : base(Native.Call("[[DocWindowController alloc] initWithWindowNibName:{0}]", new NSString(nibName)))
+	public DocWindowController(string nibName) : base(new Class("DocWindowController").Call("alloc").Call("initWithWindowNibName:", new NSString(nibName)))
 	{
 		m_env = new IVar<EnvController>(this, "envSheet");
 		m_flags = new IVar<FlagsController>(this, "flagsSheet");

@@ -31,12 +31,12 @@ namespace MCocoa
 		{
 		}
 				
-		public NSAttributedString(char ch, NSDictionary attrs) : base(Native.Call("[[NSAttributedString alloc] initWithString:{0} attributes:{1}]", new NSString(ch), attrs))
+		public NSAttributedString(char ch, NSDictionary attrs) : base(new Class("NSAttributedString").Call("alloc").Call("initWithString:attributes:", new NSString(ch), attrs))
 		{
 			autorelease();
 		}
 		
-		public NSAttributedString(string text, NSDictionary attrs) : base(Native.Call("[[NSAttributedString alloc] initWithString:{0} attributes:{1}]", new NSString(text), attrs))
+		public NSAttributedString(string text, NSDictionary attrs) : base(new Class("NSAttributedString").Call("alloc").Call("initWithString:attributes:", new NSString(text), attrs))
 		{
 			autorelease();
 		}

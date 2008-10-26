@@ -26,23 +26,23 @@ namespace MCocoa
 {
 	public partial class NSNumber : NSValue
 	{		
-		public NSNumber(bool value) : base(Native.Call("[NSNumber numberWithBool{0}]", value))
+		public NSNumber(bool value) : base(new Class("NSNumber").Call("numberWithBool:", value))
 		{
 		}
 		
-		public NSNumber(char value) : base(Native.Call("[NSNumber numberWithChar:{0}]", value))
+		public NSNumber(char value) : base(new Class("NSNumber").Call("numberWithChar:", value))
 		{
 		}
 		
-		public NSNumber(float value) : base(Native.Call("[NSNumber numberWithFloat:{0}]", value))
+		public NSNumber(float value) : base(new Class("NSNumber").Call("numberWithFloat:", value))
 		{
 		}
 		
-		public NSNumber(double value) : base(Native.Call("[NSNumber numberWithDouble:{0}]", value))
+		public NSNumber(double value) : base(new Class("NSNumber").Call("numberWithDouble:", value))
 		{
 		}
 		
-		public NSNumber(int value) : base(Native.Call("[NSNumber numberWithInt:{0}]", value))
+		public NSNumber(int value) : base(new Class("NSNumber").Call("numberWithInt:", value))
 		{
 		}
 	}

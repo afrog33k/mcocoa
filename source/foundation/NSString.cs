@@ -27,11 +27,11 @@ namespace MCocoa
 {
 	public partial class NSString : NSObject
 	{		
-		public NSString(char ch) : base(Native.Call("[NSString stringWithUTF8String:{0}]", new string(ch, 1)))
+		public NSString(char ch) : base(new Class("NSString").Call("stringWithUTF8String:", new string(ch, 1)))
 		{
 		}
 		
-		public NSString(string str) : base(Native.Call("[NSString stringWithUTF8String:{0}]", str))
+		public NSString(string str) : base(new Class("NSString").Call("stringWithUTF8String:", str))
 		{
 		}
 		
