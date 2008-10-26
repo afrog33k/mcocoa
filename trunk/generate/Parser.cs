@@ -60,7 +60,7 @@ internal abstract class Parser
 				string name = DoParseMethodFragment(argNames, argTypes);
 				if (name.StartsWith("DEPRECATED"))
 					deprecated = true;
-				else if (!name.StartsWith("NS_REQUIRES"))
+				else if (!name.StartsWith("NS_REQUIRES") && !name.StartsWith("AVAILABLE"))
 					method.Name += name;
 			}
 			method.ArgNames = argNames.ToArray();

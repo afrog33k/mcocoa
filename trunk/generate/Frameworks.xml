@@ -40,11 +40,8 @@
 		<Blacklist>
 			<Method interface = "NSApplication" method = "run" reason = "because there is a hand-written version"/>
 			<Method interface = "NSApplication" method = "windows" reason = "because there is a hand-written version"/>
-			<Method interface = "NSDocumentController" method = "sharedDocumentController" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "subviews" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "setSubviews:" reason = "because there is a hand-written version"/>
-			<Method interface = "NSWindow" method = "contentView" reason = "because there is a hand-written version"/>
-			<Method interface = "NSWindow" method = "windowController" reason = "because there is a hand-written version"/>
 
 			<Method interface = "NSAlert" method = "alertWithMessageText:defaultButton:alternateButton:otherButton:informativeTextWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSGradient" method = "initWithColorsAndLocations:" reason = "because it is variadic"/>
@@ -52,5 +49,175 @@
 			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because it has a function pointer"/>			
 		</Blacklist>
 	</Framework> 
+	
+	<!-- A lot of Cocoa methods are typed to return an id which is really annoying. To make these methods more
+	pleasant to deal with you can add their names here and the generator will type them with either the specified
+	type or the interface type. -->
+	<TypeResults>
+		<TypeResult name = "alphanumericCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "calendarDate" type = "NSCalendarDate"/>
+		<TypeResult name = "capitalizedLetterCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "characterSetWithBitmapRepresentation:" type = "NSCharacterSet"/>
+		<TypeResult name = "characterSetWithCharactersInString:" type = "NSCharacterSet"/>
+		<TypeResult name = "characterSetWithContentsOfFile:" type = "NSCharacterSet"/>
+		<TypeResult name = "characterSetWithRange:" type = "NSCharacterSet"/>
+		<TypeResult name = "contentView" type = "NSView"/>
+		<TypeResult name = "controlCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "copyWithZone:"/>
+		<TypeResult name = "currentCalendar" type = "NSCalendar"/>
+		<TypeResult name = "currentDocument" type = "NSDocument"/>
+		<TypeResult name = "currentLocale" type = "NSLocale"/>
+		<TypeResult name = "date" type = "NSDate"/>
+		<TypeResult name = "dateWithString:calendarFormat:" type = "NSCalendarDate"/>
+		<TypeResult name = "dateWithString:calendarFormat:locale:" type = "NSCalendarDate"/>
+		<TypeResult name = "dateWithTimeIntervalSinceNow:" type = "NSDate"/>
+		<TypeResult name = "dateWithTimeIntervalSinceReferenceDate:" type = "NSDate"/>
+		<TypeResult name = "dateWithTimeIntervalSince1970:" type = "NSDate"/>
+		<TypeResult name = "dateWithYear:month:day:hour:minute:second:timeZone:" type = "NSCalendarDate"/>
+		<TypeResult name = "decomposableCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "decimalDigitCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "distantFuture" type = "NSDate"/>
+		<TypeResult name = "distantPast" type = "NSDate"/>
+		<TypeResult name = "document" type = "NSDocument"/>
+		<TypeResult name = "documentForURL:" type = "NSDocument"/>
+		<TypeResult name = "documentForWindow:" type = "NSDocument"/>
+		<TypeResult name = "documentView" type = "NSView"/>
+		<TypeResult name = "imageNamed:" type = "NSImage"/>
+		<TypeResult name = "fileURLWithPath:"/>
+		<TypeResult name = "fileURLWithPath:isDirectory:"/>
+		<TypeResult name = "illegalCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "indexSet"/>
+		<TypeResult name = "indexSetWithIndex:"/>
+		<TypeResult name = "indexSetWithIndexesInRange:"/>
+		<TypeResult name = "initByReferencingFile:"/>
+		<TypeResult name = "initByReferencingURL:"/>
+		<TypeResult name = "initForReadingWithData:"/>
+		<TypeResult name = "initForWritingWithMutableData:"/>
+		<TypeResult name = "initToBuffer:capacity:"/>
+		<TypeResult name = "initToFileAtPath:append:"/>
+		<TypeResult name = "initToMemory"/>
+		<TypeResult name = "initWithArray:"/>
+		<TypeResult name = "initWithArray:copyItems:"/>
+		<TypeResult name = "initWithAttributedString:"/>
+		<TypeResult name = "initWithChar:"/>
+		<TypeResult name = "initWithBytes:objCType:"/>
+		<TypeResult name = "initWithBytes:length:"/>
+		<TypeResult name = "initWithBytes:length:encoding:"/>
+		<TypeResult name = "initWithBytesNoCopy:length:"/>
+		<TypeResult name = "initWithBytesNoCopy:length:freeWhenDone:"/>
+		<TypeResult name = "initWithBytesNoCopy:length:encoding:freeWhenDone:"/>
+		<TypeResult name = "initWithBool:"/>
+		<TypeResult name = "initWithCalendarIdentifier:"/>
+		<TypeResult name = "initWithCapacity:"/>
+		<TypeResult name = "initWithCoder:"/>
+		<TypeResult name = "initWithCharacters:length:"/>
+		<TypeResult name = "initWithCharactersNoCopy:length:freeWhenDone:"/>
+		<TypeResult name = "initWithColor:"/>
+		<TypeResult name = "initWithColors:"/>
+		<TypeResult name = "initWithColors:atLocations:colorSpace:"/>
+		<TypeResult name = "initWithCondition:"/>
+		<TypeResult name = "initWithContentRect:styleMask:backing:defer:"/>
+		<TypeResult name = "initWithContentRect:styleMask:backing:defer:screen:"/>
+		<TypeResult name = "initWithContentsOfFile:"/>
+		<TypeResult name = "initWithContentsOfFile:options:error:"/>
+		<TypeResult name = "initWithContentsOfFile:encoding:error:"/>
+		<TypeResult name = "initWithContentsOfFile:usedEncoding:error:"/>
+		<TypeResult name = "initWithContentsOfMappedFile:"/>
+		<TypeResult name = "initWithContentsOfURL:"/>
+		<TypeResult name = "initWithContentsOfURL:encoding:error:"/>
+		<TypeResult name = "initWithContentsOfURL:options:error:"/>
+		<TypeResult name = "initWithContentsOfURL:usedEncoding:error:"/>
+		<TypeResult name = "initWithCString:encoding:"/>
+		<TypeResult name = "initWithData:"/>
+		<TypeResult name = "initWithData:encoding:"/>
+		<TypeResult name = "initWithDictionary:"/>
+		<TypeResult name = "initWithDictionary:copyItems:"/>
+		<TypeResult name = "initWithDomain:code:userInfo:"/>
+		<TypeResult name = "initWithDouble:"/>
+		<TypeResult name = "initWithFileAtPath:"/>
+		<TypeResult name = "initWithFireDate:interval:target:selector:userInfo:repeats:"/>
+		<TypeResult name = "initWithFloat:"/>
+		<TypeResult name = "initWithFormat:arguments:"/>
+		<TypeResult name = "initWithFormat:locale:arguments:"/>
+		<TypeResult name = "initWithFrame:pullsDown:"/>
+		<TypeResult name = "initWithFrame:textContainer:"/>
+		<TypeResult name = "initWithIconRef:"/>
+		<TypeResult name = "initWithIndex:"/>
+		<TypeResult name = "initWithIndexesInRange:"/>
+		<TypeResult name = "initWithIndexSet:"/>
+		<TypeResult name = "initWithInt:"/>
+		<TypeResult name = "initWithInteger:"/>
+		<TypeResult name = "initWithKeyOptions:valueOptions:capacity:"/>
+		<TypeResult name = "initWithKeyPointerFunctions:valuePointerFunctions:capacity:"/>
+		<TypeResult name = "initWithLength:"/>
+		<TypeResult name = "initWithLocaleIdentifier:"/>
+		<TypeResult name = "initWithLong:"/>
+		<TypeResult name = "initWithInvocation:"/>
+		<TypeResult name = "initWithLongLong:"/>
+		<TypeResult name = "initWithName:reason:userInfo:"/>
+		<TypeResult name = "initWithNibName:bundle:"/>
+		<TypeResult name = "initWithNotificationCenter:"/>
+		<TypeResult name = "initWithObjects:count:"/>
+		<TypeResult name = "initWithObjects:forKeys:"/>
+		<TypeResult name = "initWithObjects:forKeys:count:"/>
+		<TypeResult name = "initWithOptions:"/>
+		<TypeResult name = "initWithOptions:capacity:"/>
+		<TypeResult name = "initWithPath:"/>
+		<TypeResult name = "initWithPasteboard:"/>
+		<TypeResult name = "initWithPointerFunctions:capacity:"/>
+		<TypeResult name = "initWithShort:"/>
+		<TypeResult name = "initWithSize:"/>
+		<TypeResult name = "initWithStartingColor:endingColor:"/>
+		<TypeResult name = "initWithString:"/>
+		<TypeResult name = "initWithString:attributes:"/>
+		<TypeResult name = "initWithString:calendarFormat:"/>
+		<TypeResult name = "initWithString:calendarFormat:locale:"/>
+		<TypeResult name = "initWithTarget:selector:object:"/>
+		<TypeResult name = "initWithTitle:"/>
+		<TypeResult name = "initWithTitle:action:keyEquivalent:"/>
+		<TypeResult name = "initWithTimeIntervalSinceReferenceDate:"/>
+		<TypeResult name = "initWithTimeInterval:sinceDate:"/>
+		<TypeResult name = "initWithTimeIntervalSinceNow:"/>
+		<TypeResult name = "initWithYear:month:day:hour:minute:second:timeZone:"/>
+		<TypeResult name = "initWithSet:"/>
+		<TypeResult name = "initWithSet:copyItems:"/>
+		<TypeResult name = "initWithUnsignedChar:"/>
+		<TypeResult name = "initWithUnsignedInt:"/>
+		<TypeResult name = "initWithUnsignedInteger:"/>
+		<TypeResult name = "initWithUnsignedLong:"/>
+		<TypeResult name = "initWithUnsignedLongLong:"/>
+		<TypeResult name = "initWithUnsignedShort:"/>
+		<TypeResult name = "initWithUTF8String:"/>
+		<TypeResult name = "initWithWindow:"/>
+		<TypeResult name = "initWithWindowNibName:"/>
+		<TypeResult name = "initWithWindowNibNameOwner:"/>
+		<TypeResult name = "initWithWindowNibPathOwner:"/>
+		<TypeResult name = "invertedSet" type = "NSCharacterSet"/>
+		<TypeResult name = "letterCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "lowercaseLetterCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "mutableCopyWithZone:"/>
+		<TypeResult name = "newlineCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "nonBaseCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "punctuationCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "sharedDocumentController"/>
+		<TypeResult name = "string" type = "NSString"/>
+		<TypeResult name = "stringWithString:"/>
+		<TypeResult name = "stringWithCapacity:"/>
+		<TypeResult name = "stringWithCharacters:length:"/>
+		<TypeResult name = "stringWithUTF8String:"/>
+		<TypeResult name = "stringWithCString:encoding:"/>
+		<TypeResult name = "stringWithContentsOfFile:encoding:error:"/>
+		<TypeResult name = "stringWithContentsOfFile:usedEncoding:error:"/>
+		<TypeResult name = "stringWithContentsOfURL:encoding:error:"/>
+		<TypeResult name = "stringWithContentsOfURL:usedEncoding:error:"/>
+		<TypeResult name = "symbolCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "systemLocale" type = "NSLocale"/>
+		<TypeResult name = "uppercaseLetterCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "URLWithString:"/>
+		<TypeResult name = "URLWithString:relativeToURL:"/>
+		<TypeResult name = "whitespaceAndNewlineCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "whitespaceCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "windowController" type = "NSWindowController"/>
+	</TypeResults>
 </Generate>
 

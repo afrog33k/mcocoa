@@ -1,11 +1,6 @@
 set a symbolic breakpoint at -[NSException raise]
 
-* Check in generator?
-* Might want to figure out all the methods an interface contains and then write them out:
-	- so don't need extension classes
-	- but we want to keep the file associations
-	- would be nice to add a comment for classes generated for a category
-	- how to handle class and instance methods with the same name? rename them both?
+* NSIndexSet has bad result types.
 * Add a simple foundation unit test.
 * Generated a method named fileURLWithPathIsDirectoryAVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER
 * See if natty works.

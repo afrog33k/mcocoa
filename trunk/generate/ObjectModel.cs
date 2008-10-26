@@ -59,6 +59,21 @@ internal sealed class ObjectModel
 		return result;
 	}
 	
+	public string MapResult(string iname, string mname, string rtype)
+	{
+		string result;
+		
+		if (m_resultMap.TryGetValue(mname, out result))
+		{
+			if (result == null)
+				result = iname;
+		}
+		else
+			result = rtype;
+		
+		return result;
+	}
+	
 	public NativeProtocol FindProtocol(string name)
 	{
 		NativeProtocol result;
@@ -77,6 +92,14 @@ internal sealed class ObjectModel
 			throw new Exception("Couldn't find interface " + name);
 			
 		return result;
+	}
+	
+	public void AddResultMapping(string method, string type)
+	{
+		if (!m_resultMap.ContainsKey(method))
+			m_resultMap.Add(method, type);
+		else
+			Console.Error.WriteLine("{0} TypeResult was listed twice", method);
 	}
 	
 	#region Private Methods ---------------------------------------------------
@@ -150,5 +173,6 @@ internal sealed class ObjectModel
 	private List<NativeFile> m_files = new List<NativeFile>();
 	private Dictionary<string, NativeProtocol> m_protocols = new Dictionary<string, NativeProtocol>();
 	private Dictionary<string, NativeInterface> m_interfaces = new Dictionary<string, NativeInterface>();
+	private Dictionary<string, string> m_resultMap = new Dictionary<string, string>();
 	#endregion
 }

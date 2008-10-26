@@ -57,10 +57,40 @@ internal static class Program
 					{
 						foreach (XmlNode gchild in child.ChildNodes)	
 						{
+							if (gchild.Name == "TypeResults")
+							{
+								DoAddResultType(objects, gchild);			
+							}
+						}
+					}
+				}
+
+				foreach (XmlNode child in xml.ChildNodes)	
+				{
+					if (child.Name == "Generate")
+					{
+						foreach (XmlNode gchild in child.ChildNodes)	
+						{
 							if (gchild.Name == "Framework")
 								DoGenerateFromXML(objects, gchild);			
 						}
 					}
+				}
+			}
+		}
+	}
+	
+	private static void DoAddResultType(ObjectModel objects, XmlNode tr)
+	{
+		if (tr.ChildNodes.Count > 0)
+		{
+			foreach (XmlNode child in tr.ChildNodes)
+			{
+				if (child.Name == "TypeResult") 
+				{
+					string name = child.Attributes["name"].Value;
+					string type = child.Attributes["type"] != null ? child.Attributes["type"].Value : null;
+					objects.AddResultMapping(name, type);
 				}
 			}
 		}
