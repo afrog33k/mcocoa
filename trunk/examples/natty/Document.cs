@@ -158,8 +158,7 @@ internal sealed class Document : NSDocument
 		return read;
 	}
 
-	[Register("makeWindowControllers")]		
-	public void MakeWindowControllers()
+	public new void makeWindowControllers()
 	{
 		DocWindowController controller = DocWindowController.Create("Document");
 		addWindowController(controller);

@@ -26,9 +26,48 @@ using System.Runtime.InteropServices;
 namespace MCocoa
 { 
 	[Register("NSDecimal")]
-	public struct NSDecimal
+	public struct NSDecimal : IEquatable<NSDecimal>
 	{
 		public UInt32 _bitfield;
+	
+		public override bool Equals(object rhsObj)
+		{
+			if (rhsObj == null)						
+				return false;
+			
+			if (GetType() != rhsObj.GetType()) 
+				return false;
+		
+			NSDecimal rhs = (NSDecimal) rhsObj;					
+			return this == rhs;
+		}
+			
+		public bool Equals(NSDecimal rhs)	
+		{
+			return this == rhs;
+		}
+	 
+		public static bool operator==(NSDecimal lhs, NSDecimal rhs)
+		{
+			return lhs._bitfield == rhs._bitfield;
+		}
+		
+		public static bool operator!=(NSDecimal lhs, NSDecimal rhs)
+		{
+			return !(lhs == rhs);
+		}
+		
+		public override int GetHashCode()
+		{
+			int hash;
+			
+			unchecked
+			{
+				hash = 3*_bitfield.GetHashCode();
+			}
+			
+			return hash;
+		}
 
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
 		public UInt16[] _mantissa;

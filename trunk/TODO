@@ -1,30 +1,23 @@
 set a symbolic breakpoint at -[NSException raise]
 
-* Look at generators in apple's java bridge and in mobjc.
-* Remove the old google projects.
-* Get rid of Ignore.
-* Structs needs Equals and GetHashCode.
-* Add one or two more of Apple's sample apps.
-* Probably should add interfaces for protocols.
-* Menu handlers seem to work a bit differently than in objc. In objc exceptions
-  seem to be logged, but in objc3-sharp the app terminates with an unhandled
-  exception.
+http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
+
 * Work on Natty:
-	- order in transcript whenever its visible and we get new output
 	- prefs could be used to save fonts, colors, editor, global vars
 	- need to support stdin (important for install or removing files
 	  generated under sudo)
 	- make files should default to RELEASE
 	- would be nice to support nant
 	- might be neat to have a lookup error command
+* Do a mobjc release.
+* Do a mcocoa release.
+* Remove the old google projects.
+* Probably should add interfaces for protocols.
 * Release checklist:
 	- search for TODO
 	- run smoke
-	- make clean
 	- make sure examples work in debug
-	- make clean
 	- make sure examples work in release
-	- make clean
 	- review tar target
 	- make sure everything is checked in
 	- use svn log -r 7:HEAD > CHANGE_LOG
