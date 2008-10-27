@@ -103,7 +103,7 @@ namespace MCocoa
 		[NewMethod("CollectGarbage:")]		
 		public void CollectGarbage(NSObject sender)
 		{
-			Unused.Arg(sender);
+			Unused.Value = sender;
 			
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -112,7 +112,7 @@ namespace MCocoa
 		[NewMethod("DumpObjects:")]		
 		public void DumpObjects(NSObject sender)
 		{
-			Unused.Arg(sender);
+			Unused.Value = sender;
 			
 			CollectGarbage(null);
 
@@ -131,7 +131,7 @@ namespace MCocoa
 		[NewMethod("DumpWindows:")]		
 		public void DumpWindows(NSObject sender)
 		{
-			Unused.Arg(sender);
+			Unused.Value = sender;
 			
 			for (int i = 0; i < NSApplication.sharedApplication().windows().Length; ++i)
 			{
@@ -145,7 +145,7 @@ namespace MCocoa
 		[NewMethod("Execute:")]		
 		public void Execute(NSObject arg)
 		{
-			Unused.Arg(arg);
+			Unused.Value = arg;
 			
 			List<Action> actions;
 
@@ -228,7 +228,7 @@ namespace MCocoa
 				{
 					while (m_actions.Count == 0)
 					{
-						Ignore.Value = Monitor.Wait(m_lock);
+						Unused.Value = Monitor.Wait(m_lock);
 					}
 					
 					if (!m_pendingExecute)
