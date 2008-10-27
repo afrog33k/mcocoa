@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Miscellaneous/Foundation_Functions/Reference/reference.html#//apple_ref/doc/uid/TP40003774-DontLinkChapterID_1-DontLinkElementID_60
 namespace MCocoa
 {
-	public static partial class NSFunctions
+	public static partial class Functions
 	{
 	}
 }
