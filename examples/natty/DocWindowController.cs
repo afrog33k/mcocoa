@@ -89,8 +89,7 @@ internal sealed class DocWindowController : NSWindowController
 	#endregion
 	
 	#region Errors Data Source ------------------------------------------------
-	[Register("numberOfRowsInTableView:")]		
-	public int NumberOfRowsInTableView(NSTableView table)
+	public int numberOfRowsInTableView(NSTableView table)
 	{
 		return m_errors.Count;
 	}
@@ -226,8 +225,7 @@ internal sealed class DocWindowController : NSWindowController
 		return NSString.Create(DoGetTitle());
 	}
 	
-	[Register("windowDidLoad")]
-	public void WindowDidLoad()
+	public new void windowDidLoad()
 	{		
 		try
 		{
@@ -396,11 +394,8 @@ internal sealed class DocWindowController : NSWindowController
 	
 	private void DoShowOutput()
 	{
-		if (!m_transcriptWindow.Value.isVisible())
-		{
-			m_transcriptWindow.Value.makeKeyAndOrderFront(this);
-			m_transcriptWindow.Value.setTitle(DoGetTitle() + " Transcript");
-		}
+		m_transcriptWindow.Value.makeKeyAndOrderFront(this);
+		m_transcriptWindow.Value.setTitle(DoGetTitle() + " Transcript");
 	}
 
 	private string DoGetTitle()

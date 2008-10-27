@@ -31,7 +31,7 @@ namespace MCocoa
 	
 	[DisableRule("R1016", "Const2")]	
 	[Register("_NSRange")]
-	public struct NSRange
+	public struct NSRange : IEquatable<NSRange>
 	{		
 		public int location;
 		public int length;
@@ -48,6 +48,45 @@ namespace MCocoa
 		public override string ToString()
 		{
 			return string.Format("[{0}, {1})", location, location + length);
+		}
+	
+		public override bool Equals(object rhsObj)
+		{
+			if (rhsObj == null)						
+				return false;
+			
+			if (GetType() != rhsObj.GetType()) 
+				return false;
+		
+			NSRange rhs = (NSRange) rhsObj;					
+			return this == rhs;
+		}
+			
+		public bool Equals(NSRange rhs)	
+		{
+			return this == rhs;
+		}
+	 
+		public static bool operator==(NSRange lhs, NSRange rhs)
+		{
+			return lhs.location == rhs.location && lhs.length == rhs.length;
+		}
+		
+		public static bool operator!=(NSRange lhs, NSRange rhs)
+		{
+			return !(lhs == rhs);
+		}
+		
+		public override int GetHashCode()
+		{
+			int hash;
+			
+			unchecked
+			{
+				hash = 3*location.GetHashCode() + 7*length.GetHashCode();
+			}
+			
+			return hash;
 		}
 	}
 }

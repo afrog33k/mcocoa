@@ -62,8 +62,7 @@ internal sealed class EnvController : NSObject
 	#endregion
 	
 	#region Data Source
-	[Register("numberOfRowsInTableView:")]		
-	public int NumberOfRows(NSTableView table)
+	public int numberOfRowsInTableView(NSTableView table)
 	{
 		return m_vars.Count;
 	}

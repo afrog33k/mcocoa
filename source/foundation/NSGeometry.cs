@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 namespace MCocoa
 {
 	[Register("_NSPoint")]
-	public struct NSPoint
+	public struct NSPoint : IEquatable<NSPoint>
 	{
 		public float x;
 		public float y;
@@ -51,12 +51,51 @@ namespace MCocoa
 		{
 			return string.Format("({0}, {1})", x, y);
 		}
+	
+		public override bool Equals(object rhsObj)
+		{
+			if (rhsObj == null)						
+				return false;
+			
+			if (GetType() != rhsObj.GetType()) 
+				return false;
+		
+			NSPoint rhs = (NSPoint) rhsObj;					
+			return this == rhs;
+		}
+			
+		public bool Equals(NSPoint rhs)	
+		{
+			return this == rhs;
+		}
+	 
+		public static bool operator==(NSPoint lhs, NSPoint rhs)
+		{
+			return lhs.x == rhs.x && lhs.y == rhs.y;
+		}
+		
+		public static bool operator!=(NSPoint lhs, NSPoint rhs)
+		{
+			return !(lhs == rhs);
+		}
+		
+		public override int GetHashCode()
+		{
+			int hash;
+			
+			unchecked
+			{
+				hash = 3*x.GetHashCode() + 7*y.GetHashCode();
+			}
+			
+			return hash;
+		}
 		
 		public static readonly NSPoint Zero = new NSPoint(0.0f, 0.0f);
 	}
 	
 	[Register("_NSSize")]
-	public struct NSSize
+	public struct NSSize : IEquatable<NSSize>
 	{
 		public float width;
 		public float height;
@@ -71,12 +110,51 @@ namespace MCocoa
 		{
 			return string.Format("({0}, {1})", width, height);
 		}
+	
+		public override bool Equals(object rhsObj)
+		{
+			if (rhsObj == null)						
+				return false;
+			
+			if (GetType() != rhsObj.GetType()) 
+				return false;
+		
+			NSSize rhs = (NSSize) rhsObj;					
+			return this == rhs;
+		}
+			
+		public bool Equals(NSSize rhs)	
+		{
+			return this == rhs;
+		}
+	 
+		public static bool operator==(NSSize lhs, NSSize rhs)
+		{
+			return lhs.width == rhs.width && lhs.height == rhs.height;
+		}
+		
+		public static bool operator!=(NSSize lhs, NSSize rhs)
+		{
+			return !(lhs == rhs);
+		}
+		
+		public override int GetHashCode()
+		{
+			int hash;
+			
+			unchecked
+			{
+				hash = 3*width.GetHashCode() + 7*height.GetHashCode();
+			}
+			
+			return hash;
+		}
 		
 		public static readonly NSSize Zero = new NSSize(0.0f, 0.0f);
 	}
 	
 	[Register("_NSRect")]
-	public struct NSRect
+	public struct NSRect : IEquatable<NSRect>
 	{
 		public NSPoint origin;
 		public NSSize size;
@@ -129,6 +207,45 @@ namespace MCocoa
 		public override string ToString()
 		{
 			return string.Format("({0}, {1})", origin, size);
+		}
+	
+		public override bool Equals(object rhsObj)
+		{
+			if (rhsObj == null)						
+				return false;
+			
+			if (GetType() != rhsObj.GetType()) 
+				return false;
+		
+			NSRect rhs = (NSRect) rhsObj;					
+			return this == rhs;
+		}
+			
+		public bool Equals(NSRect rhs)	
+		{
+			return this == rhs;
+		}
+	 
+		public static bool operator==(NSRect lhs, NSRect rhs)
+		{
+			return lhs.origin == rhs.origin && lhs.size == rhs.size;
+		}
+		
+		public static bool operator!=(NSRect lhs, NSRect rhs)
+		{
+			return !(lhs == rhs);
+		}
+		
+		public override int GetHashCode()
+		{
+			int hash;
+			
+			unchecked
+			{
+				hash = 3*origin.GetHashCode() + 7*size.GetHashCode();
+			}
+			
+			return hash;
 		}
 		
 		[DllImport("/System/Library/Frameworks/Foundation.framework/Foundation")]
