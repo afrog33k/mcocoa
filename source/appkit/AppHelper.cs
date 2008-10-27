@@ -65,8 +65,7 @@ namespace MCocoa
 				delay.TotalSeconds);
 		}
 		
-		[Register("OnDelayedAction:")]		
-		public void OnDelayedAction(NSNumber id)
+		public void onDelayedAction(NSNumber id)
 		{
 			Action action = m_delayedActions[id.intValue()];
 			m_delayedActions.Remove(id.intValue());
@@ -85,13 +84,12 @@ namespace MCocoa
 		
 		#region Event Handlers ------------------------------------------------
 #if DEBUG
-		[Register("InitDebugMenu")]		
-		public void InitDebugMenu()
+		public void initDebugMenu()
 		{
 			NSMenu debugMenu = NSMenu.Create("Debug");
-			debugMenu.addItem(NSMenuItem.Create("Collect Garbage", "CollectGarbage:", this));
-			debugMenu.addItem(NSMenuItem.Create("Dump Objects", "DumpObjects:", this));
-			debugMenu.addItem(NSMenuItem.Create("Dump Windows", "DumpWindows:", this));
+			debugMenu.addItem(NSMenuItem.Create("Collect Garbage", "collectGarbage:", this));
+			debugMenu.addItem(NSMenuItem.Create("Dump Objects", "dumpObjects:", this));
+			debugMenu.addItem(NSMenuItem.Create("Dump Windows", "dumpWindows:", this));
 			
 			NSMenuItem debugItem = NSMenuItem.Create("Debug");
 			debugItem.setSubmenu(debugMenu);
@@ -100,8 +98,7 @@ namespace MCocoa
 		}
 
 		[DisableRule("P1017", "ExplicitGC")]
-		[Register("CollectGarbage:")]		
-		public void CollectGarbage(NSObject sender)
+		public void collectGarbage(NSObject sender)
 		{
 			Unused.Value = sender;
 			
@@ -109,12 +106,11 @@ namespace MCocoa
 			GC.WaitForPendingFinalizers();
 		}
 		
-		[Register("DumpObjects:")]		
-		public void DumpObjects(NSObject sender)
+		public void dumpObjects(NSObject sender)
 		{
 			Unused.Value = sender;
 			
-			CollectGarbage(null);
+			collectGarbage(null);
 
 			List<string> lines = new List<string>();			
 			foreach (NSObject o in NSObject.Snapshot())
@@ -128,8 +124,7 @@ namespace MCocoa
 			Console.WriteLine(" ");
 		}
 		
-		[Register("DumpWindows:")]		
-		public void DumpWindows(NSObject sender)
+		public void dumpWindows(NSObject sender)
 		{
 			Unused.Value = sender;
 			
@@ -142,8 +137,7 @@ namespace MCocoa
 		}
 #endif	// DEBUG
 
-		[Register("Execute:")]		
-		public void Execute(NSObject arg)
+		public void execute(NSObject arg)
 		{
 			Unused.Value = arg;
 			
@@ -218,7 +212,7 @@ namespace MCocoa
 		
 		private void DoThread()
 		{
-			Selector selector = new Selector("Execute:");		
+			Selector selector = new Selector("execute:");		
 			NSObject pool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
 			Unused.Value = pool;		// shut compiler up
 

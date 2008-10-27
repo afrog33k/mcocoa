@@ -67,7 +67,7 @@ namespace MCocoa
 			app.m_run = new Native(app, new Selector("run"));
 			
 #if DEBUG
-			app.BeginInvoke(() => app.m_helper.Call("InitDebugMenu"));
+			app.BeginInvoke(() => app.m_helper.Call("initDebugMenu"));
 #endif
 
 			ms_startupPool.release();
