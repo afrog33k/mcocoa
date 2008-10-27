@@ -31,7 +31,7 @@ internal sealed class ErrorTable : NSTableView
 	}
 						
 	#region Overrides
-	[OverrideMethod("mouseDown:")]		
+	[Register("mouseDown:")]		
 	public void MouseDown(NSEvent evt)
 	{
 		if (evt.clickCount() == 2)
@@ -40,7 +40,7 @@ internal sealed class ErrorTable : NSTableView
 			SuperCall("mouseDown:", evt);
 	}
 
-	[OverrideMethod("keyDown:")]		
+	[Register("keyDown:")]		
 	public void KeyDown(NSEvent evt)
 	{
 		string chars = evt.characters();

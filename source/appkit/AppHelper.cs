@@ -65,7 +65,7 @@ namespace MCocoa
 				delay.TotalSeconds);
 		}
 		
-		[NewMethod("OnDelayedAction:")]		
+		[Register("OnDelayedAction:")]		
 		public void OnDelayedAction(NSNumber id)
 		{
 			Action action = m_delayedActions[id.intValue()];
@@ -85,7 +85,7 @@ namespace MCocoa
 		
 		#region Event Handlers ------------------------------------------------
 #if DEBUG
-		[NewMethod("InitDebugMenu")]		
+		[Register("InitDebugMenu")]		
 		public void InitDebugMenu()
 		{
 			NSMenu debugMenu = NSMenu.Create("Debug");
@@ -100,7 +100,7 @@ namespace MCocoa
 		}
 
 		[DisableRule("P1017", "ExplicitGC")]
-		[NewMethod("CollectGarbage:")]		
+		[Register("CollectGarbage:")]		
 		public void CollectGarbage(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -109,7 +109,7 @@ namespace MCocoa
 			GC.WaitForPendingFinalizers();
 		}
 		
-		[NewMethod("DumpObjects:")]		
+		[Register("DumpObjects:")]		
 		public void DumpObjects(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -128,7 +128,7 @@ namespace MCocoa
 			Console.WriteLine(" ");
 		}
 		
-		[NewMethod("DumpWindows:")]		
+		[Register("DumpWindows:")]		
 		public void DumpWindows(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -142,7 +142,7 @@ namespace MCocoa
 		}
 #endif	// DEBUG
 
-		[NewMethod("Execute:")]		
+		[Register("Execute:")]		
 		public void Execute(NSObject arg)
 		{
 			Unused.Value = arg;

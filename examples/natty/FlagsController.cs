@@ -53,13 +53,13 @@ internal sealed class FlagsController : NSObject
     }
 
 	#region Action Handlers
-	[NewMethod("toggle:")]		
+	[Register("toggle:")]		
 	public void Toggle(NSButton sender)
 	{
 		m_flags[sender.title().ToString()] = sender.state();
     }
 
-	[NewMethod("flagsOK:")]		
+	[Register("flagsOK:")]		
 	public void FlagsOK(NSObject sender)
 	{
 		foreach (KeyValuePair<string, int> entry in m_flags)
@@ -70,7 +70,7 @@ internal sealed class FlagsController : NSObject
 		m_sheet.Value.orderOut(this);
     }
 
-	[NewMethod("flagsCancel:")]		
+	[Register("flagsCancel:")]		
 	public void FlagsCancel(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);

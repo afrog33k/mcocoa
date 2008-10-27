@@ -54,25 +54,25 @@ internal sealed class DocWindowController : NSWindowController
 	}
 						
 	#region Action Handlers ---------------------------------------------------
-	[NewMethod("targetChanged:")]		
+	[Register("targetChanged:")]		
 	public void TargetChanged(NSPopUpButton sender)
 	{
 		m_doc.Target = sender.titleOfSelectedItem().ToString();
 	}
 
-	[NewMethod("build:")]		
+	[Register("build:")]		
 	public void Build(NSObject sender)
 	{
 		m_doc.Build();
 	}
 
-	[NewMethod("cancel:")]		
+	[Register("cancel:")]		
 	public void Cancel(NSObject sender)
 	{
 		m_doc.Cancel();
 	}
 
-	[NewMethod("environment:")]		
+	[Register("environment:")]		
 	public void EnvironmentSheet(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))
@@ -82,7 +82,7 @@ internal sealed class DocWindowController : NSWindowController
 		m_env.Value.Open(m_doc, window());
     }
 
-	[NewMethod("flags:")]		
+	[Register("flags:")]		
 	public void Flags(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_flags.Value))
@@ -94,13 +94,13 @@ internal sealed class DocWindowController : NSWindowController
 	#endregion
 	
 	#region Errors Data Source ------------------------------------------------
-	[NewMethod("numberOfRowsInTableView:")]		
+	[Register("numberOfRowsInTableView:")]		
 	public int NumberOfRowsInTableView(NSTableView table)
 	{
 		return m_errors.Count;
 	}
 
-	[NewMethod("tableView:objectValueForTableColumn:row:")]		
+	[Register("tableView:objectValueForTableColumn:row:")]		
 	public NSObject TableObjectForCell(NSTableView table, NSTableColumn column, int row)
 	{
 		Error error = m_errors[row];
@@ -112,7 +112,7 @@ internal sealed class DocWindowController : NSWindowController
 			return NSString.Create(error.Line);
 	}
 
-	[NewMethod("openSelection:")]		
+	[Register("openSelection:")]		
 	public void OpenSelection(NSObject sender)
 	{
 		bool opened = false;
@@ -177,7 +177,7 @@ internal sealed class DocWindowController : NSWindowController
 		return false;
 	}
 
-	[NewMethod("openFile:")]		
+	[Register("openFile:")]		
 	public void OpenFile(int row)
 	{
 		DoTryOpenFile(m_errors[row].File, m_errors[row].Line);
@@ -219,7 +219,7 @@ internal sealed class DocWindowController : NSWindowController
 	}
 	#endregion
 	
-	[NewMethod("validateMenuItem:")]		
+	[Register("validateMenuItem:")]		
 	public bool ValidateMenuItem(NSMenuItem item)
 	{		
 		if (item.action().Name == "build:")
@@ -229,13 +229,13 @@ internal sealed class DocWindowController : NSWindowController
 	}
 	
 	#region Overrides ---------------------------------------------------------
-	[OverrideMethod("windowTitleForDocumentDisplayName:")]		
+	[Register("windowTitleForDocumentDisplayName:")]		
 	public NSString WindowTitleForDocumentDisplayName(NSString displayName)
 	{		
 		return NSString.Create(DoGetTitle());
 	}
 	
-	[OverrideMethod("windowDidLoad")]		
+	[Register("windowDidLoad")]		
 	public void WindowDidLoad()
 	{		
 		try
