@@ -78,7 +78,7 @@ namespace MCocoa
 		        			
 		public void run()
 		{
-			Ignore.Value = m_run.Invoke();
+			Unused.Value = m_run.Invoke();
 		}
 		
 		public NSWindow[] windows()
