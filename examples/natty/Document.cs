@@ -144,9 +144,9 @@ internal sealed class Document : NSDocument
 		}
 		catch (Exception e)
 		{
-			NSMutableDictionary userInfo = new NSMutableDictionary();
-			userInfo.setObjectForKey(new NSString("Couldn't read the document."), new NSString(Externs.NSLocalizedDescriptionKey));
-			userInfo.setObjectForKey(new NSString(e.Message), new NSString(Externs.NSLocalizedFailureReasonErrorKey));
+			NSMutableDictionary userInfo = NSMutableDictionary.Create();
+			userInfo.setObjectForKey(NSString.Create("Couldn't read the document."), NSString.Create(Externs.NSLocalizedDescriptionKey));
+			userInfo.setObjectForKey(NSString.Create(e.Message), NSString.Create(Externs.NSLocalizedFailureReasonErrorKey));
 			
 			NSError error = new NSError(NSError.alloc().initWithDomainCodeUserInfo(
 				Externs.Cocoa3Domain, 1, userInfo));
@@ -161,7 +161,7 @@ internal sealed class Document : NSDocument
 	[OverrideMethod("makeWindowControllers")]		
 	public void MakeWindowControllers()
 	{
-		DocWindowController controller = new DocWindowController("Document");
+		DocWindowController controller = DocWindowController.Create("Document");
 		addWindowController(controller);
 	}
 	#endregion	

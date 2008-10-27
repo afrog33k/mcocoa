@@ -27,23 +27,28 @@ namespace MCocoa
 {
 	public partial class NSAttributedString : NSObject
 	{		
-		public NSAttributedString(string text, NSString attr, NSObject value) : this(text, DoCreateDict(attr, value))
+		public static NSAttributedString Create(string text, NSString attr, NSObject value)
 		{
+			return Create(text, DoCreateDict(attr, value));
 		}
 				
-		public NSAttributedString(char ch, NSDictionary attrs) : base(new Class("NSAttributedString").Call("alloc").Call("initWithString:attributes:", new NSString(ch), attrs))
+		public static NSAttributedString Create(char ch, NSDictionary attrs)
 		{
-			autorelease();
+			NSAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSAttributedString>();
+			result.autorelease();
+			return result;
 		}
 		
-		public NSAttributedString(string text, NSDictionary attrs) : base(new Class("NSAttributedString").Call("alloc").Call("initWithString:attributes:", new NSString(text), attrs))
+		public static NSAttributedString Create(string text, NSDictionary attrs) 
 		{
-			autorelease();
+			NSAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSAttributedString>();
+			result.autorelease();
+			return result;
 		}
 
 		private static NSDictionary DoCreateDict(NSString attr, NSObject value)
 		{
-			NSMutableDictionary dict = new NSMutableDictionary();
+			NSMutableDictionary dict = NSMutableDictionary.Create();
 			dict.setObjectForKey(value, attr);
 			return dict;
 		}

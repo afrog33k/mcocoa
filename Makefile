@@ -31,7 +31,7 @@ all: animating-views natty
 
 lib: bin/mcocoa.dll
 
-check: bin/tests.dll bin/mcocoa.dll
+check: bin/tests.dll
 	cd bin && "$(NUNIT)" tests.dll -nologo
 
 generate: bin/generate.exe
@@ -65,7 +65,7 @@ bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
 	@./gen_version.sh $(version) source/AssemblyVersion.cs
 	$(CSC) -out:bin/mcocoa.dll $(CSC_FLAGS) -keyfile:keys -target:library -reference:bin/mobjc.dll @bin/cocoa_files
 
-bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs
+bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs bin/mcocoa.dll
 	$(CSC) -out:bin/tests.dll $(CSC_FLAGS) -pkg:mono-nunit -target:library tests/*.cs generate/*.cs -reference:bin/mobjc.dll -reference:bin/mcocoa.dll
 
 # ------------------

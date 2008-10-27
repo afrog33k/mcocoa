@@ -27,25 +27,16 @@ namespace MCocoa
 {
 	public partial class NSArray : NSObject
 	{		
-		public NSArray(params string[] args) : base(DoCreate(args))
-		{
-		}
-
-		public NSArray(params NSObject[] args) : base(DoCreate(args))
-		{
-		}
-		
-		#region Private Methods -----------------------------------------------
-		private static IntPtr DoCreate(string[] args)
+		public static NSArray Create(params string[] args)
 		{
 			NSString[] strs = new NSString[args.Length];
 			for (int i = 0; i < args.Length; ++i)
-				strs[i] = new NSString(args[i]);
+				strs[i] = NSString.Create(args[i]);
 				
-			return DoCreate(strs);
+			return Create(strs);
 		}
 
-		private static IntPtr DoCreate(NSObject[] args)
+		public static NSArray Create(params NSObject[] args) 
 		{
 			IntPtr[] ptrs = new IntPtr[args.Length];
 			for (int i = 0; i < args.Length; ++i)
@@ -54,8 +45,7 @@ namespace MCocoa
 			GCHandle handle = GCHandle.Alloc(ptrs, GCHandleType.Pinned);
 			IntPtr objects = handle.AddrOfPinnedObject();
 
-			return (IntPtr) new Class("NSArray").Call("arrayWithObjects:count:", objects, args.Length);
+			return ms_class.Call("arrayWithObjects:count:", objects, (uint) args.Length).To<NSArray>();
 		}
-		#endregion
 	}
 }

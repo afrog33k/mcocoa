@@ -1,7 +1,6 @@
 set a symbolic breakpoint at -[NSException raise]
 
-* Generate partial classes:
-	- NSObject should have equals and hash
+* Look at generators in apple's java bridge and in mobjc.
 * Remove the old google projects.
 * Get rid of Ignore.
 * Structs needs Equals and GetHashCode.

@@ -218,22 +218,20 @@ internal sealed class Generate
 			DoWrite("	[Register]");
 			DoWrite("	public partial class {0} : {1}", m_interface.Name, m_interface.BaseName);
 			DoWrite("	{");
-			DoWrite("		public {0}() : base(ms_class.Alloc().init())", m_interface.Name);
-			DoWrite("		{");
-			DoWrite("			autorelease();");
-			DoWrite("		}");
-			DoWrite();
 			DoWrite("		public {0}(IntPtr instance) : base(instance)", m_interface.Name);
 			DoWrite("		{");
 			DoWrite("		}");
 			DoWrite();
-			DoWrite("		public {0}(Untyped instance) : base(instance)", m_interface.Name);
+			DoWrite("		public static new {0} Create()", m_interface.Name);
 			DoWrite("		{");
+			DoWrite("			{0} result = ({0}) ms_class.Alloc().init();", m_interface.Name);
+			DoWrite("			result.autorelease();");
+			DoWrite("			return result;");
 			DoWrite("		}");
 			DoWrite();
 			DoWrite("		public static new {0} alloc()", m_interface.Name);
 			DoWrite("		{");
-			DoWrite("			return new {0}(ms_class.Call(\"alloc\"));", m_interface.Name);
+			DoWrite("			return ({0}) ms_class.Call(\"alloc\");", m_interface.Name);
 			DoWrite("		}");
 			DoWrite();
 			DoWrite("		public new {0} retain()", m_interface.Name);
@@ -439,7 +437,10 @@ internal sealed class Generate
 		}
 		for (int i = 0; i < method.ArgNames.Length; ++i)
 		{			
-			DoWriteType(method.ArgTypes[i]);
+			if (method.ArgTypes[i] == "SEL")
+				m_buffer.Append("string");
+			else
+				DoWriteType(method.ArgTypes[i]);
 			m_buffer.Append(" ");
 			m_buffer.Append(DoSanitize(method.ArgNames[i]));
 			
@@ -455,12 +456,15 @@ internal sealed class Generate
 			m_buffer.Append("			Unused.Value = ");
 		else
 			m_buffer.Append("			return ");
-			
-		if (DoIsCastable(rtype))
+		
+		if (rtype != "void")
 		{
-			m_buffer.Append("(");
-			m_buffer.Append(rtype);
-			m_buffer.Append(") ");
+			if (rtype != "string" || method.ReturnType != "NSString *")
+			{
+				m_buffer.Append("(");
+				m_buffer.Append(rtype == "bool" ? "sbyte" : rtype);
+				m_buffer.Append(") ");
+			}
 		}
 		
 		if (m_interface.Category != null && m_interface.Name == "NSObject")
@@ -477,26 +481,28 @@ internal sealed class Generate
 			m_buffer.Append(", ");
 			if (method.ArgTypes[i] == "NSString *")
 			{
-				m_buffer.Append("new NSString(");
+				m_buffer.Append("NSString.Create(");
 				m_buffer.Append(DoSanitize(method.ArgNames[i]));
 				m_buffer.Append(")");
+			}
+			else if (method.ArgTypes[i] == "SEL")
+			{
+				string aname = DoSanitize(method.ArgNames[i]);
+				m_buffer.Append(aname + " != null ? new Selector(");
+				m_buffer.Append(aname);
+				m_buffer.Append(") : null");
 			}
 			else
 				m_buffer.Append(DoSanitize(method.ArgNames[i]));
 		}
 		m_buffer.Append(")");
-		if (rtype != "void" && !DoIsCastable(rtype))
-		{			
-			if (rtype == "string" && method.ReturnType == "NSString *")
-			{
-				m_buffer.Append(".To<NSString>().ToString()");
-			}
-			else
-			{
-				m_buffer.Append(".To<");
-				m_buffer.Append(rtype);
-				m_buffer.Append(">()");
-			}
+		if (rtype == "string" && method.ReturnType == "NSString *")
+		{
+			m_buffer.Append(".To<NSString>().ToString()");
+		}
+		else if (rtype == "bool")
+		{
+			m_buffer.Append(" != 0");
 		}
 		m_buffer.AppendLine(";");
 		
@@ -592,42 +598,6 @@ internal sealed class Generate
 		}
 		
 		return suffix;
-	}
-	
-	private bool DoIsCastable(string type)
-	{
-		switch (type)
-		{
-			case "bool":
-			case "Boolean":
-			case "byte":
-			case "Byte":
-			case "char":
-			case "Char":
-			case "short":
-			case "Int16":
-			case "int":
-			case "Int32":
-			case "long":
-			case "Int64":
-			case "sbyte":
-			case "ushort":
-			case "UInt16":
-			case "uint":
-			case "UInt32":
-			case "ulong":
-			case "Uint64":
-			case "float":
-			case "Single":
-			case "double":
-			case "Double":
-			case "IntPtr":
-			case "Class":
-			case "Selector":
-				return true;
-		}
-		
-		return false;
 	}
 	
 	private void DoWriteMethodName(string name, string suffix)

@@ -29,20 +29,28 @@ using System.IO;
 [ExportClass("DocWindowController", "NSWindowController", IVars = "flagsSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
 internal sealed class DocWindowController : NSWindowController
 {
-	public DocWindowController(string nibName) : base(new Class("DocWindowController").Call("alloc").Call("initWithWindowNibName:", new NSString(nibName)))
+	public DocWindowController(IntPtr instance) : base(instance)
 	{
-		m_env = new IVar<EnvController>(this, "envSheet");
-		m_flags = new IVar<FlagsController>(this, "flagsSheet");
+	}
 
-		m_errorWindow = new IVar<NSWindow>(this, "errorWindow");
-		m_transcriptWindow = new IVar<NSWindow>(this, "outputWindow");	
-		m_errorTable = new IVar<ErrorTable>(this, "errors");
-		m_statusLabel = new IVar<NSTextField>(this, "status");
-		m_buildBtn = new IVar<NSButton>(this, "build");
-		m_cancelBtn = new IVar<NSButton>(this, "cancel");
-		m_outputView = new IVar<NSTextView>(this, "output");
+	public static DocWindowController Create(string nibName)
+	{
+		DocWindowController result = new Class("DocWindowController").Call("alloc").Call("initWithWindowNibName:", NSString.Create(nibName)).To<DocWindowController>();
+		
+		result.m_env = new IVar<EnvController>(result, "envSheet");
+		result.m_flags = new IVar<FlagsController>(result, "flagsSheet");
+
+		result.m_errorWindow = new IVar<NSWindow>(result, "errorWindow");
+		result.m_transcriptWindow = new IVar<NSWindow>(result, "outputWindow");	
+		result.m_errorTable = new IVar<ErrorTable>(result, "errors");
+		result.m_statusLabel = new IVar<NSTextField>(result, "status");
+		result.m_buildBtn = new IVar<NSButton>(result, "build");
+		result.m_cancelBtn = new IVar<NSButton>(result, "cancel");
+		result.m_outputView = new IVar<NSTextView>(result, "output");
 	
-		autorelease();
+		result.autorelease();
+		
+		return result;
 	}
 						
 	#region Action Handlers ---------------------------------------------------
@@ -97,11 +105,11 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		Error error = m_errors[row];
 		if (column.identifier().ToString() == "1")
-			return new NSString(error.Message);
+			return NSString.Create(error.Message);
 		else if (column.identifier().ToString() == "2")
-			return new NSString(error.File);
+			return NSString.Create(error.File);
 		else
-			return new NSString(error.Line);
+			return NSString.Create(error.Line);
 	}
 
 	[NewMethod("openSelection:")]		
@@ -224,7 +232,7 @@ internal sealed class DocWindowController : NSWindowController
 	[OverrideMethod("windowTitleForDocumentDisplayName:")]		
 	public NSString WindowTitleForDocumentDisplayName(NSString displayName)
 	{		
-		return new NSString(DoGetTitle());
+		return NSString.Create(DoGetTitle());
 	}
 	
 	[OverrideMethod("windowDidLoad")]		
@@ -255,7 +263,7 @@ internal sealed class DocWindowController : NSWindowController
 			
 			NSPopUpButton targets = new NSPopUpButton(this["targets"]);
 			targets.removeAllItems();	
-			targets.addItemsWithTitles(new NSArray(m_doc.Targets));
+			targets.addItemsWithTitles(NSArray.Create(m_doc.Targets));
 			
 			m_buildBtn.Value.setEnabled(m_doc.Targets.Length > 0);
 	
@@ -265,7 +273,7 @@ internal sealed class DocWindowController : NSWindowController
 		catch (Exception e)
 		{	
 			// By default cocoa just logs a lame message to the console...
-			NSAlert alert = new NSAlert();
+			NSAlert alert = NSAlert.Create();
 			alert.setMessageText("Couldn't open the document.");
 			alert.setInformativeText(e.Message);
 			alert.runModal();
@@ -295,7 +303,7 @@ internal sealed class DocWindowController : NSWindowController
 				m_buildBtn.Value.setEnabled(true);
 				m_cancelBtn.Value.setEnabled(false);
 				DoShowOutput();
-				m_outputView.Value.textStorage().appendAttributedString(new NSAttributedString(Environment.NewLine, ms_stdoutAttrs));
+				m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(Environment.NewLine, ms_stdoutAttrs));
 				if (m_doc.ExitCode != 0 && m_errors.Count > 0)
 					m_errorWindow.Value.makeKeyAndOrderFront(this);
 				break;
@@ -305,7 +313,7 @@ internal sealed class DocWindowController : NSWindowController
 				m_statusLabel.Value.setTextColor(NSColor.orangeColor());
 				m_buildBtn.Value.setEnabled(true);
 				m_cancelBtn.Value.setEnabled(false);
-				m_outputView.Value.textStorage().appendAttributedString(new NSAttributedString(Environment.NewLine, ms_stdoutAttrs));
+				m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(Environment.NewLine, ms_stdoutAttrs));
 				m_errorWindow.Value.orderOut(this);
 				m_errors.Clear();
 				m_errorTable.Value.noteNumberOfRowsChanged();
@@ -358,13 +366,13 @@ internal sealed class DocWindowController : NSWindowController
 	
 	private void DoGotCommand(object sender, string data)
 	{
-		m_outputView.Value.textStorage().appendAttributedString(new NSAttributedString(data, ms_commandAttrs));
+		m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_commandAttrs));
 		DoScrollOutputToEnd();
 	}
 	
 	private void DoGotStdout(object sender, string data)
 	{
-		m_outputView.Value.textStorage().appendAttributedString(new NSAttributedString(data, ms_stdoutAttrs));
+		m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_stdoutAttrs));
 		DoScrollOutputToEnd();
 	}
 	
@@ -384,7 +392,7 @@ internal sealed class DocWindowController : NSWindowController
 			}
 		}
 		
-		m_outputView.Value.textStorage().appendAttributedString(new NSAttributedString(data, ms_stderrAttrs));
+		m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_stderrAttrs));
 		DoScrollOutputToEnd();
 	}
 	
@@ -417,7 +425,7 @@ internal sealed class DocWindowController : NSWindowController
 		
 	private static NSDictionary DoCreateCommandAttrs()
 	{
-		NSMutableDictionary dict = new NSMutableDictionary();
+		NSMutableDictionary dict = NSMutableDictionary.Create();
 		dict.setObjectForKey(NSFont.fontWithNameSize(ms_fontName + "-Bold", 12.0f), Externs.NSFontAttributeName);
 		dict.retain();
 		return dict;
@@ -425,7 +433,7 @@ internal sealed class DocWindowController : NSWindowController
 
 	private static NSDictionary DoCreateStdoutAttrs()
 	{
-		NSMutableDictionary dict = new NSMutableDictionary();
+		NSMutableDictionary dict = NSMutableDictionary.Create();
 		dict.setObjectForKey(NSFont.fontWithNameSize(ms_fontName, 12.0f), Externs.NSFontAttributeName);
 		dict.retain();
 		return dict;
@@ -433,7 +441,7 @@ internal sealed class DocWindowController : NSWindowController
 
 	private static NSDictionary DoCreateStderrAttrs()
 	{
-		NSMutableDictionary dict = new NSMutableDictionary();
+		NSMutableDictionary dict = NSMutableDictionary.Create();
 		dict.setObjectForKey(NSFont.fontWithNameSize(ms_fontName, 12.0f), Externs.NSFontAttributeName);
 		dict.setObjectForKey(NSColor.redColor(), Externs.NSForegroundColorAttributeName);
 		dict.retain();

@@ -29,18 +29,18 @@ namespace MCocoa
 	{		
 		public NSView[] subviews()
 		{
-			NSArray items = new NSArray(Call("subviews"));
+			NSArray items = (NSArray) Call("subviews");
 
 			NSView[] result = new NSView[items.count()];
 			for (int i = 0; i < items.count(); ++i)
-				result[i] = new NSView((IntPtr) items.objectAtIndex((uint) i));
+				result[i] = items.objectAtIndex((uint) i).To<NSView>();
 				
 			return result;					
 		}
 
 		public void setSubviews(NSView[] newSubviews)
 		{
-			NSMutableArray array = new NSMutableArray();
+			NSMutableArray array = NSMutableArray.Create();
 			foreach (NSView view in newSubviews)
 				array.addObject(view);
 				

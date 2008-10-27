@@ -34,7 +34,7 @@ internal static class Program
 			Registrar.CanInit = true;
 			
 			// Load the nib and run the main event loop.
-			NSApplication app = new NSApplication("MainMenu.nib");
+			NSApplication app = NSApplication.Create("MainMenu.nib");
 			app.run();
 		}
 		catch (Exception e)
