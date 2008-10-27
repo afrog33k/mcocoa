@@ -45,8 +45,7 @@ internal sealed class EnvController : NSObject
     }
 
 	#region Action Handlers
-	[Register("envOK:")]		
-	public void EnvOK(NSObject sender)
+	public void envOK(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
 		m_sheet.Value.orderOut(this);
@@ -55,8 +54,7 @@ internal sealed class EnvController : NSObject
 		m_doc.Variables.AddRange(m_vars);
     }
 
-	[Register("envCancel:")]		
-	public void EnvCancel(NSObject sender)
+	public void envCancel(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
 		m_sheet.Value.orderOut(this);

@@ -54,26 +54,22 @@ internal sealed class DocWindowController : NSWindowController
 	}
 						
 	#region Action Handlers ---------------------------------------------------
-	[Register("targetChanged:")]		
-	public void TargetChanged(NSPopUpButton sender)
+	public void targetChanged(NSPopUpButton sender)
 	{
 		m_doc.Target = sender.titleOfSelectedItem().ToString();
 	}
 
-	[Register("build:")]		
-	public void Build(NSObject sender)
+	public void build(NSObject sender)
 	{
 		m_doc.Build();
 	}
 
-	[Register("cancel:")]		
-	public void Cancel(NSObject sender)
+	public void cancel(NSObject sender)
 	{
 		m_doc.Cancel();
 	}
 
-	[Register("environment:")]		
-	public void EnvironmentSheet(NSObject sender)
+	public void environment(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))
 			NSBundle.loadNibNamedOwner("Environment", this);
@@ -82,8 +78,7 @@ internal sealed class DocWindowController : NSWindowController
 		m_env.Value.Open(m_doc, window());
     }
 
-	[Register("flags:")]		
-	public void Flags(NSObject sender)
+	public void flags(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_flags.Value))
 			NSBundle.loadNibNamedOwner("Flags", this);
@@ -112,8 +107,7 @@ internal sealed class DocWindowController : NSWindowController
 			return NSString.Create(error.Line);
 	}
 
-	[Register("openSelection:")]		
-	public void OpenSelection(NSObject sender)
+	public void openSelection(NSObject sender)
 	{
 		bool opened = false;
 		
@@ -177,8 +171,7 @@ internal sealed class DocWindowController : NSWindowController
 		return false;
 	}
 
-	[Register("openFile:")]		
-	public void OpenFile(int row)
+	public void openFile(int row)
 	{
 		DoTryOpenFile(m_errors[row].File, m_errors[row].Line);
 	}
@@ -219,8 +212,7 @@ internal sealed class DocWindowController : NSWindowController
 	}
 	#endregion
 	
-	[Register("validateMenuItem:")]		
-	public bool ValidateMenuItem(NSMenuItem item)
+	public bool validateMenuItem(NSMenuItem item)
 	{		
 		if (item.action().Name == "build:")
 			return m_doc.State != State.Building;
@@ -229,13 +221,12 @@ internal sealed class DocWindowController : NSWindowController
 	}
 	
 	#region Overrides ---------------------------------------------------------
-	[Register("windowTitleForDocumentDisplayName:")]		
-	public NSString WindowTitleForDocumentDisplayName(NSString displayName)
+	public NSString windowTitleForDocumentDisplayName(NSString displayName)
 	{		
 		return NSString.Create(DoGetTitle());
 	}
 	
-	[Register("windowDidLoad")]		
+	[Register("windowDidLoad")]
 	public void WindowDidLoad()
 	{		
 		try

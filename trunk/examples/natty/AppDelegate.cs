@@ -34,8 +34,7 @@ internal sealed class AppDelegate : NSObject
 	}
 	
 	#region Delegate Methods
-	[Register("applicationDidFinishLaunching:")]		
-	public void ApplicationDidFinishLaunching(NSObject notification)
+	public void applicationDidFinishLaunching(NSObject notification)
 	{		
 		NSDocumentController controller = NSDocumentController.sharedDocumentController();
 		controller.openDocument(this);
