@@ -29,11 +29,7 @@ internal sealed class ErrorTable : NSTableView
 	public ErrorTable(IntPtr instance) : base(instance)
 	{
 	}
-			
-	public ErrorTable(Untyped instance) : base(instance)
-	{
-	}
-			
+						
 	#region Overrides
 	[OverrideMethod("mouseDown:")]		
 	public void MouseDown(NSEvent evt)
@@ -79,7 +75,7 @@ internal sealed class ErrorTable : NSTableView
 		uint index = indexes.firstIndex();
 		while (index != Enums.NSNotFound)
 		{
-			dataSource().Call("openFile:", index);
+			dataSource().Call("openFile:", (int) index);
 			index = indexes.indexGreaterThanIndex(index);
 		}
 	}

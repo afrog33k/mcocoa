@@ -9,10 +9,6 @@ namespace MCocoa
 		public CIImage(IntPtr instance) : base(instance)
 		{
 		}
-
-		public CIImage(Untyped instance) : base(instance)
-		{
-		}
 		
 		// TODO: missing a lot of methods
 	}

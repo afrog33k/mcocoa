@@ -26,26 +26,32 @@ namespace MCocoa
 {
 	public partial class NSMenuItem : NSObject
 	{
-		public NSMenuItem(string title) : this(title, null, string.Empty, null)
+		public static NSMenuItem Create(string title)
 		{
+			return Create(title, null, string.Empty, null);
 		}
 
-		public NSMenuItem(string title, string selector) : this(title, selector, string.Empty, null)
+		public static NSMenuItem Create(string title, string selector)
 		{
+			return Create(title, selector, string.Empty, null);
 		}
 
-		public NSMenuItem(string title, string selector, NSObject target) : this(title, selector, string.Empty, target)
+		public static NSMenuItem Create(string title, string selector, NSObject target)
 		{
+			return Create(title, selector, string.Empty, target);
 		}
 
-		public NSMenuItem(string title, string selector, string charCode, NSObject target) : base(new Class("NSMenuItem").Call(
-			"alloc").Call("initWithTitle:action:keyEquivalent:", 
-				new NSString(title), selector != null ? new Selector(selector) : null, new NSString(charCode)))
+		public static NSMenuItem Create(string title, string selector, string charCode, NSObject target)
 		{
-			autorelease();			
+			NSMenuItem result = (NSMenuItem) ms_class.Call("alloc").
+				Call("initWithTitle:action:keyEquivalent:", NSString.Create(title), 
+					selector != null ? new Selector(selector) : null, NSString.Create(charCode));
+			result.autorelease();			
 
 			if (target != null)
-				setTarget(target);
+				result.setTarget(target);
+				
+			return result;
 		}
 	}
 }

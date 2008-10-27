@@ -27,12 +27,14 @@ namespace MCocoa
 {
 	public partial class NSString : NSObject
 	{		
-		public NSString(char ch) : base(new Class("NSString").Call("stringWithUTF8String:", new string(ch, 1)))
+		public static NSString Create(char ch)
 		{
+			return ms_class.Call("stringWithUTF8String:", new string(ch, 1)).To<NSString>();
 		}
 		
-		public NSString(string str) : base(new Class("NSString").Call("stringWithUTF8String:", str))
+		public static NSString Create(string str) 
 		{
+			return ms_class.Call("stringWithUTF8String:", str).To<NSString>();
 		}
 		
 		public string GetCharacters(NSRange range)
@@ -51,6 +53,6 @@ namespace MCocoa
 			return this != IntPtr.Zero ? (string) Call("UTF8String") : string.Empty;
 		}
 		
-		public static readonly NSString Empty = new NSString(string.Empty).retain();
+		public static readonly NSString Empty = NSString.Create(string.Empty).retain();
 	}
 }

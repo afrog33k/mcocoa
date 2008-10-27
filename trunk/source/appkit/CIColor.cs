@@ -9,10 +9,6 @@ namespace MCocoa
 		public CIColor(IntPtr instance) : base(instance)
 		{
 		}
-
-		public CIColor(Untyped instance) : base(instance)
-		{
-		}
 		
 		// TODO: missing a lot of methods
 	}

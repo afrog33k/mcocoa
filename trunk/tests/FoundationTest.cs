@@ -34,14 +34,14 @@ public class FoundationTest
 		Registrar.CanInit = true;
 		NSObject pool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
 		
-		NSMutableArray array = new NSMutableArray(NSMutableArray.alloc().initWithCapacity(3));
+		NSMutableArray array = NSMutableArray.alloc().initWithCapacity(3).To<NSMutableArray>();
 		array.addObject(NSNumber.numberWithInt(100));
 		array.addObject(NSNumber.numberWithBool(true));
-		array.addObject(new NSString("hmm"));
+		array.addObject(NSString.Create("hmm"));
 
 		Assert.AreEqual(3, array.count());
 		Assert.AreEqual(100, (int) array.objectAtIndex(0).Call("intValue"));
-		Assert.AreEqual(true, (bool) array.objectAtIndex(1).Call("boolValue"));
+		Assert.AreEqual(1, (sbyte) array.objectAtIndex(1).Call("boolValue"));
 		Assert.AreEqual("hmm", array.objectAtIndex(2).ToString());
 
 		pool.release();

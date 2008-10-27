@@ -30,11 +30,19 @@ namespace MCocoa
 	[ExportClass("AppHelper", "NSObject")]
 	internal sealed class AppHelper : NSObject
 	{
-		public AppHelper() : base(new Class("AppHelper").Call("alloc").Call("init"))
+		public AppHelper(IntPtr instance) : base(instance)
 		{
-			m_thread = new Thread(this.DoThread);
-			m_thread.IsBackground = true;
-			m_thread.Start();
+		}
+
+		public static new AppHelper Create()
+		{
+			AppHelper result = (AppHelper) new Class("AppHelper").Call("alloc").Call("init");
+			
+			result.m_thread = new Thread(result.DoThread);
+			result.m_thread.IsBackground = true;
+			result.m_thread.Start();
+			
+			return result;
 		}
 		
 		public void Add(Action action)
@@ -53,7 +61,7 @@ namespace MCocoa
 			
 			Call("performSelector:withObject:afterDelay:", 
 				new Selector("OnDelayedAction:"),
-				new NSNumber(id),
+				NSNumber.Create(id),
 				delay.TotalSeconds);
 		}
 		
@@ -80,12 +88,12 @@ namespace MCocoa
 		[NewMethod("InitDebugMenu")]		
 		public void InitDebugMenu()
 		{
-			NSMenu debugMenu = new NSMenu("Debug");
-			debugMenu.addItem(new NSMenuItem("Collect Garbage", "CollectGarbage:", this));
-			debugMenu.addItem(new NSMenuItem("Dump Objects", "DumpObjects:", this));
-			debugMenu.addItem(new NSMenuItem("Dump Windows", "DumpWindows:", this));
+			NSMenu debugMenu = NSMenu.Create("Debug");
+			debugMenu.addItem(NSMenuItem.Create("Collect Garbage", "CollectGarbage:", this));
+			debugMenu.addItem(NSMenuItem.Create("Dump Objects", "DumpObjects:", this));
+			debugMenu.addItem(NSMenuItem.Create("Dump Windows", "DumpWindows:", this));
 			
-			NSMenuItem debugItem = new NSMenuItem("Debug");
+			NSMenuItem debugItem = NSMenuItem.Create("Debug");
 			debugItem.setSubmenu(debugMenu);
 			
 			NSApplication.sharedApplication().mainMenu().addItem(debugItem);
@@ -168,12 +176,15 @@ namespace MCocoa
 #if DEBUG
 		private void DoDump(NSResponder o, ref int indent)
 		{
-			if (!o.nextResponder().IsNil())
-				DoDump(o.nextResponder(), ref indent);
-			else
+			if (NSObject.IsNullOrNil(o))
+			{
 				DoDump1(NSApplication.sharedApplication(), ref indent);
-
-			DoDump1(o, ref indent);
+			}
+			else
+			{
+				DoDump(o.nextResponder(), ref indent);
+				DoDump1(o, ref indent);
+			}
 		}
 
 		private void DoDump1(NSResponder o, ref int indent)
@@ -181,19 +192,19 @@ namespace MCocoa
 			Console.Write("{0}{1}", new string(' ', 3*indent), o);
 					
 			List<string> extras = new List<string>();
-			if ((IntPtr) o == (IntPtr) NSApplication.sharedApplication().keyWindow())
+			if (o == NSApplication.sharedApplication().keyWindow())
 				extras.Add("key");
-			if ((IntPtr) o == (IntPtr) NSApplication.sharedApplication().mainWindow())
+			if (o == NSApplication.sharedApplication().mainWindow())
 				extras.Add("main");
-			if (o.respondsToSelector(new Selector("isVisible")))
-				if (!(bool) o.Call("isVisible"))
+			if (o.respondsToSelector("isVisible"))
+				if ((sbyte) o.Call("isVisible") == 0)
 					extras.Add("hidden");
 					
 			if (extras.Count > 0)
 				Console.Write(" [{0}]", string.Join(", ", extras.ToArray()));
 			Console.WriteLine();
 
-			if (o.respondsToSelector(new Selector("delegate")))
+			if (o.respondsToSelector("delegate"))
 			{
 				NSObject d = (NSObject) o.Call("delegate");
 				if (!NSObject.IsNullOrNil(d))

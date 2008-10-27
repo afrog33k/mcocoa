@@ -40,7 +40,8 @@ internal sealed class EnvController : NSObject
 
 		m_sheet.Value.setDelegate(this);
 		m_table.Value.setDataSource(this);
-		NSApplication.sharedApplication().beginSheetModalForWindowModalDelegateDidEndSelectorContextInfo(m_sheet.Value, window, this, null, IntPtr.Zero);
+		NSApplication.sharedApplication().beginSheetModalForWindowModalDelegateDidEndSelectorContextInfo(
+			m_sheet.Value, window, this, null, IntPtr.Zero);
     }
 
 	#region Action Handlers
@@ -75,9 +76,9 @@ internal sealed class EnvController : NSObject
 		KeyValuePair<string, string> entry = m_vars[row];
 	
 		if (column.identifier().ToString() == "1")
-			return new NSString(entry.Key);
+			return NSString.Create(entry.Key);
 		else 
-			return new NSString(entry.Value);
+			return NSString.Create(entry.Value);
 	}
 
 	[NewMethod("tableView:setObjectValue:forTableColumn:row:")]		

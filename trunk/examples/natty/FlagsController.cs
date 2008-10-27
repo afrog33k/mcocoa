@@ -42,7 +42,7 @@ internal sealed class FlagsController : NSObject
 		{
 			if (views[i].respondsToSelector("title"))
 			{
-				string title = new NSString(views[i].Call("title")).ToString();
+				string title = views[i].Call("title").To<NSString>().ToString();
 				if (m_flags.ContainsKey(title))
 					views[i].Call("setState:", m_flags[title]);
 			}

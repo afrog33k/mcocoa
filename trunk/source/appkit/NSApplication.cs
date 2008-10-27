@@ -45,13 +45,15 @@ namespace MCocoa
 			ms_startupPool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
 		}
 		
-		public NSApplication(string nibName) : base(sharedApplication())
+		public static NSApplication Create(string nibName)
 		{		
-			m_mainThread = Thread.CurrentThread;
+			NSApplication app = sharedApplication();
+			
+			app.m_mainThread = Thread.CurrentThread;
 
 			// Load our nib. This will instantiate all of the native objects and wire them together.
 			// The C# objects will be created the first time a managed method is called.
-			NSMutableDictionary dict = new NSMutableDictionary();					
+			NSMutableDictionary dict = NSMutableDictionary.Create();					
 			bool loaded = NSBundle.mainBundle().loadNibFileExternalNameTableWithZone_i(
 				nibName, dict, IntPtr.Zero);
 							
@@ -62,14 +64,16 @@ namespace MCocoa
 			// hanging around while we're in the main event loop because that may hide bugs.
 			// So, we'll instantiate a Native instance here and call Invoke later which can
 			// be done without an NSAutoreleasePool.
-			m_run = new Native(this, new Selector("run"));
+			app.m_run = new Native(app, new Selector("run"));
 			
 #if DEBUG
-			BeginInvoke(() => m_helper.Call("InitDebugMenu"));
+			app.BeginInvoke(() => app.m_helper.Call("InitDebugMenu"));
 #endif
 
 			ms_startupPool.release();
 			ms_startupPool = null;
+			
+			return app;
 		}
 		        			
 		public void run()
@@ -79,11 +83,11 @@ namespace MCocoa
 		
 		public NSWindow[] windows()
 		{
-			NSArray items = new NSArray(Call("windows"));
+			NSArray items = (NSArray) Call("windows");
 
 			NSWindow[] result = new NSWindow[items.count()];
 			for (int i = 0; i < items.count(); ++i)
-				result[i] = new NSWindow((IntPtr) items.objectAtIndex((uint) i));
+				result[i] = items.objectAtIndex((uint) i).To<NSWindow>();
 				
 			return result;					
 		}
@@ -121,7 +125,7 @@ namespace MCocoa
 
 		#region Fields --------------------------------------------------------
 		private Native m_run;
-		private AppHelper m_helper = new AppHelper();
+		private AppHelper m_helper = AppHelper.Create();
 		private Thread m_mainThread;
 
 		private static NSObject ms_startupPool;

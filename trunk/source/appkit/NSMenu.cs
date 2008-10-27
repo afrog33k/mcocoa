@@ -26,10 +26,14 @@ namespace MCocoa
 {
 	public partial class NSMenu : NSObject
 	{
-		public NSMenu(string title) : base(new Class("NSMenu").Call(
-			"alloc").Call("initWithTitle:", new NSString(title)))
+		public static NSMenu Create(string title)
 		{
-			autorelease();
+			NSMenu result = (NSMenu) ms_class.Call("alloc").Call("initWithTitle:", 
+				NSString.Create(title));
+				
+			result.autorelease();
+			
+			return result;
 		}
 	}
 }
