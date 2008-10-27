@@ -2,6 +2,9 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
+* Do a mobjc release.
+* Do a mcocoa release.
+* Remove the old google projects.
 * Work on Natty:
 	- prefs could be used to save fonts, colors, editor, global vars
 	- need to support stdin (important for install or removing files
@@ -9,9 +12,6 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- make files should default to RELEASE
 	- would be nice to support nant
 	- might be neat to have a lookup error command
-* Do a mobjc release.
-* Do a mcocoa release.
-* Remove the old google projects.
 * Probably should add interfaces for protocols.
 * Release checklist:
 	- search for TODO
