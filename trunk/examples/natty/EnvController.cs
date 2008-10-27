@@ -45,7 +45,7 @@ internal sealed class EnvController : NSObject
     }
 
 	#region Action Handlers
-	[NewMethod("envOK:")]		
+	[Register("envOK:")]		
 	public void EnvOK(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
@@ -55,7 +55,7 @@ internal sealed class EnvController : NSObject
 		m_doc.Variables.AddRange(m_vars);
     }
 
-	[NewMethod("envCancel:")]		
+	[Register("envCancel:")]		
 	public void EnvCancel(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
@@ -64,13 +64,13 @@ internal sealed class EnvController : NSObject
 	#endregion
 	
 	#region Data Source
-	[NewMethod("numberOfRowsInTableView:")]		
+	[Register("numberOfRowsInTableView:")]		
 	public int NumberOfRows(NSTableView table)
 	{
 		return m_vars.Count;
 	}
 
-	[NewMethod("tableView:objectValueForTableColumn:row:")]		
+	[Register("tableView:objectValueForTableColumn:row:")]		
 	public NSObject GetCell(NSTableView table, NSTableColumn column, int row)
 	{
 		KeyValuePair<string, string> entry = m_vars[row];
@@ -81,7 +81,7 @@ internal sealed class EnvController : NSObject
 			return NSString.Create(entry.Value);
 	}
 
-	[NewMethod("tableView:setObjectValue:forTableColumn:row:")]		
+	[Register("tableView:setObjectValue:forTableColumn:row:")]		
 	public void SetCell(NSTableView table, NSObject v, NSTableColumn column, int row)
 	{
 		DBC.Pre(column.identifier().ToString() == "2", "id is {0}", column.identifier());

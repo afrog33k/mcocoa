@@ -120,7 +120,7 @@ internal sealed class Document : NSDocument
 	}
 	
 	#region Overrides ---------------------------------------------------------
-	[OverrideMethod("readFromData:ofType:error:")]		
+	[Register("readFromData:ofType:error:")]		
 	public bool ReadFromDataOfTypeError(NSData data, NSString typeName, IntPtr outError)
 	{
 		bool read = true;
@@ -158,7 +158,7 @@ internal sealed class Document : NSDocument
 		return read;
 	}
 
-	[OverrideMethod("makeWindowControllers")]		
+	[Register("makeWindowControllers")]		
 	public void MakeWindowControllers()
 	{
 		DocWindowController controller = DocWindowController.Create("Document");

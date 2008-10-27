@@ -32,7 +32,7 @@ internal sealed class DocController : NSDocumentController
 	}
 			
 	#region Overrides ---------------------------------------------------------
-	[OverrideMethod("runModalOpenPanel:forTypes:")]		
+	[Register("runModalOpenPanel:forTypes:")]		
 	public int RunModalOpenPanelForTypes(NSOpenPanel openPanel, NSObject extensions)
 	{		
 		openPanel.setDelegate(this);
@@ -42,7 +42,7 @@ internal sealed class DocController : NSDocumentController
 	#endregion	
 
 	#region Delegate Methods --------------------------------------------------
-	[NewMethod("panel:shouldShowFilename:")]		
+	[Register("panel:shouldShowFilename:")]		
 	public bool PanelShouldShowFilename(NSObject sender, NSString fileName)
 	{		
 		string name = fileName.ToString();
