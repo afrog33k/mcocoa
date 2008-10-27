@@ -26,96 +26,99 @@ using System.Runtime.InteropServices;
 // http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Miscellaneous/AppKit_Functions/Reference/reference.html#//apple_ref/doc/uid/TP40004154-I1-DontLinkElementID_61
 namespace MCocoa
 {
-	public static partial class NSFunctions
+	public static partial class Functions
 	{
-		public static void Beep()
+		public static void NSBeep()
 		{
-			NSBeep();
+			NativeMethods.NSBeep();
 		}
 
 		#region Framing Rectangles --------------------------------------------
-		public static void FrameRect(NSRect rect)
+		public static void NSFrameRect(NSRect rect)
 		{
-			NSFrameRect(rect);
+			NativeMethods.NSFrameRect(rect);
 		}
 
-		public static void FrameRect(NSRect rect, float width)
+		public static void NSFrameRectWithWidth(NSRect rect, float width)
 		{
-			NSFrameRectWithWidth(rect, width);
+			NativeMethods.NSFrameRectWithWidth(rect, width);
 		}
 
-		public static void FrameRect(NSRect rect, float width, int op)
+		public static void NSFrameRectWithWidthUsingOperation(NSRect rect, float width, int op)
 		{
-			NSFrameRectWithWidthUsingOperation(rect, width, op);
+			NativeMethods.NSFrameRectWithWidthUsingOperation(rect, width, op);
 		}
 		#endregion
 
 		#region Filling Rectangles --------------------------------------------
-		public static void RectFill(NSRect rect)
+		public static void NSRectFill(NSRect rect)
 		{
-			NSRectFill(rect);
+			NativeMethods.NSRectFill(rect);
 		}
 
-		public static void RectFill(NSRect[] rects)
+		public static void NSRectFillList(NSRect[] rects)
 		{
-			NSRectFillList(rects, rects.Length);
+			NativeMethods.NSRectFillList(rects, rects.Length);
 		}
 
-		public static void RectFill(NSRect[] rects, int op)
+		public static void NSRectFillListUsingOperation(NSRect[] rects, int op)
 		{
-			NSRectFillListUsingOperation(rects, rects.Length, op);
+			NativeMethods.NSRectFillListUsingOperation(rects, rects.Length, op);
 		}
 
-		public static void RectFill(NSRect[] rects, NSColor[] colors)
+		public static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors)
 		{
 			DBC.Pre(rects.Length == colors.Length, "rects and colors have different lengths");
 			
-			NSRectFillListWithColors(rects, colors, rects.Length);
+			NativeMethods.NSRectFillListWithColors(rects, colors, rects.Length);
 		}
 
-		public static void RectFill(NSRect[] rects, NSColor[] colors, int op)
+		public static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int op)
 		{
 			DBC.Pre(rects.Length == colors.Length, "rects and colors have different lengths");
 			
-			NSRectFillListWithColorsUsingOperation(rects, colors, rects.Length, op);
+			NativeMethods.NSRectFillListWithColorsUsingOperation(rects, colors, rects.Length, op);
 		}
 
-		public static void RectFill(NSRect rect, int op)
+		public static void NSRectFillUsingOperation(NSRect rect, int op)
 		{
-			NSRectFillUsingOperation(rect, op);
+			NativeMethods.NSRectFillUsingOperation(rect, op);
 		}
 		#endregion
 
 		#region P/Invokes -----------------------------------------------------
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSBeep();
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSFrameRect(NSRect rect);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSFrameRectWithWidth(NSRect rect, float width);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSFrameRectWithWidthUsingOperation(NSRect rect, float width, int op);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSRectFill(NSRect rect);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSRectFillList(NSRect[] rects, int count);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSRectFillListUsingOperation(NSRect[] rects, int count, int op);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors, int count);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int count, int op);
-
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private extern static void NSRectFillUsingOperation(NSRect rect, int op);
+		private static class NativeMethods
+		{
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSBeep();
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSFrameRect(NSRect rect);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSFrameRectWithWidth(NSRect rect, float width);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSFrameRectWithWidthUsingOperation(NSRect rect, float width, int op);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSRectFill(NSRect rect);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSRectFillList(NSRect[] rects, int count);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSRectFillListUsingOperation(NSRect[] rects, int count, int op);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors, int count);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int count, int op);
+	
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSRectFillUsingOperation(NSRect rect, int op);
+		}
 		#endregion
 	}
 }
