@@ -1,0 +1,171 @@
+------------------------------------------------------------------------
+r1 | (no author) | 2008-10-24 16:29:04 -0700 (Fri, 24 Oct 2008) | 1 line
+
+Initial directory structure.
+------------------------------------------------------------------------
+r2 | jesjones@mindspring.com | 2008-10-24 16:41:26 -0700 (Fri, 24 Oct 2008) | 3 lines
+
+Initial import.
+
+
+------------------------------------------------------------------------
+r3 | jesjones@mindspring.com | 2008-10-24 17:18:43 -0700 (Fri, 24 Oct 2008) | 3 lines
+
+AssemblyVersion.cs should not be checked in.
+
+
+------------------------------------------------------------------------
+r4 | jesjones@mindspring.com | 2008-10-24 17:54:16 -0700 (Fri, 24 Oct 2008) | 3 lines
+
+Removing generated files.
+
+
+------------------------------------------------------------------------
+r5 | jesjones@mindspring.com | 2008-10-24 17:55:06 -0700 (Fri, 24 Oct 2008) | 3 lines
+
+Removing generated files.
+
+
+------------------------------------------------------------------------
+r6 | jesjones@mindspring.com | 2008-10-25 12:22:35 -0700 (Sat, 25 Oct 2008) | 8 lines
+
+Index: generate/Frameworks.xml
+* Hand code a few methods so we can return something better than NSObject.
+
+Index: generate/Generate.cs
+* Can't use extension methods for class methods in categories.
+* Cast results where we can (Untyped.To is stricter than the cast operators).
+
+
+------------------------------------------------------------------------
+r7 | jesjones@mindspring.com | 2008-10-25 15:38:13 -0700 (Sat, 25 Oct 2008) | 18 lines
+
+Index: generate/Generate.cs
+* If an interface has class and instance methods with the same name then append "_c"
+  and "_i" to the method names.
+* Don't generate methods from categories named "NSDeprecated". 
+
+Index: source/foundation/NSArray.cs
+Index: source/foundation/NSAttributedString.cs
+* Added some convenient ctors.
+
+Index: source/foundation/NSFunctions.cs
+Index: source/appkit/NSFunctions.cs
+* Added.
+ 
+Index: source/foundation/NSError.cs
+Index: source/appkit/NSAttributedString.cs
+* Added Externs.
+
+
+------------------------------------------------------------------------
+r8 | jesjones@mindspring.com | 2008-10-25 17:38:38 -0700 (Sat, 25 Oct 2008) | 18 lines
+
+Index: generate/Frameworks.xml
+Index: generate/ObjectModel.cs
+Index: generate/Generate.cs
+Index: generate/Program.cs
+* We now fix up a bunch of method return types so they return a better type than NSObject.
+
+Index: source/appkit/NSWindow.cs
+Index: source/appkit/NSDocumentController.cs
+* Don't need these any more.
+
+Index: generate/Parser.cs
+Index: tests/InterfacesTest.cs
+* Don't do bad things when AVAILABLE macros are present.
+
+Index: tests/FoundationTest.cs
+* Added.
+
+
+------------------------------------------------------------------------
+r9 | jesjones@mindspring.com | 2008-10-25 18:02:28 -0700 (Sat, 25 Oct 2008) | 5 lines
+
+Generated code now uses string for result and arg types. This may be inefficient
+for large strings, but clients can always drop down to dynamic calls and use
+NSString directly.
+
+
+------------------------------------------------------------------------
+r10 | jesjones@mindspring.com | 2008-10-25 21:57:03 -0700 (Sat, 25 Oct 2008) | 4 lines
+
+Index: Makefile
+* Exclude svn files from tar.
+
+
+------------------------------------------------------------------------
+r11 | jesjones@mindspring.com | 2008-10-26 02:13:46 -0700 (Sun, 26 Oct 2008) | 3 lines
+
+Removed formatted calls.
+
+
+------------------------------------------------------------------------
+r12 | jesjones@mindspring.com | 2008-10-26 21:57:41 -0700 (Sun, 26 Oct 2008) | 3 lines
+
+Updated for mobjc changes (removal of Untyped and tighter type conversions).
+
+
+------------------------------------------------------------------------
+r13 | jesjones@mindspring.com | 2008-10-26 22:11:13 -0700 (Sun, 26 Oct 2008) | 3 lines
+
+Removed Ignore class from mobjc.
+
+
+------------------------------------------------------------------------
+r14 | jesjones@mindspring.com | 2008-10-26 22:47:14 -0700 (Sun, 26 Oct 2008) | 3 lines
+
+Replaced NewMethodAttribute and OverrideMethodAttribute with RegisterAttribute.
+
+
+------------------------------------------------------------------------
+r15 | jesjones@mindspring.com | 2008-10-26 23:23:29 -0700 (Sun, 26 Oct 2008) | 3 lines
+
+RegisterAttribute is now optional on methods.
+
+
+------------------------------------------------------------------------
+r16 | jesjones@mindspring.com | 2008-10-27 14:09:26 -0700 (Mon, 27 Oct 2008) | 4 lines
+
+* Added Equals and GetHashCode methods to most of the cocoa structs.
+* Natty order ins the transcript window when it gets new output.
+
+
+------------------------------------------------------------------------
+r17 | jesjones@mindspring.com | 2008-10-27 14:59:46 -0700 (Mon, 27 Oct 2008) | 3 lines
+
+Renaming NSFunctions.
+
+
+------------------------------------------------------------------------
+r18 | jesjones@mindspring.com | 2008-10-27 15:03:13 -0700 (Mon, 27 Oct 2008) | 3 lines
+
+Renamed the NSFunctions.
+
+
+------------------------------------------------------------------------
+r19 | jesjones@mindspring.com | 2008-10-27 17:28:36 -0700 (Mon, 27 Oct 2008) | 16 lines
+
+Index: source/appkit/AppHelper.cs
+* Fixed casing on call to onDelayedAction.
+ 			
+Index: source/appkit/NSApplication.cs
+* Fields have to be static.
+
+Index: source/foundation/NSAttributedString.cs
+* Added NSMutableAttributedString Create methods.
+
+Index: source/appkit/NSBezierPath.cs
+* Added nicer appendBezierPathWithPointsCount.
+
+Index: source/appkit/NSGradient.cs
+* Added Create methods.
+
+
+------------------------------------------------------------------------
+r20 | jesjones@mindspring.com | 2008-10-28 15:57:45 -0700 (Tue, 28 Oct 2008) | 3 lines
+
+* Very minor tweaks.
+
+
+------------------------------------------------------------------------

@@ -1,17 +1,24 @@
 BUILDING
 
-You'll need to install the objc3-sharp library which you can find at
-<http://code.google.com/p/objc3-sharp/>. Once you've done that navigate
-to the cocoa3-sharp directory with a terminal and and type 'make' to make 
-the library and the example apps. Type 'make run-animating-views' to run
-the animating views example and 'make run-natty' to run the natty example.
+You'll need to install the mobjc3 library which you can find at
+<http://code.google.com/p/mobjc/>. Once you've done that navigate
+to the mcocoa directory with a terminal and and type 'make generate' 
+generate the wrapper classes. Then you can type 'make run-animating-views' 
+to run the animating views example and 'make run-natty' to run the natty 
+example (which is a gui wrapper for make files).
 
 INSTALLING
 
 To install type `sudo make install`, to uninstall type `sudo make uninstall`.
 
-By default the libraries are installed into /usr/local/lib and
-the cocoa-pack script is installed into /usr/local/bin. You can 
+By default the libraries are installed into /usr/local/lib. You can 
 change this with a command like this: `make INSTALL_DIR=/tmp install`.
+
+Typically you'd copy the libraries out of /usr/local/lib into your
+project's bin directory with a make target like this:
+
+update-libraries:
+	cp `pkg-config --variable=Libraries mobjc` bin
+	cp `pkg-config --variable=Libraries mcocoa` bin
 
 jesjones@mindspring.com
