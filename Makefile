@@ -21,7 +21,7 @@ PKG_CONFIG_DIR ?= /usr/local/lib/pkgconfig
 dummy1 := $(shell mkdir bin 2> /dev/null)			
 export dummy2 := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
 
-base_version := 0.1.xxx.0										# major.minor.build.revision
+base_version := 0.2.xxx.0										# major.minor.build.revision
 version := $(shell ./get_version.sh $(base_version) build_num)	# this will increment the build number stored in build_num
 export version := $(strip $(version))
 
@@ -142,5 +142,5 @@ uninstall:
 	-rm $(pc_file)
 
 tar:
-	tar --create --compress --exclude \*/.svn --exclude \*/.svn/\* --file=mcocoa-$(version).tar.gz AUTHORS Dictionary.txt MIT.X11 Makefile README examples gen_version.sh get_version.sh source generate tests
+	tar --create --compress --exclude \*/.svn --exclude \*/.svn/\* --file=mcocoa-$(version).tar.gz AUTHORS Dictionary.txt MIT.X11 Makefile README examples gen_version.sh get_version.sh source generate tests CHANGES CHANGE_LOG
 

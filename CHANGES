@@ -1,0 +1,5 @@
+-- Version 0.2.0.0 (r20) ----
+
+* Complete rewrite: instead of the experimental hand-coded wrappers
+  we now generate wrappers based on Apple's headers.
+* Methods which call directly into native code are now lower case.
