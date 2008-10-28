@@ -29,7 +29,7 @@ namespace MCocoa
 	{		
 		public static NSAttributedString Create(string text, NSString attr, NSObject value)
 		{
-			return Create(text, DoCreateDict(attr, value));
+			return Create(text, CreateDict(attr, value));
 		}
 				
 		public static NSAttributedString Create(char ch, NSDictionary attrs)
@@ -46,11 +46,33 @@ namespace MCocoa
 			return result;
 		}
 
-		private static NSDictionary DoCreateDict(NSString attr, NSObject value)
+		protected static NSDictionary CreateDict(NSString attr, NSObject value)
 		{
 			NSMutableDictionary dict = NSMutableDictionary.Create();
 			dict.setObjectForKey(value, attr);
 			return dict;
+		}
+	}
+
+	public partial class NSMutableAttributedString : NSAttributedString
+	{		
+		public new static NSMutableAttributedString Create(string text, NSString attr, NSObject value)
+		{
+			return Create(text, CreateDict(attr, value));
+		}
+				
+		public new static NSMutableAttributedString Create(char ch, NSDictionary attrs)
+		{
+			NSMutableAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSMutableAttributedString>();
+			result.autorelease();
+			return result;
+		}
+		
+		public new static NSMutableAttributedString Create(string text, NSDictionary attrs) 
+		{
+			NSMutableAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSMutableAttributedString>();
+			result.autorelease();
+			return result;
 		}
 	}
 }
