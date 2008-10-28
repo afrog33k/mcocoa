@@ -47,7 +47,7 @@ namespace MCocoa
 				
 		public override string ToString()
 		{
-			return string.Format("[{0}, {1})", location, location + length);
+			return string.Format("[{0}, {1}]", location, location + length);
 		}
 	
 		public override bool Equals(object rhsObj)
