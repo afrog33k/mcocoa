@@ -40,6 +40,7 @@
 		<Blacklist>
 			<Method interface = "NSApplication" method = "run" reason = "because there is a hand-written version"/>
 			<Method interface = "NSApplication" method = "windows" reason = "because there is a hand-written version"/>
+			<Method interface = "NSBezierPath" method = "appendBezierPathWithPoints:count:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "subviews" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "setSubviews:" reason = "because there is a hand-written version"/>
 

@@ -49,7 +49,7 @@ namespace MCocoa
 		{		
 			NSApplication app = sharedApplication();
 			
-			app.m_mainThread = Thread.CurrentThread;
+			ms_mainThread = Thread.CurrentThread;
 
 			// Load our nib. This will instantiate all of the native objects and wire them together.
 			// The C# objects will be created the first time a managed method is called.
@@ -64,10 +64,11 @@ namespace MCocoa
 			// hanging around while we're in the main event loop because that may hide bugs.
 			// So, we'll instantiate a Native instance here and call Invoke later which can
 			// be done without an NSAutoreleasePool.
-			app.m_run = new Native(app, new Selector("run"));
+			ms_run = new Native(app, new Selector("run"));
 			
+			ms_helper = AppHelper.Create();
 #if DEBUG
-			app.BeginInvoke(() => app.m_helper.Call("initDebugMenu"));
+			app.BeginInvoke(() => ms_helper.Call("initDebugMenu"));
 #endif
 
 			ms_startupPool.release();
@@ -78,7 +79,7 @@ namespace MCocoa
 		        			
 		public void run()
 		{
-			Unused.Value = m_run.Invoke();
+			Unused.Value = ms_run.Invoke();
 		}
 		
 		public NSWindow[] windows()
@@ -96,7 +97,7 @@ namespace MCocoa
 		{
 			DBC.Pre(action != null, "action is null");
 
-			m_helper.Add(action);
+			ms_helper.Add(action);
 		}
 		
 		public void BeginInvoke(Action action, TimeSpan delay)
@@ -104,12 +105,12 @@ namespace MCocoa
 			DBC.Pre(action != null, "action is null");
 			DBC.Pre(delay >= TimeSpan.Zero, "delay is negative");
 
-			m_helper.QueueDelayed(action, delay);
+			ms_helper.QueueDelayed(action, delay);
 		}
 				
 		public bool InvokeRequired
 		{
-			get {return Thread.CurrentThread != m_mainThread;}
+			get {return Thread.CurrentThread != ms_mainThread;}
 		}
 									
 		#region P/Invokes -----------------------------------------------------
@@ -124,9 +125,9 @@ namespace MCocoa
 		#endregion
 
 		#region Fields --------------------------------------------------------
-		private Native m_run;
-		private AppHelper m_helper = AppHelper.Create();
-		private Thread m_mainThread;
+		private static Native ms_run;								// we're not an exported class so mobjc may create new instances of our class even for the same id thus our data should be static
+		private static AppHelper ms_helper;
+		private static Thread ms_mainThread;
 
 		private static NSObject ms_startupPool;
 		#endregion

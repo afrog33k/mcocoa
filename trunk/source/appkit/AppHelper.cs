@@ -32,6 +32,8 @@ namespace MCocoa
 	{
 		public AppHelper(IntPtr instance) : base(instance)
 		{
+			DBC.Assert(!ms_created, "AppHelper (and the app) should be created only once");
+			ms_created = true;
 		}
 
 		public static new AppHelper Create()
@@ -50,7 +52,7 @@ namespace MCocoa
 			lock (m_lock)
 			{
 				m_actions.Add(action);
-	            Monitor.PulseAll(m_lock);
+				Monitor.PulseAll(m_lock);
 			}
 		}
 		
@@ -60,7 +62,7 @@ namespace MCocoa
 			m_delayedActions.Add(id, action);
 			
 			Call("performSelector:withObject:afterDelay:", 
-				new Selector("OnDelayedAction:"),
+				new Selector("onDelayedAction:"),
 				NSNumber.Create(id),
 				delay.TotalSeconds);
 		}
@@ -196,6 +198,7 @@ namespace MCocoa
 					
 			if (extras.Count > 0)
 				Console.Write(" [{0}]", string.Join(", ", extras.ToArray()));
+				
 			Console.WriteLine();
 
 			if (o.respondsToSelector("delegate"))
@@ -242,6 +245,8 @@ namespace MCocoa
 		private Thread m_thread;
 		private int m_actionID;
 		private Dictionary<int, Action> m_delayedActions = new Dictionary<int, Action>();
+
+		private static bool ms_created;
 		#endregion
 	}
 }
