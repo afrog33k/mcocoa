@@ -32,7 +32,7 @@ namespace MCocoa
 	{
 		public AppHelper(IntPtr instance) : base(instance)
 		{
-			DBC.Assert(!ms_created, "AppHelper (and the app) should be created only once");
+			DBC.Assert(!ms_created, "AppHelper should be created only once");
 			ms_created = true;
 		}
 
@@ -41,6 +41,7 @@ namespace MCocoa
 			AppHelper result = (AppHelper) new Class("AppHelper").Call("alloc").Call("init");
 			
 			result.m_thread = new Thread(result.DoThread);
+			result.m_thread.Name = "AppHelper";
 			result.m_thread.IsBackground = true;
 			result.m_thread.Start();
 			

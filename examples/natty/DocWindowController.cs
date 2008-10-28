@@ -134,7 +134,7 @@ internal sealed class DocWindowController : NSWindowController
 		}
 		
 		if (!opened)
-			NSFunctions.Beep();
+			Functions.NSBeep();
 	}
 	
 	private NSRange DoExtendSelection(string text, NSRange range)
