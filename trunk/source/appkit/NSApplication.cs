@@ -42,7 +42,7 @@ namespace MCocoa
 
 			// Cocoa expects an NSAutoreleasePool to always be available so we need to
 			// create one which we can use before we enter the main event loop.
-			ms_startupPool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
+			ms_startupPool = new NSObject(NSObject.CreateNative("NSAutoreleasePool"));
 		}
 		
 		public static NSApplication Create(string nibName)

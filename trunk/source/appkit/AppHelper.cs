@@ -38,7 +38,7 @@ namespace MCocoa
 
 		public static new AppHelper Create()
 		{
-			AppHelper result = (AppHelper) new Class("AppHelper").Call("alloc").Call("init");
+			AppHelper result = new AppHelper(NSObject.CreateNative("AppHelper"));
 			
 			result.m_thread = new Thread(result.DoThread);
 			result.m_thread.Name = "AppHelper";
