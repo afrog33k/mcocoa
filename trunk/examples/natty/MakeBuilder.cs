@@ -19,22 +19,33 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using MCocoa;
+using MObjc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 internal class MakeBuilder
 {
 	public MakeBuilder(string contents)
 	{
-		m_contents = contents;
-		m_index = 0;
+		m_scanner = NSScanner.scannerWithString(contents);
+		m_scanner.setCharactersToBeSkipped(NSCharacterSet.whitespaceCharacterSet());	// does not include new lines
+		m_scanner.setCaseSensitive(true);
+		
+		m_nameChars = NSMutableCharacterSet.Create();
+		m_nameChars.formUnionWithCharacterSet(NSCharacterSet.alphanumericCharacterSet());		
+		m_nameChars.addCharactersInString("_-");		
+
+		m_eolChars = NSMutableCharacterSet.Create();
+		m_eolChars.addCharactersInString("\r\n#");		// lines are ended by comments or new line characters
 		
 		DoParse();
 	}
 	
-	public Process Build(string buildFile, string target, List<KeyValuePair<string, string>> vars, Dictionary<string, int> flags)
+	public Process Build(string buildFile, string target, List<EnvVar> vars, Dictionary<string, int> flags)
 	{	
 		string args = string.Empty;
 
@@ -42,9 +53,12 @@ internal class MakeBuilder
 			if (f.Value == 1)
 				args += string.Format("--{0} ", f.Key);
 
-		foreach (KeyValuePair<string, string> v in vars)
-			if (v.Value.Length > 0)
-				args += string.Format("{0}={1} ", v.Key, v.Value);
+		foreach (EnvVar v in vars)
+			if (v.Value.Length > 0 && v.Value != v.DefaultValue)
+				if (v.Value.IndexOf(" ") >= 0)
+					args += string.Format("{0}=\"{1}\" ", v.Name, v.Value);
+				else
+					args += string.Format("{0}={1} ", v.Name, v.Value);
 		args += target;
 		
 		m_command = "make " + args + Environment.NewLine;
@@ -66,7 +80,7 @@ internal class MakeBuilder
 		get {return m_targets.ToArray();}
 	}
 	
-	public string[] Variables
+	public EnvVar[] Variables
 	{
 		get {return m_variables.ToArray();}
 	}
@@ -81,239 +95,122 @@ internal class MakeBuilder
 		get {return m_command;}
 	}
 	
-	#region Private Methods
+	#region Private Methods ---------------------------------------------------
 	public void DoParse()
 	{		
-		while (!AtEnd)
+		while (!m_scanner.isAtEnd())
 		{
-			do
+			string name, token;
+			if (m_scanner.scanCharactersFromSetIntoString(m_nameChars, out name))
 			{
-				string target = DoParseTarget();
-				if (target != null)
+				if (name == "ifdef" || name == "ifndef")
 				{
-					if (m_ignore.IndexOf(target) < 0)
-						m_targets.Add(target);
-					break;
+					EnvVar v = DoParseDefine();
+					if (v != null)
+						if (!m_variables.Any(x => x.Name == v.Name))
+							m_variables.Add(v);
 				}
-				
-				string v = DoParseVariable();
-				if (v != null)
+				else if (m_scanner.scanStringIntoString(":", out token))
 				{
-					if (m_variables.IndexOf(v) < 0)
-						m_variables.Add(v);
-					break;
+					if (!m_scanner.scanStringIntoString("=", out token))
+						if (m_ignore.IndexOf(name) < 0)
+							m_targets.Add(name);
 				}
-
-				v = DoParseDefine();
-				if (v != null)
+				else
 				{
-					if (m_variables.IndexOf(v) < 0)
-						m_variables.Add(v);
-					break;
+					EnvVar v = DoParseVariable(name);
+					if (v != null)
+					{
+						EnvVar old = m_variables.SingleOrDefault(x => x.Name == v.Name);
+						if (old != null)
+							old.DefaultValue = v.DefaultValue;
+						else
+							m_variables.Add(v);
+					}
 				}
-
-				DoParseCommand();
 			}
-			while (false);
+			else
+				DoParseCommand();
 			
 			DoSkipToNextLine();
 		}
 	}
-	
-	private bool AtEnd
-	{
-		get {return m_index == m_contents.Length;}
-	}
-	
-	// natty-ignore: install uninstall keys
-	// natty-default: lib
+		
+	// # natty-ignore: install uninstall keys
+	// # natty-default: lib
 	private void DoParseCommand()
 	{
-		string command = "# natty-ignore:";
-		if (string.Compare(m_contents, m_index, command, 0, command.Length) == 0)
+		string token;
+		if (m_scanner.scanStringIntoString("#", out token))
 		{
-			int k = m_index + command.Length;
-			int j = k;
-			while (j < m_contents.Length && m_contents[j] != '\n' && m_contents[j] != '\r')
-				++j;
-				
-			string ignore = m_contents.Substring(k, j - k);
-			m_ignore.AddRange(ignore.Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries));
-			
-			m_index = j;
-		}
+			if (m_scanner.scanStringIntoString("natty-ignore:", out token))
+			{
+				if (m_scanner.scanUpToCharactersFromSetIntoString(m_eolChars, out token))
+				{
+					string[] names = token.Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries);
+					m_ignore.AddRange(names);
+				}
+			}
 
-		command = "# natty-default:";
-		if (string.Compare(m_contents, m_index, command, 0, command.Length) == 0)
-		{
-			int j = m_index + command.Length;
-			while (j < m_contents.Length && m_contents[j] == ' ')
-				++j;
-			
-			int k = j;
-			while (j < m_contents.Length && IsNameChar(m_contents[j]))
-				++j;
-				
-			m_default = m_contents.Substring(k, j - k);
-			
-			m_index = j;
+			if (m_scanner.scanStringIntoString("natty-default:", out token))
+			{
+				if (m_scanner.scanUpToCharactersFromSetIntoString(m_eolChars, out token))
+				{
+					m_default = token;
+				}
+			}
 		}
 	}
 	
-	// Target := Letter NameChar* ' '+ '?=' ' '+ .+
-	private string DoParseVariable()
+	// Target := Name '?=' .+
+	private EnvVar DoParseVariable(string name)
 	{
-		string variable = null;
-		
-		int j = m_index;
-		while (j < m_contents.Length && (m_contents[j] == ' ' || m_contents[j] == '\t'))
-			++j;
-			
-		int l = j;
-
-		// Letter
-		if (char.IsLetter(m_contents[j]))
+		EnvVar variable = null;
+				
+		string token;
+		if (m_scanner.scanStringIntoString("?=", out token))
 		{
-			// NameChar*
-			while (j < m_contents.Length && IsNameChar(m_contents[j]))
-				++j;
-				
-			int k = j;
-			
-			// ' '+
-			if (j < m_contents.Length && m_contents[j] == ' ')
+			string value;
+			if (m_scanner.scanUpToCharactersFromSetIntoString(m_eolChars, out value))
 			{
-				while (j < m_contents.Length && m_contents[j] == ' ')
-					++j;
-				
-				// '?=' ' '+ .+
-				if (j + 1 < m_contents.Length && m_contents[j] == '?' && m_contents[j+1] == '=')
-				{
-					j += 2;
-					
-					if (j < m_contents.Length && m_contents[j] == ' ')
-					{
-						variable = m_contents.Substring(l, k - l);
-						m_index = j;
-					}
-				}
+				variable = new EnvVar(name, value.Trim());
 			}
+		}
+		
+		return variable;	
+	}
+	
+	// Target := ('ifdef' | 'ifndef')  Name
+	private EnvVar DoParseDefine()
+	{
+		EnvVar variable = null;
+		
+		string name;
+		if (m_scanner.scanCharactersFromSetIntoString(m_nameChars, out name))
+		{
+			variable = new EnvVar(name, string.Empty);
 		}
 		
 		return variable;
 	}
-	
-	// Target := ('ifdef' | 'ifndef') ' '+ Letter NameChar* 
-	private string DoParseDefine()
-	{
-		string variable = null;
-		
-		int j = m_index;
-		while (j < m_contents.Length && (m_contents[j] == ' ' || m_contents[j] == '\t'))
-			++j;
-		
-		// 'ifdef' | 'ifndef'
-		if (j + 4 < m_contents.Length && 
-			m_contents[j+0] == 'i' && 
-			m_contents[j+1] == 'f' &&
-			m_contents[j+2] == 'd' &&
-			m_contents[j+3] == 'e' &&
-			m_contents[j+4] == 'f')
-			j += 5;
-		else if (j + 5 < m_contents.Length && 
-			m_contents[j+0] == 'i' && 
-			m_contents[j+1] == 'f' &&
-			m_contents[j+2] == 'n' &&
-			m_contents[j+3] == 'd' &&
-			m_contents[j+4] == 'e' &&
-			m_contents[j+5] == 'f')
-			j += 6;
-		else
-			return null;
 			
-		// ' '+
-		if (j < m_contents.Length && m_contents[j] == ' ')
-		{
-			while (j < m_contents.Length && m_contents[j] == ' ')
-				++j;
-				
-			int l = j;
-			
-			// Letter
-			if (char.IsLetter(m_contents[j]))
-			{
-				// NameChar*
-				while (j < m_contents.Length && IsNameChar(m_contents[j]))
-					++j;
-									
-				variable = m_contents.Substring(l, j - l);
-				m_index = j;
-			}
-		}
-		
-		return variable;
-	}
-	
-	// Target := Letter NameChar* ' '* ':' (' ' | Letter | NewLine)
-	private string DoParseTarget()
-	{
-		string target = null;
-		
-		// Letter
-		if (char.IsLetter(m_contents[m_index]))
-		{
-			// NameChar*
-			int j = m_index;
-			while (j < m_contents.Length && IsNameChar(m_contents[j]))
-				++j;
-			
-			// ' '*
-			while (j < m_contents.Length && m_contents[j] == ' ')
-				++j;
-			
-			// ':' (' ' | Letter | NewLine)
-			if (j < m_contents.Length && m_contents[j] == ':')
-			{
-				int k = j++;
-				if (j < m_contents.Length && (
-					m_contents[j] == ' ' || 
-					char.IsLetter(m_contents[j]) || 
-					m_contents[j] == '\n' || 
-					m_contents[j] == '\r'))
-				{
-					target = m_contents.Substring(m_index, k - m_index);
-					m_index = j;
-				}
-			}
-		}
-		
-		return target;
-	}
-	
-	// NameChar := Letter | [0-9_-\.]
-	private bool IsNameChar(char ch)
-	{
-		return char.IsLetterOrDigit(ch) || ch == '_' || ch == '-' || ch == '.';
-	}
-	
 	private void DoSkipToNextLine()
 	{
-		while (m_index < m_contents.Length && m_contents[m_index] != '\n' && m_contents[m_index] != '\r')
-			++m_index;
-
-		while (m_index < m_contents.Length && (m_contents[m_index] == '\n' || m_contents[m_index] == '\r'))
-			++m_index;
+		string token;
+		Unused.Value = m_scanner.scanUpToCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
+		Unused.Value = m_scanner.scanCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
 	}
 	#endregion
 	
-	#region Fields
+	#region Fields ------------------------------------------------------------
 	private List<string> m_targets = new List<string>();
-	private List<string> m_variables = new List<string>();
+	private List<EnvVar> m_variables = new List<EnvVar>();
 	private List<string> m_ignore = new List<string>();
 	private string m_default;
 	private string m_command;
-	private string m_contents;
-	private int m_index;
+	private NSScanner m_scanner;
+	private NSMutableCharacterSet m_nameChars;
+	private NSMutableCharacterSet m_eolChars;
 	#endregion
 }
  

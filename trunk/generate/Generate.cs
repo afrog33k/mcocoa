@@ -74,6 +74,7 @@ internal sealed class Generate
 				DoWrite();
 				DoWrite("using MObjc;");
 				DoWrite("using System;");
+				DoWrite("using System.Runtime.InteropServices;");
 				DoWrite();
 		
 				DoWrite("namespace MCocoa");
@@ -87,10 +88,14 @@ internal sealed class Generate
 		
 				string outPath = Path.Combine(outDir, hfile + ".cs");
 				File.WriteAllText(outPath, buffer.ToString());
+		
+				// These files should not normally be hand edited so we'll lock them.
+				File.SetAttributes(outPath, FileAttributes.ReadOnly);
 			}
 		}
 	}
 	
+	#region Private Methods ---------------------------------------------------
 	private void DoEnums(StringBuilder buffer, NativeFile file)
 	{
 		m_buffer = buffer;
@@ -415,17 +420,14 @@ internal sealed class Generate
 	
 	private void DoWriteMethod(NativeMethod method)
 	{		
+		MethodInfo minfo = new MethodInfo(m_objects, m_interface, method);
+		
 		// signature		
 		m_buffer.Append("		public ");
 		if (method.IsClass || (m_interface.Category != null && m_interface.Name == "NSObject"))
 			m_buffer.Append("static ");
-		
-		string rtype = m_objects.MapResult(m_interface.Name, method.Name, method.ReturnType);
-		rtype = DoMapType(rtype);
-		if (rtype == "IBAction")
-			rtype = "void";
-						
-		m_buffer.Append(rtype);
+								
+		m_buffer.Append(minfo.ResultType.Managed);
 		m_buffer.Append(" ");
 		DoWriteMethodName(method.Name, DoGetMethodSuffix(method));
 		m_buffer.Append("(");
@@ -435,16 +437,13 @@ internal sealed class Generate
 			if (method.ArgNames.Length > 0)
 				m_buffer.Append(", ");
 		}
-		for (int i = 0; i < method.ArgNames.Length; ++i)
+		for (int i = 0; i < minfo.ArgNames.Length; ++i)
 		{			
-			if (method.ArgTypes[i] == "SEL")
-				m_buffer.Append("string");
-			else
-				DoWriteType(method.ArgTypes[i]);
+			m_buffer.Append(minfo.ArgTypes[i].Managed);
 			m_buffer.Append(" ");
-			m_buffer.Append(DoSanitize(method.ArgNames[i]));
+			m_buffer.Append(minfo.ArgNames[i].Managed);
 			
-			if (i + 1 < method.ArgNames.Length)
+			if (i + 1 < minfo.ArgNames.Length)
 				m_buffer.Append(", ");
 		}
 		m_buffer.AppendLine(")");
@@ -452,14 +451,49 @@ internal sealed class Generate
 		DoWrite("		{");
 		
 		// body
+		DoWriteProlog(minfo);
+		DoWriteCall(method, minfo);
+		DoWriteEpilog(minfo);
+		
+		// trailer
+		DoWrite("		}");
+	}
+	
+	private void DoWriteProlog(MethodInfo minfo)
+	{		
+		if (minfo.HasOutArgs)
+		{
+			for (int i = 0; i < minfo.ArgNames.Length; ++i)
+			{
+				if (minfo.ArgTypes[i].ManagedOut.Length > 0)
+				{
+					if (minfo.ArgTypes[i].ManagedOut == "string")
+						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[8];{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+					else
+						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[Marshal.SizeOf(typeof({1}))];{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
+					m_buffer.AppendFormat("			GCHandle {0}Handle = GCHandle.Alloc({0}Buffer, GCHandleType.Pinned);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+					m_buffer.AppendFormat("			IntPtr {0}Ptr = {0}Handle.AddrOfPinnedObject();{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+					m_buffer.AppendLine();
+				}
+			}
+		}
+	}
+	
+	private void DoWriteCall(NativeMethod method, MethodInfo minfo)
+	{
+		string rtype = minfo.ResultType.Managed;
+		
 		if (rtype == "void")
 			m_buffer.Append("			Unused.Value = ");
 		else
-			m_buffer.Append("			return ");
+			if (minfo.HasOutArgs)
+				m_buffer.Append("			" + rtype + " result_ = ");
+			else
+				m_buffer.Append("			return ");
 		
 		if (rtype != "void")
 		{
-			if (rtype != "string" || method.ReturnType != "NSString *")
+			if (rtype != "string" || minfo.ResultType.Native != "NSString *")
 			{
 				m_buffer.Append("(");
 				m_buffer.Append(rtype == "bool" ? "sbyte" : rtype);
@@ -476,40 +510,76 @@ internal sealed class Generate
 		m_buffer.Append(method.Name);
 		m_buffer.Append("\"");
 		
-		for (int i = 0; i < method.ArgNames.Length; ++i)
+		for (int i = 0; i < minfo.ArgNames.Length; ++i)
 		{
 			m_buffer.Append(", ");
-			if (method.ArgTypes[i] == "NSString *")
+			if (minfo.ArgTypes[i].Native == "NSString *")
 			{
 				m_buffer.Append("NSString.Create(");
-				m_buffer.Append(DoSanitize(method.ArgNames[i]));
+				m_buffer.Append(minfo.ArgNames[i].Managed);
 				m_buffer.Append(")");
 			}
-			else if (method.ArgTypes[i] == "SEL")
+			else if (minfo.ArgTypes[i].Native == "SEL")
 			{
-				string aname = DoSanitize(method.ArgNames[i]);
+				string aname = minfo.ArgNames[i].Managed;
 				m_buffer.Append(aname + " != null ? new Selector(");
 				m_buffer.Append(aname);
 				m_buffer.Append(") : null");
 			}
+			else if (minfo.ArgTypes[i].ManagedOut.Length > 0)
+			{
+				m_buffer.Append(minfo.ArgNames[i].Managed);
+				m_buffer.Append("Ptr");
+			}
 			else
-				m_buffer.Append(DoSanitize(method.ArgNames[i]));
+				m_buffer.Append(minfo.ArgNames[i].Managed);
 		}
 		m_buffer.Append(")");
-		if (rtype == "string" && method.ReturnType == "NSString *")
+		if (minfo.ResultType.Managed == "string" && minfo.ResultType.Native == "NSString *")
 		{
 			m_buffer.Append(".To<NSString>().ToString()");
 		}
-		else if (rtype == "bool")
+		else if (minfo.ResultType.Managed == "bool")
 		{
 			m_buffer.Append(" != 0");
 		}
 		m_buffer.AppendLine(";");
-		
-		// trailer
-		DoWrite("		}");
 	}
 	
+	private void DoWriteEpilog(MethodInfo minfo)
+	{
+		if (minfo.HasOutArgs)
+		{
+			for (int i = 0; i < minfo.ArgNames.Length; ++i)
+			{
+				switch (minfo.ArgTypes[i].ManagedOut)
+				{
+					case "Byte":
+					case "Int16":
+					case "Int32":
+					case "Int64":
+						m_buffer.AppendFormat("			{0} = Marshal.Read{1}({0}Ptr);{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
+						break;
+					
+					case "string":
+						m_buffer.AppendFormat("			{0} = new NSString(Marshal.ReadIntPtr({0}Ptr)).ToString();{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+						break;
+					
+					default:
+						if (minfo.ArgTypes[i].ManagedOut.Length > 0)
+							m_buffer.AppendFormat("			{0} = ({1}) Marshal.PtrToStructure({0}Ptr, typeof({1}));{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
+						break;
+				}
+			}
+			
+			if (minfo.ResultType.Managed != "void")
+			{
+				m_buffer.AppendLine();
+				m_buffer.AppendLine("			return result_;");
+			}
+		}
+	}
+
 	// Checks the interface methods, but not categories, protocols, or bases.
 	private bool DoInterfaceHasMethod(string mname, bool isClass)
 	{
@@ -640,276 +710,7 @@ internal sealed class Generate
 		}
 		m_buffer.Append(suffix);
 	}
-	
-	private void DoWriteType(string type)
-	{
-		type = DoMapType(type);
-		m_buffer.Append(type);		
-	}
-	
-	private string DoMapType(string type)
-	{
-		type = m_objects.MapType(type);				// note that this is word to word with no spaces in the words
-
-		switch (type)
-		{
-			case "BOOL":
-			case "Boolean":
-				return "bool";
-				
-			case "unsigned char":
-			case "uint8_t":
-				return "byte";
-				
-			case "unichar":
-				return "char";
-				
-			case "double":
-				return "double";
-				
-			case "CGFloat":
-			case "float":
-				return "float";
-				
-			case "AEReturnID":
-			case "AESendPriority":
-			case "OSErr":
-			case "short":
-				return "Int16";
-				
-			case "AESendMode":
-			case "AETransactionID":
-			case "GLint":
-			case "GLsizei":
-			case "int":
-			case "int32_t":
-			case "NSComparisonResult":
-			case "NSInteger":
-			case "OSStatus":
-			case "SInt32":
-			case "SRefCon":
-				return "Int32";
-				
-			case "int64_t":
-			case "long":
-			case "long long":
-				return "Int64";
-				
-			case "CFRunLoopRef":
-			case "CGColorSpaceRef":
-			case "CGEventRef":
-			case "CGImageRef":
-			case "char *":
-			case "const NSGlyph *":
-			case "const void *":
-			case "id *":
-			case "IconRef":
-			case "NSAppleEventManagerSuspensionID":
-			case "NSDistantObject *":
-			case "NSGlyph *":
-			case "NSModalSession":
-			case "NSPointArray":
-			case "NSPointPointer":
-			case "NSRangePointer":
-			case "NSRectArray":
-			case "NSRectPointer":
-			case "NSSizeArray":
-			case "NSZone *":
-			case "unichar *":
-			case "va_list":
-			case "void *":
-				return "IntPtr";
-				
-			case "CIColor *":
-			case "CIImage *":
-			case "id":
-			case "NSEntityDescription *":
-			case "NSFetchRequest *":
-			case "NSManagedObjectContext *":
-				return "NSObject";
-																
-			case "CGPoint":
-				return "NSPoint";
-																
-			case "CGRect":
-				return "NSRect";
-																
-			case "CGSize":
-				return "NSSize";
-																
-			case "AEArrayType":
-			case "signed char":
-				return "sbyte";
-				
-			case "SEL":
-				return "Selector";
-				
-			case "const char *":
-			case "const unichar *":
-			case "NSString *":
-				return "string";
-				
-			case "uint16_t":
-			case "unsigned short":
-				return "UInt16";
-				
-			case "AEEventClass":
-			case "AEEventID":
-			case "AEKeyword":
-			case "DescType":
-			case "FourCharCode":
-			case "GLbitfield":
-			case "GLenum":
-			case "NSAttributeType":
-			case "NSGlyph":
-			case "NSUInteger":
-			case "OSType":
-			case "ResType":
-			case "uint32_t":
-			case "unsigned":
-			case "unsigned int":
-			case "UTF32Char":
-				return "UInt32";
-				
-			case "unsigned long":
-			case "unsigned long long":
-				return "UInt64";
-				
-			default:
-				if (type.StartsWith("const "))
-					type = type.Substring("const ".Length, type.Length - "const ".Length).Trim();
-					
-				if (type.EndsWith("**") || type.StartsWith("inout ") || type.Contains("["))
-				{
-					return "IntPtr";
-				}
-				else if (type.Contains("<") && type.Contains(">"))
-				{
-					return "NSObject";		// TODO: should probably add interfaces for protocols
-				}
-				else if (type.EndsWith("*"))
-				{
-					type = type.Substring(0, type.Length - 1).Trim();
-					type = m_objects.MapType(type);
-
-					if (type.StartsWith("NS") && type != "NSInteger" && type != "NSUInteger")
-					{
-						return type;
-					}
-					else
-					{
-						return "IntPtr";
-					}
-				}
-				else
-				{
-					type = m_objects.MapType(type);
-					return type;
-				}					
-		}		
-	}
-	
-	private string DoSanitize(string name)
-	{
-		switch (name)
-		{
-			case "abstract":
-			case "as":
-			case "ascending":
-			case "base":
-			case "bool":
-			case "breakby":
-			case "byte":
-			case "case":
-			case "catch":
-			case "char":
-			case "checked":
-			case "class":
-			case "const":
-			case "continue":
-			case "decimal":
-			case "default":
-			case "delegate":
-			case "descending":
-			case "do":
-			case "double":
-			case "else":
-			case "enum":
-			case "event":
-			case "explicit":
-			case "extern":
-			case "false":
-			case "finally":
-			case "from":
-			case "fixed":
-			case "float":
-			case "for":
-			case "foreach":
-			case "get":
-			case "goto":
-			case "group":
-			case "if":
-			case "implicit":
-			case "in":
-			case "int":
-			case "interface":
-			case "internal":
-			case "into":
-			case "is":
-			case "let":
-			case "lock":
-			case "long":
-			case "namespace":
-			case "new":
-			case "null":
-			case "object":
-			case "operator":
-			case "orderby":
-			case "out":
-			case "override":
-			case "params":
-			case "partial":
-			case "private":
-			case "protected":
-			case "public":
-			case "readonly":
-			case "ref":
-			case "return":
-			case "sbyte":
-			case "sealed":
-			case "select":
-			case "set":
-			case "short":
-			case "sizeof":
-			case "stackalloc":
-			case "static":
-			case "string":
-			case "struct":
-			case "switch":
-			case "this":
-			case "throw":
-			case "true":
-			case "try":
-			case "typeof":
-			case "uint":
-			case "ulong":
-			case "unchecked":
-			case "unsafe":
-			case "ushort":
-			case "using":
-			case "var":
-			case "virtual":
-			case "void":
-			case "volatile":
-			case "while":
-			case "where":
-			case "yield":
-				return name + "_";
-		}
 		
-		return name;
-	}
-	
 	private void DoWrite()
 	{
 		m_buffer.AppendLine();
@@ -1103,12 +904,438 @@ internal sealed class Generate
 		
 		return value;
 	}
+	#endregion
+	
+	#region Private Types -----------------------------------------------------
+	private sealed class NameInfo
+	{
+		public NameInfo(string name)
+		{
+			Native = name;
+			Managed = DoSanitize(name);
+		}
 		
+		public string Native {get; private set;}
+	
+		public string Managed {get; private set;}
+		
+		private string DoSanitize(string name)
+		{
+			switch (name)
+			{
+				case "abstract":
+				case "as":
+				case "ascending":
+				case "base":
+				case "bool":
+				case "breakby":
+				case "byte":
+				case "case":
+				case "catch":
+				case "char":
+				case "checked":
+				case "class":
+				case "const":
+				case "continue":
+				case "decimal":
+				case "default":
+				case "delegate":
+				case "descending":
+				case "do":
+				case "double":
+				case "else":
+				case "enum":
+				case "event":
+				case "explicit":
+				case "extern":
+				case "false":
+				case "finally":
+				case "from":
+				case "fixed":
+				case "float":
+				case "for":
+				case "foreach":
+				case "get":
+				case "goto":
+				case "group":
+				case "if":
+				case "implicit":
+				case "in":
+				case "int":
+				case "interface":
+				case "internal":
+				case "into":
+				case "is":
+				case "let":
+				case "lock":
+				case "long":
+				case "namespace":
+				case "new":
+				case "null":
+				case "object":
+				case "operator":
+				case "orderby":
+				case "out":
+				case "override":
+				case "params":
+				case "partial":
+				case "private":
+				case "protected":
+				case "public":
+				case "readonly":
+				case "ref":
+				case "return":
+				case "sbyte":
+				case "sealed":
+				case "select":
+				case "set":
+				case "short":
+				case "sizeof":
+				case "stackalloc":
+				case "static":
+				case "string":
+				case "struct":
+				case "switch":
+				case "this":
+				case "throw":
+				case "true":
+				case "try":
+				case "typeof":
+				case "uint":
+				case "ulong":
+				case "unchecked":
+				case "unsafe":
+				case "ushort":
+				case "using":
+				case "var":
+				case "virtual":
+				case "void":
+				case "volatile":
+				case "while":
+				case "where":
+				case "yield":
+					return name + "_";
+			}
+			
+			return name;
+		}
+	}
+	
+	private class TypeInfo
+	{
+		public TypeInfo(ObjectModel objects, NativeInterface ni, NativeMethod method)
+		{
+			Native = method.ReturnType;
+
+			string type = objects.MapResult(ni.Name, method.Name, method.ReturnType);
+			Managed = MapType(objects, type);
+			if (Managed == "IBAction")
+				Managed = "void";
+		}
+			
+		protected TypeInfo(string native, string managed)
+		{
+			Native = native;
+			Managed = managed;
+		}
+			
+		// This will be "NSObject *", "NSString *", "int *", etc.
+		public string Native {get; private set;}
+	
+		// This will be "NSObject", "NSString", "out Int32", etc.
+		public string Managed {get; private set;}
+	
+		protected static string MapType(ObjectModel objects, string type)
+		{
+			type = objects.MapType(type);				// note that this is word to word with no spaces in the words
+	
+			switch (type)
+			{
+				case "BOOL":
+				case "Boolean":
+					return "bool";
+					
+				case "unsigned char":
+				case "uint8_t":
+					return "byte";
+					
+				case "unichar":
+					return "char";
+					
+				case "double":
+					return "double";
+					
+				case "CGFloat":
+				case "float":
+					return "float";
+					
+				case "AEReturnID":
+				case "AESendPriority":
+				case "OSErr":
+				case "short":
+					return "Int16";
+					
+				case "AESendMode":
+				case "AETransactionID":
+				case "GLint":
+				case "GLsizei":
+				case "int":
+				case "int32_t":
+				case "long":
+				case "NSComparisonResult":
+				case "NSInteger":
+				case "OSStatus":
+				case "SInt32":
+				case "SRefCon":
+					return "Int32";
+					
+				case "int64_t":
+				case "long long":
+					return "Int64";
+					
+				case "CFRunLoopRef":
+				case "CGColorSpaceRef":
+				case "CGEventRef":
+				case "CGImageRef":
+				case "char *":
+				case "const NSGlyph *":
+				case "const void *":
+				case "id *":
+				case "IconRef":
+				case "NSAppleEventManagerSuspensionID":
+				case "NSDistantObject *":
+				case "NSGlyph *":
+				case "NSModalSession":
+				case "NSPointArray":
+				case "NSPointPointer":
+				case "NSRangePointer":
+				case "NSRectArray":
+				case "NSRectPointer":
+				case "NSSizeArray":
+				case "NSZone *":
+				case "unichar *":
+				case "va_list":
+				case "void *":
+					return "IntPtr";
+					
+				case "CIColor *":
+				case "CIImage *":
+				case "id":
+				case "NSEntityDescription *":
+				case "NSFetchRequest *":
+				case "NSManagedObjectContext *":
+					return "NSObject";
+																	
+				case "CGPoint":
+					return "NSPoint";
+																	
+				case "CGRect":
+					return "NSRect";
+																	
+				case "CGSize":
+					return "NSSize";
+																	
+				case "AEArrayType":
+				case "signed char":
+					return "sbyte";
+					
+				case "SEL":
+					return "Selector";
+					
+				case "const char *":
+				case "const unichar *":
+				case "NSString *":
+					return "string";
+					
+				case "uint16_t":
+				case "unsigned short":
+					return "UInt16";
+					
+				case "AEEventClass":
+				case "AEEventID":
+				case "AEKeyword":
+				case "DescType":
+				case "FourCharCode":
+				case "GLbitfield":
+				case "GLenum":
+				case "NSAttributeType":
+				case "NSGlyph":
+				case "NSUInteger":
+				case "OSType":
+				case "ResType":
+				case "uint32_t":
+				case "unsigned":
+				case "unsigned int":
+				case "UTF32Char":
+					return "UInt32";
+					
+				case "unsigned long":
+				case "unsigned long long":
+					return "UInt64";
+					
+				default:
+					if (type.StartsWith("const "))
+						type = type.Substring("const ".Length, type.Length - "const ".Length).Trim();
+						
+					if (type.EndsWith("**") || type.StartsWith("inout ") || type.Contains("["))
+					{
+						return "IntPtr";
+					}
+					else if (type.Contains("<") && type.Contains(">"))
+					{
+						return "NSObject";		// TODO: should probably add interfaces for protocols
+					}
+					else if (type.EndsWith("*"))
+					{
+						type = type.Substring(0, type.Length - 1).Trim();
+						type = objects.MapType(type);
+	
+						if (type.StartsWith("NS") && type != "NSInteger" && type != "NSUInteger")
+						{
+							return type;
+						}
+						else
+						{
+							return "IntPtr";
+						}
+					}
+					else
+					{
+						type = objects.MapType(type);
+						return type;
+					}					
+			}		
+		}
+	}
+	
+	private sealed class ArgTypeInfo : TypeInfo
+	{
+		public ArgTypeInfo(ObjectModel objects, string name) : base(name, DoMapArgType(objects, name))
+		{
+		}
+				
+		// This will be "", "", "Int32", etc.
+		public string ManagedOut 
+		{
+			get
+			{
+				if (Managed.StartsWith("out "))
+					return Managed.Substring("out ".Length);
+				else
+					return string.Empty;
+			}
+		}
+	
+		private static string DoMapArgType(ObjectModel objects, string inType)
+		{
+			string type = objects.MapType(inType);				// note that this is word to word with no spaces in the words
+	
+			switch (type)
+			{
+				case "BOOL *":
+				case "Boolean *":
+					return "out bool";
+					
+				case "unsigned char *":
+				case "uint8_t *":
+					return "out byte";
+					
+				case "unichar *":
+					return "out char";
+					
+				case "double *":
+					return "out double";
+					
+				case "CGFloat *":
+				case "float *":
+					return "out float";
+					
+				case "short *":
+					return "out Int16";
+					
+				case "GLint *":
+				case "GLsizei *":
+				case "int *":
+				case "int32_t *":
+				case "long *":
+				case "NSInteger *":
+				case "SInt32 *":
+					return "out Int32";
+					
+				case "int64_t *":
+				case "long long *":
+					return "out Int64";
+					
+				case "signed char *":
+					return "out sbyte";
+					
+				case "NSString **":
+					return "out string";
+					
+				case "uint16_t *":
+				case "unsigned short *":
+					return "out UInt16";
+					
+				case "uint32_t *":
+				case "unsigned *":
+				case "unsigned int *":
+				case "UTF32Char *":
+					return "out UInt32";
+					
+				case "unsigned long *":
+				case "unsigned long long *":
+					return "out UInt64";
+					
+				case "SEL":
+					return "string";
+					
+				default:
+					return MapType(objects, inType);
+			}		
+		}
+	}
+	
+	private sealed class MethodInfo
+	{
+		public MethodInfo(ObjectModel objects, NativeInterface ni, NativeMethod method)
+		{
+			Name = method.Name;
+			ResultType = new TypeInfo(objects, ni, method);
+			
+			var argNames = new List<NameInfo>();
+			var argTypes = new List<ArgTypeInfo>();
+			
+			for (int i = 0; i < method.ArgNames.Length; ++i)
+			{
+				argNames.Add(new NameInfo(method.ArgNames[i]));
+				argTypes.Add(new ArgTypeInfo(objects, method.ArgTypes[i]));
+				
+				if (argTypes[argTypes.Count - 1].ManagedOut.Length > 0)
+					HasOutArgs = true;
+			}
+			
+			ArgNames = argNames.ToArray();
+			ArgTypes = argTypes.ToArray();
+		}
+						
+		public string Name {get; private set;}
+	
+		public TypeInfo ResultType {get; private set;}
+	
+		public NameInfo[] ArgNames {get; private set;}
+		public ArgTypeInfo[] ArgTypes {get; private set;}
+
+		public bool HasOutArgs {get; private set;}
+	}
+	#endregion
+
+	#region Fields ------------------------------------------------------------
 	private string m_inPath;
 	private ObjectModel m_objects;
 	private StringBuilder m_buffer;
 	private NativeInterface m_interface;
 	private Blacklist[] m_blacklist;
 	private Dictionary<NativeInterface, List<NativeMethod>> m_methods = new Dictionary<NativeInterface, List<NativeMethod>>();
+	#endregion
 }
 

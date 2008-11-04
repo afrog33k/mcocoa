@@ -106,12 +106,18 @@ internal static class Program
 		outPath = Path.Combine(outPath, name);
 		outPath = Path.Combine(outPath, "generated");
 		
+		string[] files;
 		if (Directory.Exists(outPath))
+		{
+			files = Directory.GetFiles(outPath, "*.cs", SearchOption.AllDirectories);
+			foreach (string file in files)
+				File.SetAttributes(file, FileAttributes.Normal);	// need to unlock generated .cs files so we can delete the directory
 			Directory.Delete(outPath, true);
+		}
 		Directory.CreateDirectory(outPath);
 
 		objects.Reset();									// resets everything but typedefs
-		string[] files = Directory.GetFiles(dir, "*.h");
+		files = Directory.GetFiles(dir, "*.h");
 		foreach (string inFile in files)
 		{
 			if (!inFile.EndsWith("NSObjCRuntime.h"))
