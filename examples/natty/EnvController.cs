@@ -33,10 +33,10 @@ internal sealed class EnvController : NSObject
 		m_table = new IVar<NSTableView>(this, "table");
 	}
 						
-	public void Open(Document doc, NSWindow window)
+	public void Open(Document doc, NSWindow window) 
 	{
 		m_doc = doc;
-		m_vars = new List<KeyValuePair<string, string>>(m_doc.Variables);
+		m_vars = new List<EnvVar>(m_doc.Variables);
 
 		m_sheet.Value.setDelegate(this);
 		m_table.Value.setDataSource(this);
@@ -44,7 +44,7 @@ internal sealed class EnvController : NSObject
 			m_sheet.Value, window, this, null, IntPtr.Zero);
     }
 
-	#region Action Handlers
+	#region Action Handlers ---------------------------------------------------
 	public void envOK(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
@@ -61,7 +61,7 @@ internal sealed class EnvController : NSObject
    	}
 	#endregion
 	
-	#region Data Source
+	#region Data Source -------------------------------------------------------
 	public int numberOfRowsInTableView(NSTableView table)
 	{
 		return m_vars.Count;
@@ -70,28 +70,30 @@ internal sealed class EnvController : NSObject
 	[Register("tableView:objectValueForTableColumn:row:")]		
 	public NSObject GetCell(NSTableView table, NSTableColumn column, int row)
 	{
-		KeyValuePair<string, string> entry = m_vars[row];
+		EnvVar variable = m_vars[row];
 	
 		if (column.identifier().ToString() == "1")
-			return NSString.Create(entry.Key);
+			return NSString.Create(variable.Name);
 		else 
-			return NSString.Create(entry.Value);
+			if (variable.Value.Length > 0)
+				return NSString.Create(variable.Value);
+			else
+				return NSString.Create(variable.DefaultValue);
 	}
 
 	[Register("tableView:setObjectValue:forTableColumn:row:")]		
 	public void SetCell(NSTableView table, NSObject v, NSTableColumn column, int row)
 	{
 		DBC.Pre(column.identifier().ToString() == "2", "id is {0}", column.identifier());
-		
-		string key = m_vars[row].Key;
-		string value = new NSString(v).ToString();
-		
-		m_vars[row] = new KeyValuePair<string, string>(key, value);
+				
+		m_vars[row].Value = v.ToString();
 	}
 	#endregion
 	
+	#region Fields ------------------------------------------------------------
 	private IVar<NSWindow> m_sheet;
 	private IVar<NSTableView> m_table;
 	private Document m_doc;
-	private List<KeyValuePair<string, string>> m_vars = new List<KeyValuePair<string, string>>();
+	private List<EnvVar> m_vars = new List<EnvVar>();
+	#endregion
 }

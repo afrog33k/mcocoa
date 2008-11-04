@@ -53,7 +53,7 @@ internal sealed class Document : NSDocument
 		get {return m_builder.Targets;}
 	}
 						
-	public List<KeyValuePair<string, string>> Variables
+	public List<EnvVar> Variables
 	{
 		get {return m_vars;}
 	}
@@ -134,8 +134,7 @@ internal sealed class Document : NSDocument
 			m_target = m_builder.Default;
 			
 			m_vars.Clear();
-			foreach (string v in m_builder.Variables)
-				m_vars.Add(new KeyValuePair<string, string>(v, string.Empty));
+			m_vars.AddRange(m_builder.Variables);
 	
 			if (m_builder.Default != null)
 				m_target = m_builder.Default;
@@ -203,7 +202,7 @@ internal sealed class Document : NSDocument
 	private string m_target;
 	private State m_state;
 	private Process m_process;
-	private List<KeyValuePair<string, string>> m_vars = new List<KeyValuePair<string, string>>();
+	private List<EnvVar> m_vars = new List<EnvVar>();
 	private Dictionary<string, int> m_flags = new Dictionary<string, int>();
 	
 	private int m_exitCode;

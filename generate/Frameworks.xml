@@ -195,11 +195,13 @@
 		<TypeResult name = "initWithWindowNibPathOwner:"/>
 		<TypeResult name = "invertedSet" type = "NSCharacterSet"/>
 		<TypeResult name = "letterCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "localizedScannerWithString:"/>
 		<TypeResult name = "lowercaseLetterCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "mutableCopyWithZone:"/>
 		<TypeResult name = "newlineCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "nonBaseCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "punctuationCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "scannerWithString:"/>
 		<TypeResult name = "sharedDocumentController"/>
 		<TypeResult name = "string" type = "NSString"/>
 		<TypeResult name = "stringWithString:"/>
