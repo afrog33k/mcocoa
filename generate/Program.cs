@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 
@@ -28,6 +29,11 @@ internal static class Program
 {
 	public static void Main(string[] args) 
 	{	
+		Trace.Listeners.Add(new ConsoleTraceListener());
+#if DEBUG
+		Debug.Listeners.Add(new ConsoleTraceListener());
+#endif
+
 		foreach (string arg in args)
 			DoProcessArg(arg);
 		

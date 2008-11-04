@@ -31,18 +31,38 @@ internal class MakeBuilder
 {
 	public MakeBuilder(string contents)
 	{
-		m_scanner = NSScanner.scannerWithString(contents);
-		m_scanner.setCharactersToBeSkipped(NSCharacterSet.whitespaceCharacterSet());	// does not include new lines
-		m_scanner.setCaseSensitive(true);
-		
-		m_nameChars = NSMutableCharacterSet.Create();
-		m_nameChars.formUnionWithCharacterSet(NSCharacterSet.alphanumericCharacterSet());		
-		m_nameChars.addCharactersInString("_-");		
+		Trace.Assert(contents != null, "contents is null, is the file ascii?");
 
-		m_eolChars = NSMutableCharacterSet.Create();
-		m_eolChars.addCharactersInString("\r\n#");		// lines are ended by comments or new line characters
-		
-		DoParse();
+		try
+		{
+			m_scanner = NSScanner.scannerWithString(contents);
+			m_scanner.setCharactersToBeSkipped(NSCharacterSet.whitespaceCharacterSet());	// does not include new lines
+			m_scanner.setCaseSensitive(true);
+			
+			m_nameChars = NSMutableCharacterSet.Create();
+			m_nameChars.formUnionWithCharacterSet(NSCharacterSet.alphanumericCharacterSet());		
+			m_nameChars.addCharactersInString("_-");		
+	
+			m_eolChars = NSMutableCharacterSet.Create();
+			m_eolChars.addCharactersInString("\r\n#");		// lines are ended by comments or new line characters
+			
+			DoParse();
+		}
+		catch (Exception e)
+		{
+			Console.Error.WriteLine("MakeBuilder raised an exception:");
+			Exception ee = e;
+			while (ee != null)
+			{
+				if (e.InnerException != null)
+					Console.Error.WriteLine("--------- {0} Exception{1}", ee == e ? "Outer" : "Inner", Environment.NewLine);
+				Console.Error.WriteLine("{0}", ee.Message + Environment.NewLine);
+				Console.Error.WriteLine("{0}", ee.StackTrace + Environment.NewLine);
+
+				ee = ee.InnerException;
+			}
+			throw;
+		}
 	}
 	
 	public Process Build(string buildFile, string target, List<EnvVar> vars, Dictionary<string, int> flags)

@@ -95,15 +95,15 @@ namespace MCocoa
 			
 		public void BeginInvoke(Action action)
 		{
-			DBC.Pre(action != null, "action is null");
+			Trace.Assert(action != null, "action is null");
 
 			ms_helper.Add(action);
 		}
 		
 		public void BeginInvoke(Action action, TimeSpan delay)
 		{
-			DBC.Pre(action != null, "action is null");
-			DBC.Pre(delay >= TimeSpan.Zero, "delay is negative");
+			Trace.Assert(action != null, "action is null");
+			Trace.Assert(delay >= TimeSpan.Zero, "delay is negative");
 
 			ms_helper.QueueDelayed(action, delay);
 		}

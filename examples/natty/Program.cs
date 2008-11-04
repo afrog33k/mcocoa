@@ -22,6 +22,7 @@
 using MCocoa;
 using MObjc;
 using System;
+using System.Diagnostics;
 
 internal static class Program
 {
@@ -32,6 +33,12 @@ internal static class Program
 			// We don't dynamically load any assemblies with mobjc types so we
 			// can initialize mobjc as soon as we start up.
 			Registrar.CanInit = true;
+			
+			// Force Trace.Assert and Debug.Assert to throw exceptions
+			Trace.Listeners.Add(new AssertListener());
+#if DEBUG			
+			Debug.Listeners.Add(new AssertListener());
+#endif
 			
 			// Load the nib and run the main event loop.
 			NSApplication app = NSApplication.Create("MainMenu.nib");

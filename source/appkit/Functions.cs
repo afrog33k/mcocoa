@@ -21,6 +21,7 @@
 
 using MObjc;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 // http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Miscellaneous/AppKit_Functions/Reference/reference.html#//apple_ref/doc/uid/TP40004154-I1-DontLinkElementID_61
@@ -68,14 +69,14 @@ namespace MCocoa
 
 		public static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors)
 		{
-			DBC.Pre(rects.Length == colors.Length, "rects and colors have different lengths");
+			Trace.Assert(rects.Length == colors.Length, "rects and colors have different lengths");
 			
 			NativeMethods.NSRectFillListWithColors(rects, colors, rects.Length);
 		}
 
 		public static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int op)
 		{
-			DBC.Pre(rects.Length == colors.Length, "rects and colors have different lengths");
+			Trace.Assert(rects.Length == colors.Length, "rects and colors have different lengths");
 			
 			NativeMethods.NSRectFillListWithColorsUsingOperation(rects, colors, rects.Length, op);
 		}
