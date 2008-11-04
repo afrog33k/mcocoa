@@ -113,7 +113,7 @@ internal class MakeBuilder
 				else if (m_scanner.scanStringIntoString(":", out token))
 				{
 					if (!m_scanner.scanStringIntoString("=", out token))
-						if (m_ignore.IndexOf(name) < 0)
+						if (m_ignore.IndexOf(name) < 0 && name != "else" && !DoIsAutomake(name))
 							m_targets.Add(name);
 				}
 				else
@@ -199,6 +199,70 @@ internal class MakeBuilder
 		string token;
 		Unused.Value = m_scanner.scanUpToCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
 		Unused.Value = m_scanner.scanCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
+	}
+	
+	private bool DoIsAutomake(string name)
+	{
+		switch (name)
+		{
+			case "all-am":
+			case "check-am":
+			case "check":
+			case "clean-am":
+			case "clean-generic":
+			case "ctags-recursive":
+			case "ctags":
+			case "CTAGS":
+			case "distclean-am":
+			case "distclean-generic":
+			case "distclean-tags":
+			case "distclean":
+			case "distdir":
+			case "dvi-am":
+			case "dvi":
+			case "GTAGS":
+			case "html":
+			case "ID":
+			case "info-am":
+			case "info":
+			case "install-am":
+			case "install-binSCRIPTS":
+			case "install-data-am":
+			case "install-data":
+			case "install-exec-am":
+			case "install-exec":
+			case "install-info":
+			case "install-man":
+			case "install-pixmapDATA":
+			case "install-strip":
+			case "installcheck-am":
+			case "installcheck":
+			case "installdirs-am":
+			case "installdirs":
+			case "maintainer-clean-am":
+			case "maintainer-clean-generic":
+			case "maintainer-clean-recursive":
+			case "maintainer-clean":
+			case "Makefile":
+			case "mostlyclean-am":
+			case "mostlyclean-generic":
+			case "mostlyclean":
+			case "pdf-am":
+			case "pdf":
+			case "ps-am":
+			case "ps":
+			case "tags-recursive":
+			case "tags":
+			case "TAGS":
+			case "uninstall-am":
+			case "uninstall-binSCRIPTS":
+			case "uninstall-info-am":
+			case "uninstall-info":
+			case "uninstall-pixmapDATA":
+				return true;
+		}
+		
+		return false;
 	}
 	#endregion
 	
