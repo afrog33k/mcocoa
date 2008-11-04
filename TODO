@@ -2,11 +2,6 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Work on Natty:
-	- would be nice to have a restore defaults button in env dialog
-	- should filter out most of the automake targets.
-	- should support command-K.
-
 * Special case AutoreleasePool::Create (don't need to if we use CreateNative).
 * May want to rewrite Create methods to use CreateNative. 
 * See if we can get rid of the "alloc" special case in NSObject.Call

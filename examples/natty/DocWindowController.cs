@@ -69,6 +69,11 @@ internal sealed class DocWindowController : NSWindowController
 		m_doc.Cancel();
 	}
 
+	public void clearTranscript(NSObject sender)
+	{
+		m_outputView.Value.textStorage().mutableString().setString(string.Empty);
+	}
+
 	public void environment(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))

@@ -59,6 +59,14 @@ internal sealed class EnvController : NSObject
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
 		m_sheet.Value.orderOut(this);
    	}
+
+	public void restoreDefaults(NSObject sender)
+	{
+		foreach (EnvVar v in m_vars)
+			v.Value = v.DefaultValue;
+			
+		m_table.Value.reloadData();
+   	}
 	#endregion
 	
 	#region Data Source -------------------------------------------------------
