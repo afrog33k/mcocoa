@@ -36,9 +36,9 @@ internal static class Program
 			Registrar.CanInit = true;
 			
 			// Force Trace.Assert and Debug.Assert to throw exceptions
-			Trace.Listeners.Add(new AssertListener());
+			AssertListener.TraceInstall();
 #if DEBUG			
-			Debug.Listeners.Add(new AssertListener());
+			AssertListener.DebugInstall();
 #endif
 			
 			// Load the nib and run the main event loop.

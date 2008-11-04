@@ -28,10 +28,18 @@ using System;
 [TestFixture]
 public class FoundationTest 	
 {
+	[TestFixtureSetUp]
+	public void Init()
+	{
+		AssertListener.TraceInstall();
+		AssertListener.DebugInstall();
+
+		Registrar.CanInit = true;
+	}
+	
 	[Test]
 	public void Array()	
 	{
-		Registrar.CanInit = true;
 		NSObject pool = new NSObject(NSObject.CreateNative("NSAutoreleasePool"));
 		
 		NSMutableArray array = NSMutableArray.alloc().initWithCapacity(3).To<NSMutableArray>();
