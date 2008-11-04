@@ -22,6 +22,7 @@
 using MObjc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace MCocoa
@@ -32,7 +33,7 @@ namespace MCocoa
 	{
 		public AppHelper(IntPtr instance) : base(instance)
 		{
-			DBC.Assert(!ms_created, "AppHelper should be created only once");
+			Trace.Assert(!ms_created, "AppHelper should be created only once");
 			ms_created = true;
 		}
 

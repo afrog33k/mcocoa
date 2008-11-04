@@ -23,6 +23,7 @@ using MCocoa;
 using MObjc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 [ExportClass("EnvController", "NSObject", IVars = "sheet table")]
 internal sealed class EnvController : NSObject
@@ -92,7 +93,7 @@ internal sealed class EnvController : NSObject
 	[Register("tableView:setObjectValue:forTableColumn:row:")]		
 	public void SetCell(NSTableView table, NSObject v, NSTableColumn column, int row)
 	{
-		DBC.Pre(column.identifier().ToString() == "2", "id is {0}", column.identifier());
+		Trace.Assert(column.identifier().ToString() == "2", string.Format("id is {0}", column.identifier()));
 				
 		m_vars[row].Value = v.ToString();
 	}

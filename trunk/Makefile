@@ -8,9 +8,9 @@ MONO ?= mono
 NUNIT ?= nunit-console2
 
 ifdef RELEASE
-	export CSC_FLAGS ?= -checked+ -warn:4 -nowarn:1591 -optimize+
+	export CSC_FLAGS ?= -checked+ -warn:4 -optimize+ -d:TRACE
 else
-	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -define:DEBUG
+	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -define:DEBUG -d:TRACE
 endif
 
 INSTALL_DIR ?= /usr/local/lib
@@ -31,7 +31,7 @@ all: animating-views natty
 
 lib: bin/mcocoa.dll
 
-check: bin/tests.dll
+test: bin/tests.dll
 	cd bin && "$(NUNIT)" tests.dll -nologo
 
 generate: bin/generate.exe
@@ -100,6 +100,7 @@ help:
 	@echo " "
 	@echo "The primary targets are:"
 	@echo "lib                  - build the library"
+	@echo "test                 - run the unit tests"
 	@echo "animating-views      - build the animating-views sample app"
 	@echo "run-animating-views  - build the animating-views sample app"
 	@echo "natty                - build the natty sample app"

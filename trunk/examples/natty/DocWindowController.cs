@@ -78,7 +78,7 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))
 			NSBundle.loadNibNamedOwner("Environment", this);
-		DBC.Assert(!NSObject.IsNullOrNil(m_env.Value), "nib didn't set envSheet");
+		Trace.Assert(!NSObject.IsNullOrNil(m_env.Value), "nib didn't set envSheet");
 	
 		m_env.Value.Open(m_doc, window());
     }
@@ -87,7 +87,7 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		if (NSObject.IsNullOrNil(m_flags.Value))
 			NSBundle.loadNibNamedOwner("Flags", this);
-		DBC.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
+		Trace.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
 	
 		m_flags.Value.Open(m_doc, window());
     }
@@ -314,7 +314,7 @@ internal sealed class DocWindowController : NSWindowController
 				break;
 				
 			default:
-				DBC.Fail("unknown state: {0}", m_doc.State);
+				Trace.Fail(string.Format("unknown state: {0}", m_doc.State));
 				break;
 		}
 	}

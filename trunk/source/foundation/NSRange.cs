@@ -21,6 +21,7 @@
 
 using MObjc;
 using System;
+using System.Diagnostics;
 
 namespace MCocoa
 {
@@ -38,8 +39,8 @@ namespace MCocoa
 
 		public NSRange(int loc, int len)
 		{
-			DBC.Pre(loc >= 0, "loc is negative");
-			DBC.Pre(len >= 0, "len is negative");
+			Trace.Assert(loc >= 0, "loc is negative");
+			Trace.Assert(len >= 0, "len is negative");
 
 			location = loc;
 			length = len;
