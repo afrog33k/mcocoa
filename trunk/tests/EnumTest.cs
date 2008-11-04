@@ -21,11 +21,19 @@
 
 using NUnit.Framework;
 using System;
+using System.Diagnostics;
 
 // Verify that we can find the various forms of enum declarations.
 [TestFixture]
 public class EnumTest 	
 {
+	[TestFixtureSetUp]
+	public void Init()
+	{
+		Trace.Listeners.Add(new ConsoleTraceListener());
+		Debug.Listeners.Add(new ConsoleTraceListener());
+	}
+	
 	[Test]
 	public void NoName()	 
 	{
