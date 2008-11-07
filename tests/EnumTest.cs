@@ -19,6 +19,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using MObjc;
 using NUnit.Framework;
 using System;
 using System.Diagnostics;
@@ -30,8 +31,7 @@ public class EnumTest
 	[TestFixtureSetUp]
 	public void Init()
 	{
-		Trace.Listeners.Add(new ConsoleTraceListener());
-		Debug.Listeners.Add(new ConsoleTraceListener());
+		AssertListener.Install();
 	}
 	
 	[Test]

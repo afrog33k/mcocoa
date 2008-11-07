@@ -35,10 +35,7 @@ internal static class Program
 			Registrar.CanInit = true;
 			
 			// Force Trace.Assert and Debug.Assert to throw exceptions
-			AssertListener.TraceInstall();
-#if DEBUG			
-			AssertListener.DebugInstall();
-#endif
+			AssertListener.Install();
 			
 			// Load the nib and run the main event loop.
 			NSApplication app = NSApplication.Create("MainMenu.nib");

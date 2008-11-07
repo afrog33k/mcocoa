@@ -19,6 +19,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using MObjc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,10 +30,7 @@ internal static class Program
 {
 	public static void Main(string[] args) 
 	{	
-		Trace.Listeners.Add(new ConsoleTraceListener());
-#if DEBUG
-		Debug.Listeners.Add(new ConsoleTraceListener());
-#endif
+		AssertListener.Install();
 
 		foreach (string arg in args)
 			DoProcessArg(arg);
