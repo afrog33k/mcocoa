@@ -59,6 +59,8 @@ internal sealed class Generate
 	public void Code(string outDir, Blacklist[] blacklist)
 	{	
 		m_blacklist = blacklist;
+		m_fastCalls = 0;
+		m_slowCalls = 0;
 
 		foreach (NativeFile file in m_objects.Files)
 		{
@@ -93,6 +95,9 @@ internal sealed class Generate
 				File.SetAttributes(outPath, FileAttributes.ReadOnly);
 			}
 		}
+		
+		string[] components = outDir.Split('/');
+		Console.WriteLine("{0:0.0}% of {1} {2} methods are fast path", 100.0*m_fastCalls/(m_fastCalls+m_slowCalls), m_fastCalls+m_slowCalls, components[components.Length - 2]);
 	}
 	
 	#region Private Methods ---------------------------------------------------
@@ -452,12 +457,23 @@ internal sealed class Generate
 		
 		// body
 		DoWriteProlog(minfo);
-		DoWriteCall(method, minfo);
+		if (DoTryFastCall(method, minfo))
+		{
+			++m_fastCalls;
+		}
+		else
+		{	
+			++m_slowCalls;
+			DoWriteCall(method, minfo);
+		}
 		DoWriteEpilog(minfo);
 		
 		// trailer
 		DoWrite("		}");
 	}
+	
+	private int m_fastCalls;
+	private int m_slowCalls;
 	
 	private void DoWriteProlog(MethodInfo minfo)
 	{		
@@ -468,7 +484,7 @@ internal sealed class Generate
 				if (minfo.ArgTypes[i].ManagedOut.Length > 0)
 				{
 					if (minfo.ArgTypes[i].ManagedOut == "string")
-						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[8];{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[4];{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 					else
 						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[Marshal.SizeOf(typeof({1}))];{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
 					m_buffer.AppendFormat("			GCHandle {0}Handle = GCHandle.Alloc({0}Buffer, GCHandleType.Pinned);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
@@ -546,7 +562,353 @@ internal sealed class Generate
 		m_buffer.AppendLine(";");
 	}
 	
-	private void DoWriteEpilog(MethodInfo minfo)
+	private bool DoTryFastCall(NativeMethod method, MethodInfo minfo)
+	{
+		if (!minfo.HasOutArgs)
+		{
+			if (minfo.ArgNames.Length == 0)
+				return DoTryFastCall0(method, minfo);
+
+			else if (minfo.ArgNames.Length == 1)
+				return DoTryFastCall1(method, minfo);
+
+			else if (minfo.ArgNames.Length == 2)
+				return DoTryFastCall2(method, minfo);
+		}
+		
+		return false;
+	}
+	
+	// managed type name => method name label
+	private Dictionary<string, string> m_labels = new Dictionary<string, string>
+	{
+		{"*", "p"},				
+		{"bool", "C"},
+		{"byte", "C"},
+		{"char", "s"},
+		{"Class", "p"},
+		{"Int16", "s"},
+		{"Int32", "i"},
+		{"IntPtr", "p"},
+		{"NSObject", "p"},
+		{"sbyte", "C"},
+		{"Selector", "p"},
+		{"string", "p"},
+		{"UInt16", "s"},
+		{"UInt32", "i"},
+		{"void", "v"},
+	};
+	
+	// managed type name => direct call return type
+	private Dictionary<string, string> m_dtypes = new Dictionary<string, string>
+	{
+		{"*", "IntPtr"},
+		{"bool", "Byte"},
+		{"byte", "Byte"},
+		{"char", "Int16"},
+		{"Class", "IntPtr"},
+		{"Int16", "Int16"},
+		{"Int32", "Int32"},
+		{"IntPtr", "IntPtr"},
+		{"NSObject", "IntPtr"},
+		{"sbyte", "Byte"},
+		{"Selector", "IntPtr"},
+		{"string", "IntPtr"},
+		{"UInt16", "Int16"},
+		{"UInt32", "Int32"},
+		{"void", "void"},
+	};
+	
+	private string DoGetKey(TypeInfo type)
+	{
+		if (type.Native.EndsWith("*"))
+			return "*";
+		
+		else if (type.Native == "id")
+			return "*";
+			
+		else
+			return type.Managed;
+	}
+	
+	private bool DoTryFastCall0(NativeMethod method, MethodInfo minfo)
+	{
+		bool done = false;
+		
+		string rtype = minfo.ResultType.Managed;
+		string rlabel;
+
+		string rkey = DoGetKey(minfo.ResultType);
+		if (m_labels.TryGetValue(rkey, out rlabel))
+		{
+			string thisPtr;
+			if (m_interface.Category != null && m_interface.Name == "NSObject")
+				thisPtr = "_instance";
+			else if (method.IsClass)
+				thisPtr = "ms_class";
+			else
+				thisPtr = "this";
+				
+			m_buffer.AppendLine("			IntPtr exception_ = IntPtr.Zero;");
+
+			m_buffer.Append("			");
+			if (rkey != "void")
+				m_buffer.AppendFormat("{0} result_ = ", m_dtypes[rkey]);
+			m_buffer.AppendFormat("DirectCalls.Call{0}({1}, new Selector(\"{2}\"), ", rlabel, thisPtr, method.Name);
+			m_buffer.AppendLine("ref exception_);");
+
+			m_buffer.AppendLine("			if (exception_ != IntPtr.Zero)");
+			m_buffer.AppendLine("				CocoaException.Raise(exception_);");
+			DoAppendFastResult(rkey, rtype, minfo);
+			
+			done = true;
+		}
+		
+		return done;
+	}
+	
+	private bool DoTryFastCall1(NativeMethod method, MethodInfo minfo)
+	{
+		bool done = false;
+		
+		string rtype = minfo.ResultType.Managed;
+		string rlabel, a0label;
+
+		string rkey = DoGetKey(minfo.ResultType);
+		string a0key = DoGetKey(minfo.ArgTypes[0]);
+		
+		if (m_labels.TryGetValue(rkey, out rlabel) && m_labels.TryGetValue(a0key, out a0label))
+		{
+			string thisPtr;
+			if (m_interface.Category != null && m_interface.Name == "NSObject")
+				thisPtr = "_instance";
+			else if (method.IsClass)
+				thisPtr = "ms_class";
+			else
+				thisPtr = "this";
+			
+			m_buffer.AppendLine("			IntPtr exception_ = IntPtr.Zero;");
+			DoAppendFastArgProlog(minfo, 0);
+			
+			m_buffer.Append("			");
+			if (rkey != "void")
+				m_buffer.AppendFormat("{0} result_ = ", m_dtypes[rkey]);
+			m_buffer.AppendFormat("DirectCalls.Call{0}{1}({2}, new Selector(\"{3}\"), ", rlabel, a0label, thisPtr, method.Name);
+			DoAppendFastArg(minfo, 0);
+			m_buffer.AppendLine("ref exception_);");
+			
+			DoAppendFastArgEpilog(minfo, 0);
+			m_buffer.AppendLine("			if (exception_ != IntPtr.Zero)");
+			m_buffer.AppendLine("				CocoaException.Raise(exception_);");
+			DoAppendFastResult(rkey, rtype, minfo);			
+
+			done = true;
+		}
+		
+		return done;
+	}
+	
+	private bool DoTryFastCall2(NativeMethod method, MethodInfo minfo)
+	{
+		bool done = false;
+		
+		string rtype = minfo.ResultType.Managed;
+		string rlabel, a0label, a1label;
+
+		string rkey = DoGetKey(minfo.ResultType);
+		string a0key = DoGetKey(minfo.ArgTypes[0]);
+		string a1key = DoGetKey(minfo.ArgTypes[1]);
+		
+		if (m_labels.TryGetValue(rkey, out rlabel) && m_labels.TryGetValue(a0key, out a0label) && m_labels.TryGetValue(a1key, out a1label))
+		{
+			string thisPtr;
+			if (m_interface.Category != null && m_interface.Name == "NSObject")
+				thisPtr = "_instance";
+			else if (method.IsClass)
+				thisPtr = "ms_class";
+			else
+				thisPtr = "this";
+			
+			m_buffer.AppendLine("			IntPtr exception_ = IntPtr.Zero;");
+			DoAppendFastArgProlog(minfo, 0);
+			DoAppendFastArgProlog(minfo, 1);
+			
+			m_buffer.Append("			");
+			if (rkey != "void")
+				m_buffer.AppendFormat("{0} result_ = ", m_dtypes[rkey]);
+			m_buffer.AppendFormat("DirectCalls.Call{0}{1}{2}({3}, new Selector(\"{4}\"), ", rlabel, a0label, a1label, thisPtr, method.Name);
+			DoAppendFastArg(minfo, 0);
+			DoAppendFastArg(minfo, 1);
+			m_buffer.AppendLine("ref exception_);");
+			
+			DoAppendFastArgEpilog(minfo, 0);
+			DoAppendFastArgEpilog(minfo, 1);
+			m_buffer.AppendLine("			if (exception_ != IntPtr.Zero)");
+			m_buffer.AppendLine("				CocoaException.Raise(exception_);");
+			DoAppendFastResult(rkey, rtype, minfo);			
+
+			done = true;
+		}
+		
+		return done;
+	}
+	
+	private void DoAppendFastArgProlog(MethodInfo minfo, int i)
+	{
+		if (minfo.ArgTypes[i].Native == "NSString *")
+		{
+		}
+		else if (minfo.ArgTypes[i].Native == "const char *")
+		{
+		}
+		else if (minfo.ArgTypes[i].Native == "const unichar *")
+		{
+		}
+		else if (minfo.ArgTypes[i].Native == "SEL")
+		{
+		}
+		else if (minfo.ArgTypes[i].Managed == "Int16" || minfo.ArgTypes[i].Managed == "UInt16" || minfo.ArgTypes[i].Managed == "byte" || minfo.ArgTypes[i].Managed == "sbyte" || minfo.ArgTypes[i].Managed == "char" || minfo.ArgTypes[i].Managed == "bool" || minfo.ArgTypes[i].Managed == "Int32" || minfo.ArgTypes[i].Managed == "UInt32" || minfo.ArgTypes[i].Managed == "IntPtr")
+		{
+		}
+		else
+		{
+			m_buffer.AppendFormat("			IntPtr buffer_{0} = ", minfo.ArgNames[i].Managed);
+			m_buffer.AppendFormat("FastPath.CreateBuffer({0}", minfo.ArgNames[i].Managed);
+			m_buffer.AppendLine(");");
+		}
+	}
+	
+	private void DoAppendFastArg(MethodInfo minfo, int i)
+	{
+		string aname = minfo.ArgNames[i].Managed;
+
+		if (minfo.ArgTypes[i].Native == "NSString *")
+		{
+			m_buffer.Append("NSString.Create(");
+			m_buffer.Append(minfo.ArgNames[i].Managed);
+			m_buffer.Append(")");
+		}
+		else if (minfo.ArgTypes[i].Native == "const char *")
+		{
+			m_buffer.Append("Marshal.StringToHGlobalAnsi(");
+			m_buffer.Append(minfo.ArgNames[i].Managed);
+			m_buffer.Append(")");
+		}
+		else if (minfo.ArgTypes[i].Native == "const unichar *")
+		{
+			m_buffer.Append("Marshal.StringToHGlobalUni(");
+			m_buffer.Append(minfo.ArgNames[i].Managed);
+			m_buffer.Append(")");
+		}
+		else if (minfo.ArgTypes[i].Native == "SEL")
+		{
+			m_buffer.Append(aname + " != null ? new Selector(");
+			m_buffer.Append(aname);
+			m_buffer.Append(") : IntPtr.Zero");
+		}
+		else if (minfo.ArgTypes[i].Managed == "UInt16")
+		{
+			m_buffer.AppendFormat("unchecked((Int16) {0})", aname);
+		}
+		else if (minfo.ArgTypes[i].Managed == "UInt32")
+		{
+			m_buffer.AppendFormat("unchecked((Int32) {0})", aname);
+		}
+		else if (minfo.ArgTypes[i].Managed == "bool")
+		{
+			m_buffer.AppendFormat("(Byte) ({0} ? 1 : 0)", aname);
+		}
+		else if (minfo.ArgTypes[i].Managed == "char")
+		{
+			m_buffer.AppendFormat("unchecked((Int16) {0})", aname);
+		}
+		else if (minfo.ArgTypes[i].Managed == "sbyte")
+		{
+			m_buffer.AppendFormat("unchecked((SByte) {0})", aname);
+		}
+		else if (minfo.ArgTypes[i].Managed == "byte" || minfo.ArgTypes[i].Managed == "Int16" || minfo.ArgTypes[i].Managed == "Int32" || minfo.ArgTypes[i].Managed == "IntPtr")
+		{
+			m_buffer.Append(aname);
+		}
+		else
+		{
+			m_buffer.AppendFormat("buffer_{0}", minfo.ArgNames[i].Managed);
+		}
+
+		m_buffer.Append(", ");
+	}
+	
+	private void DoAppendFastArgEpilog(MethodInfo minfo, int i)
+	{
+		if (minfo.ArgTypes[i].Native == "NSString *")
+		{
+		}
+		else if (minfo.ArgTypes[i].Native == "const char *")
+		{
+		}
+		else if (minfo.ArgTypes[i].Native == "const unichar *")
+		{
+		}
+		else if (minfo.ArgTypes[i].Native == "SEL")
+		{
+		}
+		else if (minfo.ArgTypes[i].Managed == "Int16" || minfo.ArgTypes[i].Managed == "UInt16" || minfo.ArgTypes[i].Managed == "byte" || minfo.ArgTypes[i].Managed == "sbyte" || minfo.ArgTypes[i].Managed == "char" || minfo.ArgTypes[i].Managed == "bool" || minfo.ArgTypes[i].Managed == "Int32" || minfo.ArgTypes[i].Managed == "UInt32" || minfo.ArgTypes[i].Managed == "IntPtr")
+		{
+		}
+		else
+		{
+			m_buffer.AppendFormat("			FastPath.FreeBuffer({0}, buffer_{0}", minfo.ArgNames[i].Managed);
+			m_buffer.AppendLine(");");
+		}
+	}
+	
+	private void DoAppendFastResult(string rkey, string rtype, MethodInfo minfo)
+	{
+		if (rtype != "void")
+		{
+			m_buffer.AppendLine("");
+			if (rtype == "byte" || rtype == "Int16" || rtype == "Int32")
+				m_buffer.AppendLine("			return result_;");
+
+			else if (rtype == "bool")
+				m_buffer.AppendLine("			return result_ != 0;");
+
+			else if (rtype == "char")
+				m_buffer.AppendLine("			return unchecked((char) result_);");
+
+			else if (rtype == "sbyte")
+				m_buffer.AppendLine("			return unchecked((SByte) result_);");
+
+			else if (rtype == "UInt16")
+				m_buffer.AppendLine("			return unchecked((UInt16) result_);");
+
+			else if (rtype == "UInt32")
+				m_buffer.AppendLine("			return unchecked((UInt32) result_);");
+
+			else if (rtype == "string" && minfo.ResultType.Native == "NSString *")
+				m_buffer.AppendLine("			return new NSString(result_).ToString();");
+
+			else if (rtype == "IntPtr")
+				m_buffer.AppendLine("			return result_;");
+
+			else if (rtype == "Selector")
+				m_buffer.AppendLine("			return new Selector(result_);");
+
+			else if (rtype == "Class")
+				m_buffer.AppendLine("			return new Class(result_);");
+
+			else if (rtype == "NSObject")
+				m_buffer.AppendLine("			return result_.To<" + rtype + ">();");
+
+			else if (rkey == "*")
+				m_buffer.AppendLine("			return result_.To<" + rtype + ">();");
+
+			else
+				m_buffer.AppendLine("			return bad_result_type;");
+		}
+	}
+	
+	private void DoWriteEpilog(MethodInfo minfo)	
 	{
 		if (minfo.HasOutArgs)
 		{

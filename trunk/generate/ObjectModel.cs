@@ -53,7 +53,10 @@ internal sealed class ObjectModel
 	{
 		string result;
 		
-		if (!m_typeMapping.TryGetValue(type, out result))
+		if (type == "unichar")
+			result = "char";
+		
+		else if (!m_typeMapping.TryGetValue(type, out result))
 			result = type;
 			
 		return result;
@@ -111,7 +114,7 @@ internal sealed class ObjectModel
 		{
 			KeyValuePair<string, string> m = parser.Mapping;
 			parser.Advance();
-			
+						
 			if (!m_typeMapping.ContainsKey(m.Key))
 				m_typeMapping.Add(m.Key, m.Value);
 			else if (m_typeMapping[m.Key] != m.Value)
