@@ -8,7 +8,8 @@ MONO ?= mono
 NUNIT ?= nunit-console2
 
 ifdef RELEASE
-	export CSC_FLAGS ?= -checked+ -warn:4 -optimize+ -d:TRACE
+	# Note that -debug+ just generates an mdb file.
+	export CSC_FLAGS ?= -checked+ -debug+ -warn:4 -optimize+ -d:TRACE
 else
 	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -define:DEBUG -d:TRACE
 endif
@@ -59,7 +60,7 @@ bin/cocoa_files: $(cocoa_files)
 	@echo "$(cocoa_files)" > bin/cocoa_files
 		
 bin/generate.exe: generate/*.cs generate/Frameworks.xml bin/csc_flags 
-	$(CSC) -out:bin/generate.exe $(CSC_FLAGS) -target:exe generate/*.cs
+	$(CSC) -out:bin/generate.exe $(CSC_FLAGS) -reference:bin/mobjc.dll -target:exe generate/*.cs
 		
 bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
 	@./gen_version.sh $(version) source/AssemblyVersion.cs

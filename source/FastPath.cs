@@ -19,56 +19,33 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using MObjc;
 using System;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
-internal sealed class TypedefParser : Parser
+namespace MCocoa
 {
-	public TypedefParser(string path, string text) : base(path, text)
-	{	
-	}
-	
-	public bool AtEnd 
-	{
-		get {return Mapping.Key == null;}
-	}
-	
-	public KeyValuePair<string, string> Mapping {get; private set;}
-	
-	public override void Advance()
-	{
-		Mapping = new KeyValuePair<string, string>(null, null);
-		
-		while (!m_tokenizer.AtEnd && Mapping.Key == null)
+	public static class FastPath
+	{		
+		public static IntPtr CreateBuffer(NSObject instance)
 		{
-			while (!m_tokenizer.AtEnd && m_tokenizer.Token != "typedef")
-				m_tokenizer.Advance();
-				
-			if (!m_tokenizer.AtEnd)
-				DoParseTypedef();
+			return instance;
 		}
-	}
-	
-	// Typedef := 'typedef' Name+ Name ';'
-	private void DoParseTypedef()
-	{
-		m_tokenizer.Advance();
-		
-		List<string> names = new List<string>();
-		while (char.IsLetter(m_tokenizer.Token[0]))
-		{
-			string name = DoParseName();
-			names.Add(name);
-		}
-		
-		if (names.Count >= 2)
-		{
-			string key = names[names.Count - 1];
 
-			names.RemoveAt(names.Count - 1);
-			string value = string.Join(" ", names.ToArray());
-			Mapping = new KeyValuePair<string, string>(key, value);
+		public static void FreeBuffer(NSObject instance, IntPtr buffer)
+		{
 		}
-	}			
+
+		public static IntPtr CreateBuffer(ValueType instance)
+		{
+			IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(instance));
+			Marshal.StructureToPtr(instance, buffer, false);
+			return buffer;
+		}
+
+		public static void FreeBuffer(ValueType instance, IntPtr buffer)
+		{
+			Marshal.FreeHGlobal(buffer);
+		}
+	}
 }
-

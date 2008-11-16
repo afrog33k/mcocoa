@@ -37,6 +37,16 @@ namespace MCocoa
 			return ms_class.Call("stringWithUTF8String:", str).To<NSString>();
 		}
 		
+		public Int32 compare(NSString string_)
+		{
+			IntPtr exception_ = IntPtr.Zero;
+			Int32 result_ = DirectCalls.Callip(this, new Selector("compare:"), string_, ref exception_);
+			if (exception_ != IntPtr.Zero)
+				CocoaException.Raise(exception_);
+
+			return result_;
+		}
+
 		public string GetCharacters(NSRange range)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal(2*range.length);
