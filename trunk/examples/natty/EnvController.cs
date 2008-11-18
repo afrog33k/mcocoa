@@ -53,6 +53,7 @@ internal sealed class EnvController : NSObject
 		
 		m_doc.Variables.Clear();
 		m_doc.Variables.AddRange(m_vars);
+ 		m_doc.SaveEnvPrefs();
     }
 
 	public void envCancel(NSObject sender)
@@ -92,10 +93,15 @@ internal sealed class EnvController : NSObject
 
 	[Register("tableView:setObjectValue:forTableColumn:row:")]		
 	public void SetCell(NSTableView table, NSObject v, NSTableColumn column, int row)
-	{
-		Trace.Assert(column.identifier().ToString() == "2", string.Format("id is {0}", column.identifier()));
-				
-		m_vars[row].Value = v.ToString();
+	{		
+		if ("1" == column.identifier().ToString())
+			m_vars[row].Name = v.ToString();
+
+		else if ("2" == column.identifier().ToString())
+			m_vars[row].Value = v.ToString();
+			
+		else
+			Trace.Fail("how did we get identifier: " + column.identifier());
 	}
 	#endregion
 	

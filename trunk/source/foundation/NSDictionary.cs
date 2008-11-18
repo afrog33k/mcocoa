@@ -19,18 +19,26 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-internal sealed class EnvVar
+using MObjc;
+using System;
+using System.Collections.Generic;
+
+namespace MCocoa
 {
-	public EnvVar(string name, string defaultValue)
-	{
-		Name = name;
-		Value = string.Empty;
-		DefaultValue = defaultValue;
+	public partial class NSDictionary : NSObject
+	{		
+		public IEnumerator<KeyValuePair<NSObject, NSObject>> GetEnumerator()
+		{
+			NSEnumerator keys = keyEnumerator();
+			
+			NSObject key = keys.nextObject();
+			while (!NSObject.IsNullOrNil(key))
+			{
+				NSObject value = objectForKey(key);
+				yield return new KeyValuePair<NSObject, NSObject>(key, value);
+
+				key = keys.nextObject();
+			}
+		}
 	}
-	
-	public string Name {get; set;}
-
-	public string Value {get; set;}
-
-	public string DefaultValue {get; set;}
 }

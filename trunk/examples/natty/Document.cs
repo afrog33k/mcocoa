@@ -119,6 +119,55 @@ internal sealed class Document : NSDocument
 			StateChanged(this, EventArgs.Empty);
 	}
 	
+	public void SaveEnvPrefs()
+	{
+		string key = fileURL().absoluteString() + "-variables";
+		
+		NSMutableDictionary dict = NSMutableDictionary.Create();
+		foreach (var entry in m_vars)
+		{
+			if (entry.Value.Length > 0 && entry.Value != entry.DefaultValue)
+				dict.setObjectForKey(NSString.Create(entry.Value), NSString.Create(entry.Name));
+		}
+		
+		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
+		defaults.setObjectForKey(dict, key);
+	}
+	
+	public void LoadEnvPrefs()
+	{
+		string key = fileURL().absoluteString() + "-variables";
+				
+		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
+		NSObject pref = defaults.objectForKey(key);
+		if (!NSObject.IsNullOrNil(pref))
+		{
+			NSMutableDictionary dict = pref.To<NSMutableDictionary>();
+
+			foreach (var entry in dict)
+			{
+				string name = entry.Key.ToString();
+				string value = entry.Value.ToString();
+		
+				int i = m_vars.FindIndex(e => e.Name == name);
+				if (i >= 0)
+				{
+					m_vars[i].Value = value;
+				}
+				else
+				{
+					EnvVar v = new EnvVar(name, string.Empty);
+					v.Value = value;
+					i = m_vars.FindIndex(e => e.Name.Length == 0);
+					if (i >= 0)
+						m_vars.Insert(i, v);
+					else
+						m_vars.Add(v);
+				}
+			}
+		}
+	}
+	
 	#region Overrides ---------------------------------------------------------
 	[Register("readFromData:ofType:error:")]		
 	public bool ReadFromDataOfTypeError(NSData data, NSString typeName, IntPtr outError)
@@ -135,6 +184,7 @@ internal sealed class Document : NSDocument
 			
 			m_vars.Clear();
 			m_vars.AddRange(m_builder.Variables);
+			LoadEnvPrefs();
 	
 			if (m_builder.Default != null)
 				m_target = m_builder.Default;
