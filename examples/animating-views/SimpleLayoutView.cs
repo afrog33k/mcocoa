@@ -25,7 +25,7 @@ using System;
 
 internal enum Layout {Column, Row, Grid}
 
-[ExportClass("SimpleLayoutView", "NSView", IVars = "boxColorField")]
+[ExportClass("SimpleLayoutView", "NSView", Outlets = "boxColorField")]
 internal sealed class SimpleLayoutView : NSView
 {
 	private SimpleLayoutView(IntPtr instance) : base(instance)

@@ -24,12 +24,12 @@ using MObjc;
 using System;
 using System.Collections.Generic;
 
-[ExportClass("FlagsController", "NSObject", IVars = "sheet")]
+[ExportClass("FlagsController", "NSObject", Outlets = "sheet")]
 internal sealed class FlagsController : NSObject
 {
 	private FlagsController(IntPtr instance) : base(instance) 
 	{
-		m_sheet = new IVar<NSWindow>(this, "sheet");
+		m_sheet = new IBOutlet<NSWindow>(this, "sheet");
 	}
 						
 	public void Open(Document doc, NSWindow window)
@@ -75,7 +75,7 @@ internal sealed class FlagsController : NSObject
    	}
 	#endregion
 		
-	private IVar<NSWindow> m_sheet;
+	private IBOutlet<NSWindow> m_sheet;
 	private Document m_doc;
 	private Dictionary<string, int> m_flags = new Dictionary<string, int>();
 }

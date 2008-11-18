@@ -38,7 +38,7 @@ public class TimingTest
 		Registrar.CanInit = true;
 	}
 	
-	private const int ArraySize = 100;
+	private const int ArraySize = 200;
 	
 	[Test]
 	public void Managed()	

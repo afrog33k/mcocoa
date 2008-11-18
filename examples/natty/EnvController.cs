@@ -25,13 +25,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-[ExportClass("EnvController", "NSObject", IVars = "sheet table")]
+[ExportClass("EnvController", "NSObject", Outlets = "sheet table")]
 internal sealed class EnvController : NSObject
 {
 	private EnvController(IntPtr instance) : base(instance) 
 	{
-		m_sheet = new IVar<NSWindow>(this, "sheet");
-		m_table = new IVar<NSTableView>(this, "table");
+		m_sheet = new IBOutlet<NSWindow>(this, "sheet");
+		m_table = new IBOutlet<NSTableView>(this, "table");
 	}
 						
 	public void Open(Document doc, NSWindow window) 
@@ -106,8 +106,8 @@ internal sealed class EnvController : NSObject
 	#endregion
 	
 	#region Fields ------------------------------------------------------------
-	private IVar<NSWindow> m_sheet;
-	private IVar<NSTableView> m_table;
+	private IBOutlet<NSWindow> m_sheet;
+	private IBOutlet<NSTableView> m_table;
 	private Document m_doc;
 	private List<EnvVar> m_vars = new List<EnvVar>();
 	#endregion
