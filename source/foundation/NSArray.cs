@@ -21,6 +21,7 @@
 
 using MObjc;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace MCocoa
@@ -46,6 +47,12 @@ namespace MCocoa
 			IntPtr objects = handle.AddrOfPinnedObject();
 
 			return ms_class.Call("arrayWithObjects:count:", objects, (uint) args.Length).To<NSArray>();
+		}
+
+		public IEnumerator<NSObject> GetEnumerator()
+		{
+			for (uint i = 0; i < count(); ++i)
+				yield return objectAtIndex(i);
 		}
 	}
 }

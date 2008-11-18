@@ -47,6 +47,9 @@ internal class MakeBuilder
 			m_eolChars.addCharactersInString("\r\n#");		// lines are ended by comments or new line characters
 			
 			DoParse();
+
+			for (int i = 0; i < 4; ++i)			// add some blank lines so the user can define new variables that we couldn't pull out of the make file
+				m_variables.Add(new EnvVar(string.Empty, string.Empty));
 		}
 		catch (Exception e)
 		{
