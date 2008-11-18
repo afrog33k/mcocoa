@@ -235,13 +235,14 @@ internal sealed class Generate
 			DoWrite("		public static new {0} Create()", m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			{0} result = ({0}) ms_class.Alloc().init();", m_interface.Name);
-			DoWrite("			result.autorelease();");
+			if (m_interface.Name != "NSAutoreleasePool")
+				DoWrite("			result.autorelease();");
 			DoWrite("			return result;");
 			DoWrite("		}");
 			DoWrite();
 			DoWrite("		public static new {0} alloc()", m_interface.Name);
 			DoWrite("		{");
-			DoWrite("			return ({0}) ms_class.Call(\"alloc\");", m_interface.Name);
+			DoWrite("			return ({0}) ms_class.Alloc();", m_interface.Name);
 			DoWrite("		}");
 			DoWrite();
 			DoWrite("		public new {0} retain()", m_interface.Name);
