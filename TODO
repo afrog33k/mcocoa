@@ -2,16 +2,24 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-managed 0.1 secs
-native 5.2 secs			4.9/4.6
-
-* See if caching selectors is a significant speed improvement.
-* Why is NSText.string_ returning an NSString?
-* Special case AutoreleasePool::Create (don't need to if we use CreateNative).
-* May want to rewrite Create methods to use CreateNative. 
-* See if we can get rid of the "alloc" special case in NSObject.Call
+* Release checklist:
+	- search for TODO
+	- run smoke
+	- make sure unit tests work
+	- make sure examples work in debug
+	- make sure examples work in release
+	- review tar target
+	- make sure everything is checked in
+	- use svn log -r 1:HEAD > CHANGE_LOG
+	- update CHANGES file
+	- update version and build numbers 
+	- install
+	- update README and wiki
+	- upload a new version to googlecode
+	- send an announcement
+	- make sure everything is checked in
 * Work on Natty:
-	- prefs could be used to save fonts, colors, editor, global vars
+	- prefs could be used to save fonts, colors
 	- need to support stdin (important for install or removing files
 	  generated under sudo)
 	- make files should default to RELEASE
@@ -35,6 +43,3 @@ native 5.2 secs			4.9/4.6
 	- send an announcement
 	- make sure everything is checked in
 
-NSUserDefaults.standardUserDefaults()
-	objectForKey:
-	setObject:forKey:

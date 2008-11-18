@@ -39,7 +39,7 @@ public class FoundationTest
 	[Test]
 	public void Array()	
 	{
-		NSObject pool = new NSObject(NSObject.CreateNative("NSAutoreleasePool"));
+		NSAutoreleasePool pool = NSAutoreleasePool.Create();
 		
 		NSMutableArray array = NSMutableArray.alloc().initWithCapacity(3).To<NSMutableArray>();
 		array.addObject(NSNumber.numberWithInt(100));

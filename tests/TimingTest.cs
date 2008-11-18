@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 // Simple benchmark for mcocoa.
+#if false
 [TestFixture]
 public class TimingTest 	
 {
@@ -107,3 +108,4 @@ public class TimingTest
 		pool.release();
 	}
 }
+#endif
