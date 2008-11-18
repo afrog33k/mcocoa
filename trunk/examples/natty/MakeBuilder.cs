@@ -107,12 +107,7 @@ internal class MakeBuilder
 	{
 		get {return m_variables.ToArray();}
 	}
-	
-	public string Default
-	{
-		get {return m_default;}
-	}
-	
+		
 	public string Command
 	{
 		get {return m_command;}
@@ -136,7 +131,7 @@ internal class MakeBuilder
 				else if (m_scanner.scanStringIntoString(":", out token))
 				{
 					if (!m_scanner.scanStringIntoString("=", out token))
-						if (m_ignore.IndexOf(name) < 0 && name != "else" && !DoIsAutomake(name))
+						if (name != "else" && !DoIsAutomake(name))
 							m_targets.Add(name);
 				}
 				else
@@ -152,39 +147,11 @@ internal class MakeBuilder
 					}
 				}
 			}
-			else
-				DoParseCommand();
 			
 			DoSkipToNextLine();
 		}
 	}
-		
-	// # natty-ignore: install uninstall keys
-	// # natty-default: lib
-	private void DoParseCommand()
-	{
-		string token;
-		if (m_scanner.scanStringIntoString("#", out token))
-		{
-			if (m_scanner.scanStringIntoString("natty-ignore:", out token))
-			{
-				if (m_scanner.scanUpToCharactersFromSetIntoString(m_eolChars, out token))
-				{
-					string[] names = token.Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries);
-					m_ignore.AddRange(names);
-				}
-			}
-
-			if (m_scanner.scanStringIntoString("natty-default:", out token))
-			{
-				if (m_scanner.scanUpToCharactersFromSetIntoString(m_eolChars, out token))
-				{
-					m_default = token;
-				}
-			}
-		}
-	}
-	
+			
 	// Target := Name '?=' .+
 	private EnvVar DoParseVariable(string name)
 	{
@@ -292,8 +259,6 @@ internal class MakeBuilder
 	#region Fields ------------------------------------------------------------
 	private List<string> m_targets = new List<string>();
 	private List<EnvVar> m_variables = new List<EnvVar>();
-	private List<string> m_ignore = new List<string>();
-	private string m_default;
 	private string m_command;
 	private NSScanner m_scanner;
 	private NSMutableCharacterSet m_nameChars;

@@ -77,6 +77,14 @@
 		<TypeResult name = "dateWithYear:month:day:hour:minute:second:timeZone:" type = "NSCalendarDate"/>
 		<TypeResult name = "decomposableCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "decimalDigitCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "dictionary"/>
+		<TypeResult name = "dictionaryWithObject:forKey:"/>
+		<TypeResult name = "dictionaryWithObjects:forKeys:count:"/>
+		<TypeResult name = "dictionaryWithDictionary:"/>
+		<TypeResult name = "dictionaryWithObjects:forKeys:"/>
+		<TypeResult name = "dictionaryWithContentsOfFile:"/>
+		<TypeResult name = "dictionaryWithContentsOfURL:"/>
+		<TypeResult name = "dictionaryWithCapacity:"/>
 		<TypeResult name = "distantFuture" type = "NSDate"/>
 		<TypeResult name = "distantPast" type = "NSDate"/>
 		<TypeResult name = "document" type = "NSDocument"/>

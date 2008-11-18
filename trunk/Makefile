@@ -1,6 +1,3 @@
-# natty-ignore: install uninstall keys tar help
-# natty-default: lib
-
 # ------------------
 # Public variables
 CSC ?= gmcs
