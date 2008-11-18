@@ -24,15 +24,15 @@ using MObjc;
 using System;
 using System.Collections.Generic;
 
-[ExportClass("PrefsController", "NSObject", IVars = "panel owner editor ignored")]
+[ExportClass("PrefsController", "NSObject", Outlets = "panel owner editor ignored")]
 internal sealed class PrefsController : NSObject
 {
 	private PrefsController(IntPtr instance) : base(instance) 	
 	{
-		m_owner = new IVar<NSObject>(this, "owner");
-		m_panel = new IVar<NSWindow>(this, "panel");
-		m_editor = new IVar<NSTextField>(this, "editor");
-		m_ignored = new IVar<NSTextField>(this, "ignored");
+		m_owner = new IBOutlet<NSObject>(this, "owner");
+		m_panel = new IBOutlet<NSWindow>(this, "panel");
+		m_editor = new IBOutlet<NSTextField>(this, "editor");
+		m_ignored = new IBOutlet<NSTextField>(this, "ignored");
 	}
  
 	public void awakeFromNib()
@@ -55,8 +55,8 @@ internal sealed class PrefsController : NSObject
     	m_owner.Value.Call("rebuildTargets");
     }
 		
-	private IVar<NSObject> m_owner;
-	private IVar<NSWindow> m_panel;
-	private IVar<NSTextField> m_editor;
-	private IVar<NSTextField> m_ignored;
+	private IBOutlet<NSObject> m_owner;
+	private IBOutlet<NSWindow> m_panel;
+	private IBOutlet<NSTextField> m_editor;
+	private IBOutlet<NSTextField> m_ignored;
 }

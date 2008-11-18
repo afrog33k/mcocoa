@@ -27,7 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-[ExportClass("DocWindowController", "NSWindowController", IVars = "flagsSheet prefSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
+[ExportClass("DocWindowController", "NSWindowController", Outlets = "flagsSheet prefSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
 internal sealed class DocWindowController : NSWindowController
 {
 	public DocWindowController(IntPtr instance) : base(instance)
@@ -38,17 +38,17 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		DocWindowController result = new Class("DocWindowController").Call("alloc").Call("initWithWindowNibName:", NSString.Create(nibName)).To<DocWindowController>();
 		
-		result.m_env = new IVar<EnvController>(result, "envSheet");
-		result.m_flags = new IVar<FlagsController>(result, "flagsSheet");
-		result.m_prefs = new IVar<NSWindow>(result, "prefSheet");
+		result.m_env = new IBOutlet<EnvController>(result, "envSheet");
+		result.m_flags = new IBOutlet<FlagsController>(result, "flagsSheet");
+		result.m_prefs = new IBOutlet<NSWindow>(result, "prefSheet");
 
-		result.m_errorWindow = new IVar<NSWindow>(result, "errorWindow");
-		result.m_transcriptWindow = new IVar<NSWindow>(result, "outputWindow");	
-		result.m_errorTable = new IVar<ErrorTable>(result, "errors");
-		result.m_statusLabel = new IVar<NSTextField>(result, "status");
-		result.m_buildBtn = new IVar<NSButton>(result, "build");
-		result.m_cancelBtn = new IVar<NSButton>(result, "cancel");
-		result.m_outputView = new IVar<NSTextView>(result, "output");
+		result.m_errorWindow = new IBOutlet<NSWindow>(result, "errorWindow");
+		result.m_transcriptWindow = new IBOutlet<NSWindow>(result, "outputWindow");	
+		result.m_errorTable = new IBOutlet<ErrorTable>(result, "errors");
+		result.m_statusLabel = new IBOutlet<NSTextField>(result, "status");
+		result.m_buildBtn = new IBOutlet<NSButton>(result, "build");
+		result.m_cancelBtn = new IBOutlet<NSButton>(result, "cancel");
+		result.m_outputView = new IBOutlet<NSTextView>(result, "output");
 	
 		result.autorelease();
 		
@@ -481,16 +481,16 @@ internal sealed class DocWindowController : NSWindowController
 
 	#region Fields ------------------------------------------------------------
 	private Document m_doc;
-	private IVar<EnvController> m_env;
-	private IVar<FlagsController> m_flags;
-	private IVar<NSWindow> m_prefs;
-	private IVar<NSTextField> m_statusLabel;
-	private IVar<NSButton> m_buildBtn;
-	private IVar<NSButton> m_cancelBtn;
-	private IVar<NSTextView> m_outputView;
-	private IVar<ErrorTable> m_errorTable;
-	private IVar<NSWindow> m_transcriptWindow;
-	private IVar<NSWindow> m_errorWindow;
+	private IBOutlet<EnvController> m_env;
+	private IBOutlet<FlagsController> m_flags;
+	private IBOutlet<NSWindow> m_prefs;
+	private IBOutlet<NSTextField> m_statusLabel;
+	private IBOutlet<NSButton> m_buildBtn;
+	private IBOutlet<NSButton> m_cancelBtn;
+	private IBOutlet<NSTextView> m_outputView;
+	private IBOutlet<ErrorTable> m_errorTable;
+	private IBOutlet<NSWindow> m_transcriptWindow;
+	private IBOutlet<NSWindow> m_errorWindow;
 	private List<Error> m_errors = new List<Error>();
 	private DateTime m_startTime;
 	

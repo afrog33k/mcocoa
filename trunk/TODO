@@ -2,17 +2,9 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Might want to save env vars in a pref:
-	- add ignored targets pref, default is install uninstall
-	- get panel working with ignored targets 
-	- need reset to restore defaults button
-	- make sure other makefiles open ok
-	- don't throw an exception if cant open file
-* Update to new mobjc
-	- get timing numbers (double iteration count)
-	- update libraries
-	- look at timing numbers again
-	- check in mobjc and mcocoa
+managed 0.1 secs
+native 5.2 secs			4.9/4.6
+
 * See if caching selectors is a significant speed improvement.
 * Why is NSText.string_ returning an NSString?
 * Special case AutoreleasePool::Create (don't need to if we use CreateNative).
