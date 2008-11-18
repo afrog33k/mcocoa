@@ -53,7 +53,7 @@ internal sealed class EnvController : NSObject
 		
 		m_doc.Variables.Clear();
 		m_doc.Variables.AddRange(m_vars);
- 		m_doc.SaveEnvPrefs();
+ 		m_doc.SavePrefs();
     }
 
 	public void envCancel(NSObject sender)

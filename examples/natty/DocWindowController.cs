@@ -25,8 +25,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
-[ExportClass("DocWindowController", "NSWindowController", IVars = "flagsSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
+[ExportClass("DocWindowController", "NSWindowController", IVars = "flagsSheet prefSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
 internal sealed class DocWindowController : NSWindowController
 {
 	public DocWindowController(IntPtr instance) : base(instance)
@@ -39,6 +40,7 @@ internal sealed class DocWindowController : NSWindowController
 		
 		result.m_env = new IVar<EnvController>(result, "envSheet");
 		result.m_flags = new IVar<FlagsController>(result, "flagsSheet");
+		result.m_prefs = new IVar<NSWindow>(result, "prefSheet");
 
 		result.m_errorWindow = new IVar<NSWindow>(result, "errorWindow");
 		result.m_transcriptWindow = new IVar<NSWindow>(result, "outputWindow");	
@@ -91,6 +93,29 @@ internal sealed class DocWindowController : NSWindowController
 	
 		m_flags.Value.Open(m_doc, window());
     }
+
+	public void showPrefs(NSObject sender)
+	{		
+		NSBundle.loadNibNamedOwner("Preferences", this);
+		Trace.Assert(!NSObject.IsNullOrNil(m_prefs.Value), "nib didn't set prefSheet");
+
+		m_prefs.Value.makeKeyAndOrderFront(this);
+	}
+		
+	public void rebuildTargets()
+	{
+		string[] ignored = m_doc.IgnoredTargets().Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries);
+		var targets = m_doc.Targets.Except(ignored);
+		
+		NSPopUpButton popup = new NSPopUpButton(this["targets"]);
+		popup.removeAllItems();	
+		popup.addItemsWithTitles(NSArray.Create(targets.ToArray()));
+						
+		m_buildBtn.Value.setEnabled(targets.Any());
+
+		if (m_doc.Target != null && targets.Contains(m_doc.Target))
+			popup.selectItemWithTitle(m_doc.Target);			
+	}	
 	#endregion
 	
 	#region Errors Data Source ------------------------------------------------
@@ -204,12 +229,34 @@ internal sealed class DocWindowController : NSWindowController
 		
 		if (File.Exists(path))
 		{
-			ProcessStartInfo info = new ProcessStartInfo();
-			info.Arguments        = string.Format("{0}:{1}", path, line);	// TODO: use a pref for this
-			info.FileName         = "bbedit";
-			info.UseShellExecute  = false;
+			string command = m_doc.Editor();
+			string args = null;
+			
+			int i = command.IndexOf(' ');
+			if (i >= 0)
+			{
+				args = command.Substring(i + 1);
+				command = command.Substring(0, i);
+			}
+			
+			try
+			{
+				ProcessStartInfo info = new ProcessStartInfo();
+				info.FileName = command;
+				info.UseShellExecute = false;
+		
+				if (args != null)
+					info.Arguments = string.Format(args, path, line);
 	
-			Process.Start(info);
+				Process.Start(info);
+			}
+			catch (Exception e)
+			{
+				NSAlert alert = NSAlert.Create();
+				alert.setMessageText("Couldn't open the file.");
+				alert.setInformativeText(e.Message);
+				alert.runModal();
+			}
 		}
 		
 		return File.Exists(path);
@@ -255,14 +302,7 @@ internal sealed class DocWindowController : NSWindowController
 			m_doc.StdoutData += this.DoGotStdout;
 			m_doc.StderrData += this.DoGotStderr;
 			
-			NSPopUpButton targets = new NSPopUpButton(this["targets"]);
-			targets.removeAllItems();	
-			targets.addItemsWithTitles(NSArray.Create(m_doc.Targets));
-			
-			m_buildBtn.Value.setEnabled(m_doc.Targets.Length > 0);
-	
-			if (m_doc.Target != null)
-				targets.selectItemWithTitle(m_doc.Target);			
+			rebuildTargets();
 		}
 		catch (Exception e)
 		{	
@@ -443,6 +483,7 @@ internal sealed class DocWindowController : NSWindowController
 	private Document m_doc;
 	private IVar<EnvController> m_env;
 	private IVar<FlagsController> m_flags;
+	private IVar<NSWindow> m_prefs;
 	private IVar<NSTextField> m_statusLabel;
 	private IVar<NSButton> m_buildBtn;
 	private IVar<NSButton> m_cancelBtn;

@@ -36,7 +36,7 @@ namespace MCocoa
 		{
 			return ms_class.Call("stringWithUTF8String:", str).To<NSString>();
 		}
-		
+				
 		public Int32 compare(NSString string_)
 		{
 			IntPtr exception_ = IntPtr.Zero;
@@ -60,7 +60,7 @@ namespace MCocoa
 						
 		public override string ToString()
 		{
-			return this != IntPtr.Zero ? (string) Call("UTF8String") : string.Empty;
+			return this != IntPtr.Zero ? (string) Call("UTF8String") : null;
 		}
 		
 		public static readonly NSString Empty = NSString.Create(string.Empty).retain();

@@ -45,7 +45,7 @@ internal sealed class Document : NSDocument
 	public string Target
 	{
 		get {return m_target;}
-		set {m_target = value;}
+		set {m_target = value; SavePrefs();}
 	}
 			
 	public string[] Targets
@@ -78,6 +78,27 @@ internal sealed class Document : NSDocument
 		get {return m_exitCode;}
 	}
 	
+	public string Editor()
+	{
+		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
+
+		string editor = defaults.stringForKey("editor");
+		if (editor == null)
+			editor = "bbedit {0}:{1}";
+			
+		return editor;
+	}
+						
+	public string IgnoredTargets()
+	{
+		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
+
+		string key = fileURL().absoluteString() + "-ignored";
+		string ignored = defaults.stringForKey(key);
+			
+		return ignored ?? string.Empty;
+	}
+						
 	public EventHandler StateChanged;
 	public delegate void DataHandler(Document doc, string data);
 	public event DataHandler CommandData;
@@ -119,8 +140,9 @@ internal sealed class Document : NSDocument
 			StateChanged(this, EventArgs.Empty);
 	}
 	
-	public void SaveEnvPrefs()
+	public void SavePrefs()
 	{
+		// environment variables
 		string key = fileURL().absoluteString() + "-variables";
 		
 		NSMutableDictionary dict = NSMutableDictionary.Create();
@@ -132,11 +154,17 @@ internal sealed class Document : NSDocument
 		
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
 		defaults.setObjectForKey(dict, key);
+		
+		// default target
+		key = fileURL().absoluteString() + "-defaultTarget";
+		defaults.setObjectForKey(NSString.Create(m_target), key);
 	}
 	
-	public void LoadEnvPrefs()
+	public void LoadPrefs()
 	{
+		// environment variables
 		string key = fileURL().absoluteString() + "-variables";
+		string value;
 				
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
 		NSObject pref = defaults.objectForKey(key);
@@ -147,7 +175,7 @@ internal sealed class Document : NSDocument
 			foreach (var entry in dict)
 			{
 				string name = entry.Key.ToString();
-				string value = entry.Value.ToString();
+				value = entry.Value.ToString();
 		
 				int i = m_vars.FindIndex(e => e.Name == name);
 				if (i >= 0)
@@ -166,6 +194,14 @@ internal sealed class Document : NSDocument
 				}
 			}
 		}
+		
+		// default target
+		key = fileURL().absoluteString() + "-defaultTarget";
+		value = defaults.stringForKey(key);
+		if (value != null && Array.IndexOf(m_builder.Targets, value) >= 0)
+			m_target = value;
+		else
+			m_target = m_builder.Targets[0];
 	}
 	
 	#region Overrides ---------------------------------------------------------
@@ -180,16 +216,10 @@ internal sealed class Document : NSDocument
 			string contents = Marshal.PtrToStringAuto(buffer);
 			
 			m_builder = new MakeBuilder(contents);
-			m_target = m_builder.Default;
 			
 			m_vars.Clear();
 			m_vars.AddRange(m_builder.Variables);
-			LoadEnvPrefs();
-	
-			if (m_builder.Default != null)
-				m_target = m_builder.Default;
-			else if (m_builder.Targets.Length > 0)
-				m_target = m_builder.Targets[0];
+			LoadPrefs();
 		}
 		catch (Exception e)
 		{

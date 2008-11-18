@@ -31,13 +31,18 @@ internal sealed class AppDelegate : NSObject
 {
 	private AppDelegate(IntPtr instance) : base(instance)
 	{
+		NSMutableDictionary dict = NSMutableDictionary.Create();
+		dict.setObjectForKey(NSString.Create("all"), NSString.Create("defaultTarget"));
+		dict.setObjectForKey(NSString.Create("install uninstall"), NSString.Create("ignoredTargets"));
+		dict.setObjectForKey(NSString.Create("bbedit {0}:{1}"), NSString.Create("editor"));
+
+		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
+		defaults.registerDefaults(dict);
 	}
 	
-	#region Delegate Methods
 	public void applicationDidFinishLaunching(NSObject notification)
 	{		
 		NSDocumentController controller = NSDocumentController.sharedDocumentController();
 		controller.openDocument(this);
 	}
-	#endregion	
 }

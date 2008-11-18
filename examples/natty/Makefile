@@ -59,7 +59,7 @@ $(exe-path): $(bin-path)/csc_flags $(gmcs-files) $(source-files)
 	$(CSC) -out:$(exe-path) $(CSC_FLAGS) -r:$(gmcs-resources) -target:exe $(source-files)
 
 # bundle
-localized-resources := MainMenu.nib,Document.nib,Environment.nib,Flags.nib
+localized-resources := MainMenu.nib,Document.nib,Environment.nib,Flags.nib,Preferences.nib
 localized-files := $(shell echo $(localized-resources) | sed "s/,/ /g")
 
 other-resources := AppIcon.icns,Build.png,Cancel.png,$(bin-path)/mobjc-glue.dylib
