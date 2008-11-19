@@ -247,7 +247,7 @@ internal sealed class Generate
 			DoWrite();
 			DoWrite("		public new {0} retain()", m_interface.Name);
 			DoWrite("		{");
-			DoWrite("			Unusned.Value = base.retain();");
+			DoWrite("			Unused.Value = base.retain();");
 			DoWrite("			return this;");
 			DoWrite("		}");
 			DoWrite();
