@@ -3,11 +3,6 @@ set a symbolic breakpoint at -[NSException raise]
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
 * Release checklist:
-	- search for TODO
-	- run smoke
-	- make sure unit tests work
-	- make sure examples work in debug
-	- make sure examples work in release
 	- review tar target
 	- make sure everything is checked in
 	- use svn log -r 1:HEAD > CHANGE_LOG

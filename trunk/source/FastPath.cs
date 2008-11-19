@@ -45,6 +45,8 @@ namespace MCocoa
 
 		public static void FreeBuffer(ValueType instance, IntPtr buffer)
 		{
+			Unused.Value = instance;		// instance is just used to pick the correct overload
+			
 			Marshal.FreeHGlobal(buffer);
 		}
 	}
