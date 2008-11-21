@@ -42,12 +42,12 @@ internal sealed class PrefsController : NSObject
 		NSObject defaults = NSUserDefaultsController.sharedUserDefaultsController();
 		NSDictionary options = NSDictionary.dictionaryWithObjectForKey(NSNumber.Create(true), NSString.Create("NSContinuouslyUpdatesValue"));
 
-		string path = "values.editor";
-		m_editor.Value.bindToObjectWithKeyPathOptions("value", defaults, path, options);
+		NSString path = NSString.Create("values.editor");
+		m_editor.Value.bindToObjectWithKeyPathOptions(NSString.Create("value"), defaults, path, options);
 
 		NSDocument doc = m_owner.Value.Call("document").To<NSDocument>();
-		path = "values." + doc.fileURL().absoluteString() + "-ignored";
-		m_ignored.Value.bindToObjectWithKeyPathOptions("value", defaults, path, options);
+		path = NSString.Create("values." + doc.fileURL().absoluteString() + "-ignored");
+		m_ignored.Value.bindToObjectWithKeyPathOptions(NSString.Create("value"), defaults, path, options);
     }
     
     public void windowWillClose(NSNotification notify)

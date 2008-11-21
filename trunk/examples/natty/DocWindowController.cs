@@ -73,13 +73,13 @@ internal sealed class DocWindowController : NSWindowController
 
 	public void clearTranscript(NSObject sender)
 	{
-		m_outputView.Value.textStorage().mutableString().setString(string.Empty);
+		m_outputView.Value.textStorage().mutableString().setString(NSString.Empty);
 	}
 
 	public void environment(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))
-			NSBundle.loadNibNamedOwner("Environment", this);
+			NSBundle.loadNibNamedOwner(NSString.Create("Environment"), this);
 		Trace.Assert(!NSObject.IsNullOrNil(m_env.Value), "nib didn't set envSheet");
 	
 		m_env.Value.Open(m_doc, window());
@@ -88,7 +88,7 @@ internal sealed class DocWindowController : NSWindowController
 	public void flags(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_flags.Value))
-			NSBundle.loadNibNamedOwner("Flags", this);
+			NSBundle.loadNibNamedOwner(NSString.Create("Flags"), this);
 		Trace.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
 	
 		m_flags.Value.Open(m_doc, window());
@@ -96,7 +96,7 @@ internal sealed class DocWindowController : NSWindowController
 
 	public void showPrefs(NSObject sender)
 	{		
-		NSBundle.loadNibNamedOwner("Preferences", this);
+		NSBundle.loadNibNamedOwner(NSString.Create("Preferences"), this);
 		Trace.Assert(!NSObject.IsNullOrNil(m_prefs.Value), "nib didn't set prefSheet");
 
 		m_prefs.Value.makeKeyAndOrderFront(this);
@@ -114,7 +114,7 @@ internal sealed class DocWindowController : NSWindowController
 		m_buildBtn.Value.setEnabled(targets.Any());
 
 		if (m_doc.Target != null && targets.Contains(m_doc.Target))
-			popup.selectItemWithTitle(m_doc.Target);			
+			popup.selectItemWithTitle(NSString.Create(m_doc.Target));			
 	}	
 	#endregion
 	
@@ -253,8 +253,8 @@ internal sealed class DocWindowController : NSWindowController
 			catch (Exception e)
 			{
 				NSAlert alert = NSAlert.Create();
-				alert.setMessageText("Couldn't open the file.");
-				alert.setInformativeText(e.Message);
+				alert.setMessageText(NSString.Create("Couldn't open the file."));
+				alert.setInformativeText(NSString.Create(e.Message));
 				alert.runModal();
 			}
 		}
@@ -272,7 +272,7 @@ internal sealed class DocWindowController : NSWindowController
 	}
 	
 	#region Overrides ---------------------------------------------------------
-	public NSString windowTitleForDocumentDisplayName(NSString displayName)
+	public new NSString windowTitleForDocumentDisplayName(NSString displayName)
 	{		
 		return NSString.Create(DoGetTitle());
 	}
@@ -283,16 +283,16 @@ internal sealed class DocWindowController : NSWindowController
 		{
 			m_doc = Call("document").To<Document>();	
 				
-			m_outputView.Value.textStorage().mutableString().setString(string.Empty);
+			m_outputView.Value.textStorage().mutableString().setString(NSString.Empty);
 			m_errorTable.Value.setDataSource(this);
 			
 			setShouldCascadeWindows(false);
 			m_transcriptWindow.Value.windowController().setShouldCascadeWindows(false);
 			m_errorWindow.Value.windowController().setShouldCascadeWindows(false);
 			
-			window().setFrameAutosaveName(m_doc.Path + "-build window");
-			m_transcriptWindow.Value.setFrameAutosaveName(m_doc.Path + "-transcript window");
-			m_errorWindow.Value.setFrameAutosaveName(m_doc.Path + "-error window");
+			window().setFrameAutosaveName(NSString.Create(m_doc.Path + "-build window"));
+			m_transcriptWindow.Value.setFrameAutosaveName(NSString.Create(m_doc.Path + "-transcript window"));
+			m_errorWindow.Value.setFrameAutosaveName(NSString.Create(m_doc.Path + "-error window"));
 			
 			m_transcriptWindow.Value.windowController().setNextResponder(this);
 			m_errorWindow.Value.windowController().setNextResponder(this);
@@ -308,8 +308,8 @@ internal sealed class DocWindowController : NSWindowController
 		{	
 			// By default cocoa just logs a lame message to the console...
 			NSAlert alert = NSAlert.Create();
-			alert.setMessageText("Couldn't open the document.");
-			alert.setInformativeText(e.Message);
+			alert.setMessageText(NSString.Create("Couldn't open the document."));
+			alert.setInformativeText(NSString.Create(e.Message));
 			alert.runModal();
 			throw;
 		}
@@ -322,7 +322,7 @@ internal sealed class DocWindowController : NSWindowController
 		{
 			case State.Building:
 				m_startTime = DateTime.Now;
-				m_statusLabel.Value.setStringValue("building...");
+				m_statusLabel.Value.setStringValue(NSString.Create("building..."));
 				m_statusLabel.Value.setTextColor(NSColor.controlTextColor());
 				m_buildBtn.Value.setEnabled(false);
 				m_cancelBtn.Value.setEnabled(true);
@@ -343,7 +343,7 @@ internal sealed class DocWindowController : NSWindowController
 				break;
 
 			case State.Canceled:
-				m_statusLabel.Value.setStringValue("canceled");
+				m_statusLabel.Value.setStringValue(NSString.Create("canceled"));
 				m_statusLabel.Value.setTextColor(NSColor.orangeColor());
 				m_buildBtn.Value.setEnabled(true);
 				m_cancelBtn.Value.setEnabled(false);
@@ -370,15 +370,15 @@ internal sealed class DocWindowController : NSWindowController
 				else
 					++numWarnings;
 			if (numErrors == 1 && numWarnings == 0)
-				m_statusLabel.Value.setStringValue("one error");
+				m_statusLabel.Value.setStringValue(NSString.Create("one error"));
 			else if (numErrors == 0 && numWarnings == 1)
-				m_statusLabel.Value.setStringValue("one warning");
+				m_statusLabel.Value.setStringValue(NSString.Create("one warning"));
 			else if (numErrors > 0 && numWarnings == 0)
-				m_statusLabel.Value.setStringValue(string.Format("{0} errors", numErrors));
+				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} errors", numErrors)));
 			else if (numErrors == 0 && numWarnings > 0)
-				m_statusLabel.Value.setStringValue(string.Format("{0} warnings", numWarnings));
+				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} warnings", numWarnings)));
 			else
-				m_statusLabel.Value.setStringValue(string.Format("{0} errors, {1} warnings", numErrors, numWarnings));
+				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} errors, {1} warnings", numErrors, numWarnings)));
 
 			if (numErrors > 0)
 				m_statusLabel.Value.setTextColor(NSColor.redColor());
@@ -388,12 +388,12 @@ internal sealed class DocWindowController : NSWindowController
 		else if (m_doc.ExitCode == 0)
 		{
 			TimeSpan elapsed = DateTime.Now - m_startTime;
-			m_statusLabel.Value.setStringValue(string.Format("built in {0:0.0} secs", elapsed.TotalSeconds));
+			m_statusLabel.Value.setStringValue(NSString.Create(string.Format("built in {0:0.0} secs", elapsed.TotalSeconds)));
 			m_statusLabel.Value.setTextColor(NSColor.controlTextColor());
 		}
 		else
 		{
-			m_statusLabel.Value.setStringValue("failed with with exit code " + m_doc.ExitCode);
+			m_statusLabel.Value.setStringValue(NSString.Create("failed with with exit code " + m_doc.ExitCode));
 			m_statusLabel.Value.setTextColor(NSColor.redColor());
 		}
 	}
@@ -420,7 +420,7 @@ internal sealed class DocWindowController : NSWindowController
 			
 			if (!m_errorWindow.Value.isVisible())
 			{
-				m_errorWindow.Value.setTitle(string.Format("{0} {1} Errors", DoGetTitle(), m_doc.Target));
+				m_errorWindow.Value.setTitle(NSString.Create(string.Format("{0} {1} Errors", DoGetTitle(), m_doc.Target)));
 				m_errorWindow.Value.makeKeyAndOrderFront(this);
 				m_errorTable.Value.selectRowIndexesByExtendingSelection(NSIndexSet.indexSetWithIndex(0), false);
 			}
@@ -440,7 +440,7 @@ internal sealed class DocWindowController : NSWindowController
 	private void DoShowOutput()
 	{
 		m_transcriptWindow.Value.makeKeyAndOrderFront(this);
-		m_transcriptWindow.Value.setTitle(DoGetTitle() + " Transcript");
+		m_transcriptWindow.Value.setTitle(NSString.Create(DoGetTitle() + " Transcript"));
 	}
 
 	private string DoGetTitle()
@@ -457,7 +457,7 @@ internal sealed class DocWindowController : NSWindowController
 	private static NSDictionary DoCreateCommandAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
-		dict.setObjectForKey(NSFont.fontWithNameSize(ms_fontName + "-Bold", 12.0f), Externs.NSFontAttributeName);
+		dict.setObjectForKey(NSFont.fontWithNameSize(NSString.Create(ms_fontName + "-Bold"), 12.0f), Externs.NSFontAttributeName);
 		dict.retain();
 		return dict;
 	}
@@ -465,7 +465,7 @@ internal sealed class DocWindowController : NSWindowController
 	private static NSDictionary DoCreateStdoutAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
-		dict.setObjectForKey(NSFont.fontWithNameSize(ms_fontName, 12.0f), Externs.NSFontAttributeName);
+		dict.setObjectForKey(NSFont.fontWithNameSize(NSString.Create(ms_fontName), 12.0f), Externs.NSFontAttributeName);
 		dict.retain();
 		return dict;
 	}
@@ -473,7 +473,7 @@ internal sealed class DocWindowController : NSWindowController
 	private static NSDictionary DoCreateStderrAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
-		dict.setObjectForKey(NSFont.fontWithNameSize(ms_fontName, 12.0f), Externs.NSFontAttributeName);
+		dict.setObjectForKey(NSFont.fontWithNameSize(NSString.Create(ms_fontName), 12.0f), Externs.NSFontAttributeName);
 		dict.setObjectForKey(NSColor.redColor(), Externs.NSForegroundColorAttributeName);
 		dict.retain();
 		return dict;

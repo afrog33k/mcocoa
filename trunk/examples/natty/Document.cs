@@ -82,7 +82,7 @@ internal sealed class Document : NSDocument
 	{
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
 
-		string editor = defaults.stringForKey("editor");
+		string editor = defaults.stringForKey(NSString.Create("editor")).To<NSString>().ToString();
 		if (editor == null)
 			editor = "bbedit {0}:{1}";
 			
@@ -94,7 +94,7 @@ internal sealed class Document : NSDocument
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
 
 		string key = fileURL().absoluteString() + "-ignored";
-		string ignored = defaults.stringForKey(key);
+		string ignored = defaults.stringForKey(NSString.Create(key)).To<NSString>().ToString();
 			
 		return ignored ?? string.Empty;
 	}
@@ -153,11 +153,11 @@ internal sealed class Document : NSDocument
 		}
 		
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
-		defaults.setObjectForKey(dict, key);
+		defaults.setObjectForKey(dict, NSString.Create(key));
 		
 		// default target
 		key = fileURL().absoluteString() + "-defaultTarget";
-		defaults.setObjectForKey(NSString.Create(m_target), key);
+		defaults.setObjectForKey(NSString.Create(m_target), NSString.Create(key));
 	}
 	
 	public void LoadPrefs()
@@ -167,7 +167,7 @@ internal sealed class Document : NSDocument
 		string value;
 				
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
-		NSObject pref = defaults.objectForKey(key);
+		NSObject pref = defaults.objectForKey(NSString.Create(key));
 		if (!NSObject.IsNullOrNil(pref))
 		{
 			NSMutableDictionary dict = pref.To<NSMutableDictionary>();
@@ -197,7 +197,7 @@ internal sealed class Document : NSDocument
 		
 		// default target
 		key = fileURL().absoluteString() + "-defaultTarget";
-		value = defaults.stringForKey(key);
+		value = defaults.stringForKey(NSString.Create(key)).To<NSString>().ToString();
 		if (value != null && Array.IndexOf(m_builder.Targets, value) >= 0)
 			m_target = value;
 		else
@@ -228,7 +228,7 @@ internal sealed class Document : NSDocument
 			userInfo.setObjectForKey(NSString.Create(e.Message), NSString.Create(Externs.NSLocalizedFailureReasonErrorKey));
 			
 			NSError error = new NSError(NSError.alloc().initWithDomainCodeUserInfo(
-				Externs.Cocoa3Domain, 1, userInfo));
+				NSString.Create(Externs.Cocoa3Domain), 1, userInfo));
 			Marshal.WriteIntPtr(outError, (IntPtr) error);
 
 			read = false;

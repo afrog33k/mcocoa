@@ -55,7 +55,7 @@ namespace MCocoa
 			// The C# objects will be created the first time a managed method is called.
 			NSMutableDictionary dict = NSMutableDictionary.Create();					
 			bool loaded = NSBundle.mainBundle().loadNibFileExternalNameTableWithZone_i(
-				nibName, dict, IntPtr.Zero);
+				NSString.Create(nibName), dict, IntPtr.Zero);
 							
 			if (!loaded)
 				throw new InvalidOperationException("Couldn't load " + nibName + ".");

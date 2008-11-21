@@ -39,6 +39,9 @@ namespace MCocoa
 			
 			GCHandle handle = GCHandle.Alloc(values, GCHandleType.Pinned);
 			Unused.Value = Call("appendBezierPathWithPoints:count:", handle.AddrOfPinnedObject(), points.Length);
+			handle.Free();
 		}
+		
+		// TODO: getLineDashCountPhase is wrong (the first argument should be an array)
 	}
 }
