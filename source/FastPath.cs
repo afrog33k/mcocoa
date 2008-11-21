@@ -27,6 +27,7 @@ namespace MCocoa
 {
 	public static class FastPath
 	{		
+		// NSObject
 		public static IntPtr CreateBuffer(NSObject instance)
 		{
 			return instance;
@@ -34,8 +35,28 @@ namespace MCocoa
 
 		public static void FreeBuffer(NSObject instance, IntPtr buffer)
 		{
+			Unused.Value = instance;		// instance is just used to pick the correct overload
+			Unused.Value = buffer;			
 		}
 
+		// string
+		public static IntPtr CreateU8Buffer(string instance)
+		{
+			return Marshal.StringToHGlobalAuto(instance);
+		}
+
+		public static IntPtr CreateU32Buffer(string instance)
+		{
+			return Marshal.StringToHGlobalUni(instance);
+		}
+
+		public static void FreeBuffer(string instance, IntPtr buffer)
+		{
+			Unused.Value = instance;		
+			Marshal.FreeHGlobal(buffer);
+		}
+
+		// structs
 		public static IntPtr CreateBuffer(ValueType instance)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(instance));
@@ -45,8 +66,7 @@ namespace MCocoa
 
 		public static void FreeBuffer(ValueType instance, IntPtr buffer)
 		{
-			Unused.Value = instance;		// instance is just used to pick the correct overload
-			
+			Unused.Value = instance;	
 			Marshal.FreeHGlobal(buffer);
 		}
 	}

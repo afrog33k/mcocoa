@@ -21,6 +21,7 @@
 
 using MObjc;
 using System;
+using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
@@ -43,7 +44,11 @@ namespace MCocoa
 		
 		public static NSGradient Create(NSArray colors, float[] locations, NSColorSpace space)
 		{
-			return ms_class.Call("alloc").Call("initWithColors:atLocations:colorSpace:", colors, locations, space).To<NSGradient>();
+			GCHandle handle = GCHandle.Alloc(locations, GCHandleType.Pinned);
+			NSGradient result = ms_class.Call("alloc").Call("initWithColors:atLocations:colorSpace:", colors, handle.AddrOfPinnedObject(), space).To<NSGradient>();
+			handle.Free();
+			
+			return result;
 		}
 	}
 }

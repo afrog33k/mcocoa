@@ -484,7 +484,7 @@ internal sealed class Generate
 			{
 				if (minfo.ArgTypes[i].ManagedOut.Length > 0)
 				{
-					if (minfo.ArgTypes[i].ManagedOut == "string")
+					if (minfo.ArgTypes[i].ManagedOut == "string" || minfo.ArgTypes[i].ManagedOut == "NSString")
 						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[4];{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 					else
 						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[Marshal.SizeOf(typeof({1}))];{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
@@ -510,12 +510,9 @@ internal sealed class Generate
 		
 		if (rtype != "void")
 		{
-			if (rtype != "string" || minfo.ResultType.Native != "NSString *")
-			{
-				m_buffer.Append("(");
-				m_buffer.Append(rtype == "bool" ? "sbyte" : rtype);
-				m_buffer.Append(") ");
-			}
+			m_buffer.Append("(");
+			m_buffer.Append(rtype == "bool" ? "sbyte" : rtype);
+			m_buffer.Append(") ");
 		}
 		
 		if (m_interface.Category != null && m_interface.Name == "NSObject")
@@ -530,13 +527,7 @@ internal sealed class Generate
 		for (int i = 0; i < minfo.ArgNames.Length; ++i)
 		{
 			m_buffer.Append(", ");
-			if (minfo.ArgTypes[i].Native == "NSString *")
-			{
-				m_buffer.Append("NSString.Create(");
-				m_buffer.Append(minfo.ArgNames[i].Managed);
-				m_buffer.Append(")");
-			}
-			else if (minfo.ArgTypes[i].Native == "SEL")
+			if (minfo.ArgTypes[i].Native == "SEL")
 			{
 				string aname = minfo.ArgNames[i].Managed;
 				m_buffer.Append(aname + " != null ? new Selector(");
@@ -552,11 +543,7 @@ internal sealed class Generate
 				m_buffer.Append(minfo.ArgNames[i].Managed);
 		}
 		m_buffer.Append(")");
-		if (minfo.ResultType.Managed == "string" && minfo.ResultType.Native == "NSString *")
-		{
-			m_buffer.Append(".To<NSString>().ToString()");
-		}
-		else if (minfo.ResultType.Managed == "bool")
+		if (minfo.ResultType.Managed == "bool")
 		{
 			m_buffer.Append(" != 0");
 		}
@@ -756,14 +743,17 @@ internal sealed class Generate
 	
 	private void DoAppendFastArgProlog(MethodInfo minfo, int i)
 	{
-		if (minfo.ArgTypes[i].Native == "NSString *")
+		if (minfo.ArgTypes[i].Native == "const char *")
 		{
-		}
-		else if (minfo.ArgTypes[i].Native == "const char *")
-		{
+			m_buffer.AppendFormat("			IntPtr buffer_{0} = ", minfo.ArgNames[i].Managed);
+			m_buffer.AppendFormat("FastPath.CreateU8Buffer({0}", minfo.ArgNames[i].Managed);
+			m_buffer.AppendLine(");");
 		}
 		else if (minfo.ArgTypes[i].Native == "const unichar *")
 		{
+			m_buffer.AppendFormat("			IntPtr buffer_{0} = ", minfo.ArgNames[i].Managed);
+			m_buffer.AppendFormat("FastPath.CreateU32Buffer({0}", minfo.ArgNames[i].Managed);
+			m_buffer.AppendLine(");");
 		}
 		else if (minfo.ArgTypes[i].Native == "SEL")
 		{
@@ -783,25 +773,7 @@ internal sealed class Generate
 	{
 		string aname = minfo.ArgNames[i].Managed;
 
-		if (minfo.ArgTypes[i].Native == "NSString *")
-		{
-			m_buffer.Append("NSString.Create(");
-			m_buffer.Append(minfo.ArgNames[i].Managed);
-			m_buffer.Append(")");
-		}
-		else if (minfo.ArgTypes[i].Native == "const char *")
-		{
-			m_buffer.Append("Marshal.StringToHGlobalAnsi(");
-			m_buffer.Append(minfo.ArgNames[i].Managed);
-			m_buffer.Append(")");
-		}
-		else if (minfo.ArgTypes[i].Native == "const unichar *")
-		{
-			m_buffer.Append("Marshal.StringToHGlobalUni(");
-			m_buffer.Append(minfo.ArgNames[i].Managed);
-			m_buffer.Append(")");
-		}
-		else if (minfo.ArgTypes[i].Native == "SEL")
+		if (minfo.ArgTypes[i].Native == "SEL")
 		{
 			m_buffer.Append(aname + " != null ? new Selector(");
 			m_buffer.Append(aname);
@@ -841,16 +813,7 @@ internal sealed class Generate
 	
 	private void DoAppendFastArgEpilog(MethodInfo minfo, int i)
 	{
-		if (minfo.ArgTypes[i].Native == "NSString *")
-		{
-		}
-		else if (minfo.ArgTypes[i].Native == "const char *")
-		{
-		}
-		else if (minfo.ArgTypes[i].Native == "const unichar *")
-		{
-		}
-		else if (minfo.ArgTypes[i].Native == "SEL")
+		if (minfo.ArgTypes[i].Native == "SEL")
 		{
 		}
 		else if (minfo.ArgTypes[i].Managed == "Int16" || minfo.ArgTypes[i].Managed == "UInt16" || minfo.ArgTypes[i].Managed == "byte" || minfo.ArgTypes[i].Managed == "sbyte" || minfo.ArgTypes[i].Managed == "char" || minfo.ArgTypes[i].Managed == "bool" || minfo.ArgTypes[i].Managed == "Int32" || minfo.ArgTypes[i].Managed == "UInt32" || minfo.ArgTypes[i].Managed == "IntPtr")
@@ -885,9 +848,6 @@ internal sealed class Generate
 
 			else if (rtype == "UInt32")
 				m_buffer.AppendLine("			return unchecked((UInt32) result_);");
-
-			else if (rtype == "string" && minfo.ResultType.Native == "NSString *")
-				m_buffer.AppendLine("			return new NSString(result_).ToString();");
 
 			else if (rtype == "IntPtr")
 				m_buffer.AppendLine("			return result_;");
@@ -924,6 +884,10 @@ internal sealed class Generate
 						m_buffer.AppendFormat("			{0} = Marshal.Read{1}({0}Ptr);{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
 						break;
 					
+					case "NSString":
+						m_buffer.AppendFormat("			{0} = new NSString(Marshal.ReadIntPtr({0}Ptr));{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+						break;
+					
 					case "string":
 						m_buffer.AppendFormat("			{0} = new NSString(Marshal.ReadIntPtr({0}Ptr)).ToString();{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 						break;
@@ -933,6 +897,9 @@ internal sealed class Generate
 							m_buffer.AppendFormat("			{0} = ({1}) Marshal.PtrToStructure({0}Ptr, typeof({1}));{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
 						break;
 				}
+
+				if (minfo.ArgTypes[i].ManagedOut.Length > 0)
+					m_buffer.AppendFormat("			{0}Handle.Free();{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 			}
 			
 			if (minfo.ResultType.Managed != "void")
@@ -1507,7 +1474,6 @@ internal sealed class Generate
 					
 				case "const char *":
 				case "const unichar *":
-				case "NSString *":
 					return "string";
 					
 				case "uint16_t":
@@ -1629,12 +1595,12 @@ internal sealed class Generate
 				case "long long *":
 					return "out Int64";
 					
+				case "NSString **":
+					return "out NSString";
+					
 				case "signed char *":
 					return "out sbyte";
-					
-				case "NSString **":
-					return "out string";
-					
+										
 				case "uint16_t *":
 				case "unsigned short *":
 					return "out UInt16";

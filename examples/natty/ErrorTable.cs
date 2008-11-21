@@ -41,7 +41,7 @@ internal sealed class ErrorTable : NSTableView
 
 	public new void keyDown(NSEvent evt)
 	{
-		string chars = evt.characters();
+		string chars = evt.characters().ToString();
 		
 		if (chars.Length == 1 && chars[0] == '\t')
 		{

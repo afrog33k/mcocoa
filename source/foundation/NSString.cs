@@ -29,39 +29,57 @@ namespace MCocoa
 	{		
 		public static NSString Create(char ch)
 		{
-			return ms_class.Call("stringWithUTF8String:", new string(ch, 1)).To<NSString>();
+			string s = new string(ch, 1);
+			
+			IntPtr buffer = Marshal.StringToHGlobalAuto(s);
+			NSString result = ms_class.Call("stringWithUTF8String:", buffer).To<NSString>();
+			Marshal.FreeHGlobal(buffer);
+			
+			return result;
 		}
 		
 		public static NSString Create(string str) 
 		{
-			return ms_class.Call("stringWithUTF8String:", str).To<NSString>();
+			IntPtr buffer = Marshal.StringToHGlobalAuto(str);
+			NSString result = ms_class.Call("stringWithUTF8String:", buffer).To<NSString>();
+			Marshal.FreeHGlobal(buffer);
+			
+			return result;
 		}
 				
-		public Int32 compare(NSString string_)
+		public void getCharacters(out string str)
 		{
-			IntPtr exception_ = IntPtr.Zero;
-			Int32 result_ = DirectCalls.Callip(this, new Selector("compare:"), string_, ref exception_);
-			if (exception_ != IntPtr.Zero)
-				CocoaException.Raise(exception_);
-
-			return result_;
+			IntPtr buffer = Marshal.AllocHGlobal((int) (2*length()));
+			Call("getCharacters:", buffer);
+			
+			str = Marshal.PtrToStringUni(buffer, (int) length());
+			Marshal.FreeHGlobal(buffer);
 		}
-
-		public string GetCharacters(NSRange range)
+						
+		public void getCharactersRange(NSRange range, out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal(2*range.length);
 			Call("getCharacters:range:", buffer, range);
 			
-			string result = Marshal.PtrToStringUni(buffer, range.length);
+			str = Marshal.PtrToStringUni(buffer, range.length);
 			Marshal.FreeHGlobal(buffer);
-				
-			return result;
 		}
 						
 		public override string ToString()
 		{
-			return this != IntPtr.Zero ? (string) Call("UTF8String") : null;
+			return this != IntPtr.Zero ? Marshal.PtrToStringAuto((IntPtr) Call("UTF8String")) : null;
 		}
+		
+		// We can't add this because of a compiler bug in mono 2.0.
+//		public static bool operator==(NSString lhs, string rhs)
+//		{
+//			return lhs.ToString() == rhs;
+//		}
+		
+//		public static bool operator!=(NSString lhs, string rhs)
+//		{
+//			return lhs.ToString() != rhs;
+//		}
 		
 		public static readonly NSString Empty = NSString.Create(string.Empty).retain();
 	}

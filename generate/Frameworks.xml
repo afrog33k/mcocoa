@@ -27,12 +27,14 @@
 			<Method interface = "NSSet" method = "setWithObjects:" reason = "because it is variadic"/>
 			<Method interface = "NSSet" method = "initWithObjects:" reason = "because it is variadic"/>
 
-			<Method interface = "NSString" method = "stringByAppendingFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "initWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "initWithFormat:locale:" reason = "because it is variadic"/>
-			<Method interface = "NSString" method = "stringWithFormat:" reason = "because it is variadic"/>
-			<Method interface = "NSString" method = "localizedStringWithFormat:" reason = "because it is variadic"/>
+			<Method interface = "NSString" method = "initWithCharactersNoCopy:length:freeWhenDone:" reason = "because the characters need to be copied"/>
+			<Method interface = "NSString" method = "getCharacters:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSString" method = "getCharacters:range:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSString" method = "localizedStringWithFormat:" reason = "because it is variadic"/>
+			<Method interface = "NSString" method = "stringByAppendingFormat:" reason = "because it is variadic"/>
+			<Method interface = "NSString" method = "stringWithFormat:" reason = "because it is variadic"/>
 		</Blacklist>
 	</Framework> 
 

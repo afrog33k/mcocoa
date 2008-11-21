@@ -35,16 +35,16 @@ internal class MakeBuilder
 
 		try
 		{
-			m_scanner = NSScanner.scannerWithString(contents);
+			m_scanner = NSScanner.scannerWithString(NSString.Create(contents));
 			m_scanner.setCharactersToBeSkipped(NSCharacterSet.whitespaceCharacterSet());	// does not include new lines
 			m_scanner.setCaseSensitive(true);
 			
 			m_nameChars = NSMutableCharacterSet.Create();
 			m_nameChars.formUnionWithCharacterSet(NSCharacterSet.alphanumericCharacterSet());		
-			m_nameChars.addCharactersInString("_-");		
+			m_nameChars.addCharactersInString(NSString.Create("_-"));		
 	
 			m_eolChars = NSMutableCharacterSet.Create();
-			m_eolChars.addCharactersInString("\r\n#");		// lines are ended by comments or new line characters
+			m_eolChars.addCharactersInString(NSString.Create("\r\n#"));		// lines are ended by comments or new line characters
 			
 			DoParse();
 
@@ -118,25 +118,25 @@ internal class MakeBuilder
 	{		
 		while (!m_scanner.isAtEnd())
 		{
-			string name, token;
+			NSString name, token;
 			if (m_scanner.scanCharactersFromSetIntoString(m_nameChars, out name))
 			{
-				if (name == "ifdef" || name == "ifndef")
+				if (name.ToString() == "ifdef" || name.ToString() == "ifndef")
 				{
 					EnvVar v = DoParseDefine();
 					if (v != null)
 						if (!m_variables.Any(x => x.Name == v.Name))
 							m_variables.Add(v);
 				}
-				else if (m_scanner.scanStringIntoString(":", out token))
+				else if (m_scanner.scanStringIntoString(NSString.Create(":"), out token))
 				{
-					if (!m_scanner.scanStringIntoString("=", out token))
-						if (name != "else" && !DoIsAutomake(name))
-							m_targets.Add(name);
+					if (!m_scanner.scanStringIntoString(NSString.Create("="), out token))
+						if (name.ToString() != "else" && !DoIsAutomake(name.ToString()))
+							m_targets.Add(name.ToString());
 				}
 				else
 				{
-					EnvVar v = DoParseVariable(name);
+					EnvVar v = DoParseVariable(name.ToString());
 					if (v != null)
 					{
 						EnvVar old = m_variables.SingleOrDefault(x => x.Name == v.Name);
@@ -157,13 +157,13 @@ internal class MakeBuilder
 	{
 		EnvVar variable = null;
 				
-		string token;
-		if (m_scanner.scanStringIntoString("?=", out token))
+		NSString token;
+		if (m_scanner.scanStringIntoString(NSString.Create("?="), out token))
 		{
-			string value;
+			NSString value;
 			if (m_scanner.scanUpToCharactersFromSetIntoString(m_eolChars, out value))
 			{
-				variable = new EnvVar(name, value.Trim());
+				variable = new EnvVar(name, value.ToString().Trim());
 			}
 		}
 		
@@ -175,10 +175,10 @@ internal class MakeBuilder
 	{
 		EnvVar variable = null;
 		
-		string name;
+		NSString name;
 		if (m_scanner.scanCharactersFromSetIntoString(m_nameChars, out name))
 		{
-			variable = new EnvVar(name, string.Empty);
+			variable = new EnvVar(name.ToString(), string.Empty);
 		}
 		
 		return variable;
@@ -186,7 +186,7 @@ internal class MakeBuilder
 			
 	private void DoSkipToNextLine()
 	{
-		string token;
+		NSString token;
 		Unused.Value = m_scanner.scanUpToCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
 		Unused.Value = m_scanner.scanCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
 	}

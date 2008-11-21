@@ -46,7 +46,10 @@ namespace MCocoa
 			GCHandle handle = GCHandle.Alloc(ptrs, GCHandleType.Pinned);
 			IntPtr objects = handle.AddrOfPinnedObject();
 
-			return ms_class.Call("arrayWithObjects:count:", objects, (uint) args.Length).To<NSArray>();
+			NSArray result = ms_class.Call("arrayWithObjects:count:", objects, (uint) args.Length).To<NSArray>();
+			handle.Free();
+			
+			return result;
 		}
 
 		public IEnumerator<NSObject> GetEnumerator()
