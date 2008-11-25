@@ -8,7 +8,7 @@ ifdef RELEASE
 	# Note that -debug+ just generates an mdb file.
 	export CSC_FLAGS ?= -checked+ -debug+ -warn:4 -optimize+ -d:TRACE
 else
-	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -define:DEBUG -d:TRACE
+	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -d:DEBUG -d:TRACE
 endif
 
 INSTALL_DIR ?= /usr/local/lib

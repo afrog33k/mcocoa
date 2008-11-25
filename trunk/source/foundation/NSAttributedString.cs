@@ -27,6 +27,13 @@ namespace MCocoa
 {
 	public partial class NSAttributedString : NSObject
 	{		
+		public static NSAttributedString Create(string text)
+		{
+			NSAttributedString result = ms_class.Alloc().Call("initWithString:", NSString.Create(text)).To<NSAttributedString>();
+			result.autorelease();
+			return result;
+		}
+				
 		public static NSAttributedString Create(string text, NSString attr, NSObject value)
 		{
 			return Create(text, CreateDict(attr, value));
@@ -34,14 +41,14 @@ namespace MCocoa
 				
 		public static NSAttributedString Create(char ch, NSDictionary attrs)
 		{
-			NSAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSAttributedString>();
+			NSAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSAttributedString>();
 			result.autorelease();
 			return result;
 		}
 		
 		public static NSAttributedString Create(string text, NSDictionary attrs) 
 		{
-			NSAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSAttributedString>();
+			NSAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSAttributedString>();
 			result.autorelease();
 			return result;
 		}
@@ -51,6 +58,11 @@ namespace MCocoa
 			NSMutableDictionary dict = NSMutableDictionary.Create();
 			dict.setObjectForKey(value, attr);
 			return dict;
+		}
+						
+		public override string ToString()
+		{
+			return this != IntPtr.Zero ? string_().ToString() : null;
 		}
 	}
 
@@ -63,14 +75,14 @@ namespace MCocoa
 				
 		public new static NSMutableAttributedString Create(char ch, NSDictionary attrs)
 		{
-			NSMutableAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSMutableAttributedString>();
+			NSMutableAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSMutableAttributedString>();
 			result.autorelease();
 			return result;
 		}
 		
 		public new static NSMutableAttributedString Create(string text, NSDictionary attrs) 
 		{
-			NSMutableAttributedString result = ms_class.Call("alloc").Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSMutableAttributedString>();
+			NSMutableAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSMutableAttributedString>();
 			result.autorelease();
 			return result;
 		}

@@ -5,9 +5,12 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 managed 0.1 secs
 native 4.9 secs
 
+* NSNotificationCenter.defaultCenter should return a NSNotificationCenter.
+* Window controllers should use the new ctor.
 * Might want a white list for out arguments (can't tell from the headers if they
   are supposed to be arrays or not)
 * Submit a bug for operator== hiding
+* Need to handle NSError ** types.
 * Work on Natty:
 	- prefs could be used to save fonts, colors
 	- need to support stdin (important for install or removing files
