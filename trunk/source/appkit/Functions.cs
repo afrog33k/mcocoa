@@ -34,6 +34,38 @@ namespace MCocoa
 			NativeMethods.NSBeep();
 		}
 
+		#region Alerts --------------------------------------------------------
+		public static int NSRunAlertPanel(NSString title, NSString message)
+		{
+			return (int) NativeMethods.NSRunAlertPanel(title, message, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+		}
+
+		public static int NSRunAlertPanel(NSString title, NSString message, NSString defaultButton, NSString alternateButton, NSString otherButton)
+		{
+			return (int) NativeMethods.NSRunAlertPanel(title, message, defaultButton, alternateButton, otherButton);
+		}
+
+		public static int NSRunInformationalAlertPanel(NSString title, NSString message)
+		{
+			return (int) NativeMethods.NSRunInformationalAlertPanel(title, message, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+		}
+
+		public static int NSRunInformationalAlertPanel(NSString title, NSString message, NSString defaultButton, NSString alternateButton, NSString otherButton)
+		{
+			return (int) NativeMethods.NSRunInformationalAlertPanel(title, message, defaultButton, alternateButton, otherButton);
+		}
+
+		public static int NSRunCriticalAlertPanel(NSString title, NSString message)
+		{
+			return (int) NativeMethods.NSRunCriticalAlertPanel(title, message, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+		}
+
+		public static int NSRunCriticalAlertPanel(NSString title, NSString message, NSString defaultButton, NSString alternateButton, NSString otherButton)
+		{
+			return (int) NativeMethods.NSRunCriticalAlertPanel(title, message, defaultButton, alternateButton, otherButton);
+		}
+		#endregion
+
 		#region Framing Rectangles --------------------------------------------
 		public static void NSFrameRect(NSRect rect)
 		{
@@ -119,6 +151,15 @@ namespace MCocoa
 	
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static void NSRectFillUsingOperation(NSRect rect, int op);
+
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static int NSRunAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);
+
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static int NSRunInformationalAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);
+
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static int NSRunCriticalAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);
 		}
 		#endregion
 	}

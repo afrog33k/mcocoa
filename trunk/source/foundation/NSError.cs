@@ -44,4 +44,13 @@ namespace MCocoa
 		public static readonly NSString NSLocalizedRecoveryOptionsErrorKey = NSString.Create("NSLocalizedRecoveryOptions").retain();
 		public static readonly NSString NSRecoveryAttempterErrorKey = NSString.Create("NSRecoveryAttempter").retain();
 	}
+
+	public partial class NSError : NSObject
+	{
+		public void Raise()
+		{
+			string message = string.Format("{0} ({1})", localizedDescription().description(), localizedFailureReason().description());
+			throw new InvalidOperationException(message);
+		}
+	}
 }

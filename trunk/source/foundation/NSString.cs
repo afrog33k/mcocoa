@@ -47,6 +47,15 @@ namespace MCocoa
 			return result;
 		}
 				
+		public static NSString Create(string format, params object[] args) 
+		{
+			IntPtr buffer = Marshal.StringToHGlobalAuto(string.Format(format, args));
+			NSString result = ms_class.Call("stringWithUTF8String:", buffer).To<NSString>();
+			Marshal.FreeHGlobal(buffer);
+			
+			return result;
+		}
+				
 		public void getCharacters(out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal((int) (2*length()));

@@ -484,13 +484,16 @@ internal sealed class Generate
 			{
 				if (minfo.ArgTypes[i].ManagedOut.Length > 0)
 				{
-					if (minfo.ArgTypes[i].ManagedOut == "string" || minfo.ArgTypes[i].ManagedOut == "NSString")
-						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[4];{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+					if (minfo.ArgTypes[i].ManagedOut == "NSError" || minfo.ArgTypes[i].ManagedOut == "NSString")
+					{
+						m_buffer.AppendFormat("			IntPtr {0}Ptr = Marshal.AllocHGlobal(4);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+						m_buffer.AppendFormat("			Marshal.WriteInt32({0}Ptr, 0);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+						m_buffer.AppendLine();
+					}
 					else
-						m_buffer.AppendFormat("			byte[] {0}Buffer = new byte[Marshal.SizeOf(typeof({1}))];{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
-					m_buffer.AppendFormat("			GCHandle {0}Handle = GCHandle.Alloc({0}Buffer, GCHandleType.Pinned);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
-					m_buffer.AppendFormat("			IntPtr {0}Ptr = {0}Handle.AddrOfPinnedObject();{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
-					m_buffer.AppendLine();
+					{
+						m_buffer.AppendFormat("			IntPtr {0}Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof({1})));{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
+					}
 				}
 			}
 		}
@@ -884,6 +887,11 @@ internal sealed class Generate
 						m_buffer.AppendFormat("			{0} = Marshal.Read{1}({0}Ptr);{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
 						break;
 					
+					case "NSError":
+						m_buffer.AppendFormat("			IntPtr {0}Value = Marshal.ReadIntPtr({0}Ptr);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+						m_buffer.AppendFormat("			{0} = {0}Value != IntPtr.Zero ? new NSError({0}Value) : null;{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+						break;
+					
 					case "NSString":
 						m_buffer.AppendFormat("			{0} = new NSString(Marshal.ReadIntPtr({0}Ptr));{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 						break;
@@ -899,7 +907,7 @@ internal sealed class Generate
 				}
 
 				if (minfo.ArgTypes[i].ManagedOut.Length > 0)
-					m_buffer.AppendFormat("			{0}Handle.Free();{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
+					m_buffer.AppendFormat("			Marshal.FreeHGlobal({0}Ptr);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 			}
 			
 			if (minfo.ResultType.Managed != "void")
@@ -1595,8 +1603,18 @@ internal sealed class Generate
 				case "long long *":
 					return "out Int64";
 					
+				case "NSRange **":
+				case "NSRangePointer":
+					return "out NSRange";
+					
+				case "NSError **":
+					return "out NSError";
+					
 				case "NSString **":
 					return "out NSString";
+					
+				case "NSStringEncoding *":
+					return "out UInt32";
 					
 				case "signed char *":
 					return "out sbyte";
