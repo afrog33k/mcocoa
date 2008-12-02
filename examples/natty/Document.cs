@@ -149,15 +149,15 @@ internal sealed class Document : NSDocument
 		foreach (var entry in m_vars)
 		{
 			if (entry.Value.Length > 0 && entry.Value != entry.DefaultValue)
-				dict.setObjectForKey(NSString.Create(entry.Value), NSString.Create(entry.Name));
+				dict.setObject_forKey(NSString.Create(entry.Value), NSString.Create(entry.Name));
 		}
 		
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
-		defaults.setObjectForKey(dict, NSString.Create(key));
+		defaults.setObject_forKey(dict, NSString.Create(key));
 		
 		// default target
 		key = fileURL().absoluteString() + "-defaultTarget";
-		defaults.setObjectForKey(NSString.Create(m_target), NSString.Create(key));
+		defaults.setObject_forKey(NSString.Create(m_target), NSString.Create(key));
 	}
 	
 	public void LoadPrefs()
@@ -224,11 +224,11 @@ internal sealed class Document : NSDocument
 		catch (Exception e)
 		{
 			NSMutableDictionary userInfo = NSMutableDictionary.Create();
-			userInfo.setObjectForKey(NSString.Create("Couldn't read the document."), NSString.Create(Externs.NSLocalizedDescriptionKey));
-			userInfo.setObjectForKey(NSString.Create(e.Message), NSString.Create(Externs.NSLocalizedFailureReasonErrorKey));
+			userInfo.setObject_forKey(NSString.Create("Couldn't read the document."), Externs.NSLocalizedDescriptionKey);
+			userInfo.setObject_forKey(NSString.Create(e.Message), Externs.NSLocalizedFailureReasonErrorKey);
 			
-			NSError error = new NSError(NSError.alloc().initWithDomainCodeUserInfo(
-				NSString.Create(Externs.Cocoa3Domain), 1, userInfo));
+			NSError error = new NSError(NSError.alloc().initWithDomain_code_userInfo(
+				Externs.Cocoa3Domain, 1, userInfo));
 			Marshal.WriteIntPtr(outError, (IntPtr) error);
 
 			read = false;

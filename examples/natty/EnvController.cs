@@ -41,7 +41,7 @@ internal sealed class EnvController : NSObject
 
 		m_sheet.Value.setDelegate(this);
 		m_table.Value.setDataSource(this);
-		NSApplication.sharedApplication().beginSheetModalForWindowModalDelegateDidEndSelectorContextInfo(
+		NSApplication.sharedApplication().beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(
 			m_sheet.Value, window, this, null, IntPtr.Zero);
     }
 

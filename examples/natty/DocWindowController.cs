@@ -79,7 +79,7 @@ internal sealed class DocWindowController : NSWindowController
 	public void environment(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))
-			NSBundle.loadNibNamedOwner(NSString.Create("Environment"), this);
+			NSBundle.loadNibNamed_owner(NSString.Create("Environment"), this);
 		Trace.Assert(!NSObject.IsNullOrNil(m_env.Value), "nib didn't set envSheet");
 	
 		m_env.Value.Open(m_doc, window());
@@ -88,7 +88,7 @@ internal sealed class DocWindowController : NSWindowController
 	public void flags(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_flags.Value))
-			NSBundle.loadNibNamedOwner(NSString.Create("Flags"), this);
+			NSBundle.loadNibNamed_owner(NSString.Create("Flags"), this);
 		Trace.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
 	
 		m_flags.Value.Open(m_doc, window());
@@ -96,7 +96,7 @@ internal sealed class DocWindowController : NSWindowController
 
 	public void showPrefs(NSObject sender)
 	{		
-		NSBundle.loadNibNamedOwner(NSString.Create("Preferences"), this);
+		NSBundle.loadNibNamed_owner(NSString.Create("Preferences"), this);
 		Trace.Assert(!NSObject.IsNullOrNil(m_prefs.Value), "nib didn't set prefSheet");
 
 		m_prefs.Value.makeKeyAndOrderFront(this);
@@ -422,7 +422,7 @@ internal sealed class DocWindowController : NSWindowController
 			{
 				m_errorWindow.Value.setTitle(NSString.Create(string.Format("{0} {1} Errors", DoGetTitle(), m_doc.Target)));
 				m_errorWindow.Value.makeKeyAndOrderFront(this);
-				m_errorTable.Value.selectRowIndexesByExtendingSelection(NSIndexSet.indexSetWithIndex(0), false);
+				m_errorTable.Value.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(0), false);
 			}
 		}
 		
@@ -457,7 +457,7 @@ internal sealed class DocWindowController : NSWindowController
 	private static NSDictionary DoCreateCommandAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
-		dict.setObjectForKey(NSFont.fontWithNameSize(NSString.Create(ms_fontName + "-Bold"), 12.0f), Externs.NSFontAttributeName);
+		dict.setObject_forKey(NSFont.fontWithName_size(NSString.Create(ms_fontName + "-Bold"), 12.0f), Externs.NSFontAttributeName);
 		dict.retain();
 		return dict;
 	}
@@ -465,7 +465,7 @@ internal sealed class DocWindowController : NSWindowController
 	private static NSDictionary DoCreateStdoutAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
-		dict.setObjectForKey(NSFont.fontWithNameSize(NSString.Create(ms_fontName), 12.0f), Externs.NSFontAttributeName);
+		dict.setObject_forKey(NSFont.fontWithName_size(NSString.Create(ms_fontName), 12.0f), Externs.NSFontAttributeName);
 		dict.retain();
 		return dict;
 	}
@@ -473,8 +473,8 @@ internal sealed class DocWindowController : NSWindowController
 	private static NSDictionary DoCreateStderrAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
-		dict.setObjectForKey(NSFont.fontWithNameSize(NSString.Create(ms_fontName), 12.0f), Externs.NSFontAttributeName);
-		dict.setObjectForKey(NSColor.redColor(), Externs.NSForegroundColorAttributeName);
+		dict.setObject_forKey(NSFont.fontWithName_size(NSString.Create(ms_fontName), 12.0f), Externs.NSFontAttributeName);
+		dict.setObject_forKey(NSColor.redColor(), Externs.NSForegroundColorAttributeName);
 		dict.retain();
 		return dict;
 	}

@@ -32,9 +32,9 @@ internal sealed class AppDelegate : NSObject
 	private AppDelegate(IntPtr instance) : base(instance)
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
-		dict.setObjectForKey(NSString.Create("all"), NSString.Create("defaultTarget"));
-		dict.setObjectForKey(NSString.Create("install uninstall"), NSString.Create("ignoredTargets"));
-		dict.setObjectForKey(NSString.Create("bbedit {0}:{1}"), NSString.Create("editor"));
+		dict.setObject_forKey(NSString.Create("all"), NSString.Create("defaultTarget"));
+		dict.setObject_forKey(NSString.Create("install uninstall"), NSString.Create("ignoredTargets"));
+		dict.setObject_forKey(NSString.Create("bbedit {0}:{1}"), NSString.Create("editor"));
 
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
 		defaults.registerDefaults(dict);

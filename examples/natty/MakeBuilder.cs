@@ -119,7 +119,7 @@ internal class MakeBuilder
 		while (!m_scanner.isAtEnd())
 		{
 			NSString name, token;
-			if (m_scanner.scanCharactersFromSetIntoString(m_nameChars, out name))
+			if (m_scanner.scanCharactersFromSet_intoString(m_nameChars, out name))
 			{
 				if (name.ToString() == "ifdef" || name.ToString() == "ifndef")
 				{
@@ -128,9 +128,9 @@ internal class MakeBuilder
 						if (!m_variables.Any(x => x.Name == v.Name))
 							m_variables.Add(v);
 				}
-				else if (m_scanner.scanStringIntoString(NSString.Create(":"), out token))
+				else if (m_scanner.scanString_intoString(NSString.Create(":"), out token))
 				{
-					if (!m_scanner.scanStringIntoString(NSString.Create("="), out token))
+					if (!m_scanner.scanString_intoString(NSString.Create("="), out token))
 						if (name.ToString() != "else" && !DoIsAutomake(name.ToString()))
 							m_targets.Add(name.ToString());
 				}
@@ -158,10 +158,10 @@ internal class MakeBuilder
 		EnvVar variable = null;
 				
 		NSString token;
-		if (m_scanner.scanStringIntoString(NSString.Create("?="), out token))
+		if (m_scanner.scanString_intoString(NSString.Create("?="), out token))
 		{
 			NSString value;
-			if (m_scanner.scanUpToCharactersFromSetIntoString(m_eolChars, out value))
+			if (m_scanner.scanUpToCharactersFromSet_intoString(m_eolChars, out value))
 			{
 				variable = new EnvVar(name, value.ToString().Trim());
 			}
@@ -176,7 +176,7 @@ internal class MakeBuilder
 		EnvVar variable = null;
 		
 		NSString name;
-		if (m_scanner.scanCharactersFromSetIntoString(m_nameChars, out name))
+		if (m_scanner.scanCharactersFromSet_intoString(m_nameChars, out name))
 		{
 			variable = new EnvVar(name.ToString(), string.Empty);
 		}
@@ -187,8 +187,8 @@ internal class MakeBuilder
 	private void DoSkipToNextLine()
 	{
 		NSString token;
-		Unused.Value = m_scanner.scanUpToCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
-		Unused.Value = m_scanner.scanCharactersFromSetIntoString(NSCharacterSet.newlineCharacterSet(), out token);
+		m_scanner.scanUpToCharactersFromSet_intoString(NSCharacterSet.newlineCharacterSet(), out token);
+		m_scanner.scanCharactersFromSet_intoString(NSCharacterSet.newlineCharacterSet(), out token);
 	}
 	
 	private bool DoIsAutomake(string name)
