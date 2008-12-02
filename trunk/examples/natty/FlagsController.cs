@@ -49,7 +49,7 @@ internal sealed class FlagsController : NSObject
 		}
 
 		m_sheet.Value.setDelegate(this);
-		NSApplication.sharedApplication().beginSheetModalForWindowModalDelegateDidEndSelectorContextInfo(m_sheet.Value, window, this, null, IntPtr.Zero);
+		NSApplication.sharedApplication().beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(m_sheet.Value, window, this, null, IntPtr.Zero);
     }
 
 	#region Action Handlers

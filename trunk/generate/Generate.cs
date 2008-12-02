@@ -1036,15 +1036,7 @@ internal sealed class Generate
 		}
 		else
 		{
-			string[] parts = name.Split(new char[]{':'}, StringSplitOptions.RemoveEmptyEntries);
-			m_buffer.Append(parts[0]);
-	
-			for (int i = 1; i < parts.Length; ++i)
-			{
-				m_buffer.Append(char.ToUpper(parts[i][0]));
-				if (parts[i].Length > 1)
-					m_buffer.Append(parts[i].Substring(1));
-			}
+			m_buffer.Append(name.Replace(":", "_").TrimEnd('_'));
 		}
 		m_buffer.Append(suffix);
 	}

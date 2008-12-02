@@ -56,7 +56,7 @@ namespace MCocoa
 		protected static NSDictionary CreateDict(NSString attr, NSObject value)
 		{
 			NSMutableDictionary dict = NSMutableDictionary.Create();
-			dict.setObjectForKey(value, attr);
+			dict.setObject_forKey(value, attr);
 			return dict;
 		}
 						
