@@ -79,6 +79,7 @@
 		<TypeResult name = "dateWithYear:month:day:hour:minute:second:timeZone:" type = "NSCalendarDate"/>
 		<TypeResult name = "decomposableCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "decimalDigitCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "defaultCenter" type = "NSNotificationCenter"/>
 		<TypeResult name = "dictionary"/>
 		<TypeResult name = "dictionaryWithObject:forKey:"/>
 		<TypeResult name = "dictionaryWithObjects:forKeys:count:"/>
@@ -210,9 +211,12 @@
 		<TypeResult name = "mutableCopyWithZone:"/>
 		<TypeResult name = "newlineCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "nonBaseCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "notificationWithName:object:" type = "NSNotification"/>
+		<TypeResult name = "notificationWithName:object:userInfo:" type = "NSNotification"/>
 		<TypeResult name = "punctuationCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "scannerWithString:"/>
 		<TypeResult name = "sharedDocumentController"/>
+		<TypeResult name = "sharedUserDefaultsController"/>
 		<TypeResult name = "string" type = "NSString"/>
 		<TypeResult name = "stringWithString:"/>
 		<TypeResult name = "stringWithCapacity:"/>
