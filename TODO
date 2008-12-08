@@ -5,6 +5,14 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 managed 0.1 secs
 native 4.9 secs
 
+* Add some more automake targets:
+	extra-bin zip-bin push
+* Natty error:
+	System.Reflection.TargetInvocationException: Exception has been thrown by the target of an Objective-C method call. ---> System.NullReferenceException: Object reference not set to an instance of an object
+	  at Document.Cancel () [0x00000] in /Users/jessejones/Source/mcocoa/examples/natty/AppDelegate.cs:562 
+	  at DocWindowController.cancel (MObjc.NSObject sender) [0x00000] in /Users/jessejones/Source/mcocoa/examples/natty/AppDelegate.cs:185 
+	  at <0x00000> <unknown method>
+	  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&)
 * Probably need to get rid of NSString.ToString, maybe can deprecate this first
 * Might want NSString.Create that takes a format string.
 * Window controllers should use the new ctor?

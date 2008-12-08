@@ -89,5 +89,7 @@ namespace MCocoa
 			
 			return hash;
 		}
+		
+		public static readonly NSRange Empty = new NSRange(0, 0);
 	}
 }
