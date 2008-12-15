@@ -34,7 +34,33 @@ namespace MCocoa
 			NativeMethods.NSBeep();
 		}
 
-		#region Alerts --------------------------------------------------------
+		#region Alert Sheets --------------------------------------------------
+		public static void NSBeginAlertSheet(NSString title, NSString defaultButton, NSString alternateButton, NSString otherButton, NSWindow docWindow, NSObject modalDelegate, string didEndSelector, string didDismissSelector, IntPtr contextInfo, NSString message)
+		{
+			Selector endSelector = didEndSelector != null ? new Selector(didEndSelector) : null;
+			Selector dismissSelector = didDismissSelector != null ? new Selector(didDismissSelector) : null;
+			
+			NativeMethods.NSBeginAlertSheet(title, defaultButton, alternateButton, otherButton, docWindow, modalDelegate, endSelector, dismissSelector, contextInfo, message);
+		}
+
+		public static void NSBeginInformationalAlertSheet(NSString title, NSString defaultButton, NSString alternateButton, NSString otherButton, NSWindow docWindow, NSObject modalDelegate, string didEndSelector, string didDismissSelector, IntPtr contextInfo, NSString message)
+		{
+			Selector endSelector = didEndSelector != null ? new Selector(didEndSelector) : null;
+			Selector dismissSelector = didDismissSelector != null ? new Selector(didDismissSelector) : null;
+			
+			NativeMethods.NSBeginInformationalAlertSheet(title, defaultButton, alternateButton, otherButton, docWindow, modalDelegate, endSelector, dismissSelector, contextInfo, message);
+		}
+
+		public static void NSBeginCriticalAlertSheet(NSString title, NSString defaultButton, NSString alternateButton, NSString otherButton, NSWindow docWindow, NSObject modalDelegate, string didEndSelector, string didDismissSelector, IntPtr contextInfo, NSString message)
+		{
+			Selector endSelector = didEndSelector != null ? new Selector(didEndSelector) : null;
+			Selector dismissSelector = didDismissSelector != null ? new Selector(didDismissSelector) : null;
+			
+			NativeMethods.NSBeginCriticalAlertSheet(title, defaultButton, alternateButton, otherButton, docWindow, modalDelegate, endSelector, dismissSelector, contextInfo, message);
+		}
+		#endregion
+
+		#region Alert Panels --------------------------------------------------
 		public static int NSRunAlertPanel(NSString title, NSString message)
 		{
 			return (int) NativeMethods.NSRunAlertPanel(title, message, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
@@ -151,6 +177,15 @@ namespace MCocoa
 	
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static void NSRectFillUsingOperation(NSRect rect, int op);
+			
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSBeginAlertSheet(IntPtr title, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton, IntPtr docWindow, IntPtr modalDelegate, IntPtr didEndSelector, IntPtr didDismissSelector, IntPtr contextInfo, IntPtr msgFormat);
+
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSBeginInformationalAlertSheet(IntPtr title, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton, IntPtr docWindow, IntPtr modalDelegate, IntPtr didEndSelector, IntPtr didDismissSelector, IntPtr contextInfo, IntPtr msgFormat);
+
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSBeginCriticalAlertSheet(IntPtr title, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton, IntPtr docWindow, IntPtr modalDelegate, IntPtr didEndSelector, IntPtr didDismissSelector, IntPtr contextInfo, IntPtr msgFormat);
 
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static int NSRunAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);

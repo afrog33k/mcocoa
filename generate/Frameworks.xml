@@ -58,6 +58,13 @@
 	type or the interface type. -->
 	<TypeResults>
 		<TypeResult name = "alphanumericCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "array" type = "NSArray"/>
+		<TypeResult name = "arrayWithCapacity:"/>
+		<TypeResult name = "arrayWithObject:"/>
+		<TypeResult name = "arrayWithObjects:count:"/>
+		<TypeResult name = "arrayWithArray:"/>
+		<TypeResult name = "arrayWithContentsOfFile:"/>
+		<TypeResult name = "arrayWithContentsOfURL:"/>
 		<TypeResult name = "calendarDate" type = "NSCalendarDate"/>
 		<TypeResult name = "capitalizedLetterCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "characterSetWithBitmapRepresentation:" type = "NSCharacterSet"/>
@@ -95,6 +102,13 @@
 		<TypeResult name = "documentForWindow:" type = "NSDocument"/>
 		<TypeResult name = "documentView" type = "NSView"/>
 		<TypeResult name = "imageNamed:" type = "NSImage"/>
+		<TypeResult name = "fileHandleForReadingAtPath:" type = "NSFileHandle"/>
+		<TypeResult name = "fileHandleForUpdatingAtPath:" type = "NSFileHandle"/>
+		<TypeResult name = "fileHandleForWritingAtPath:" type = "NSFileHandle"/>
+		<TypeResult name = "fileHandleWithNullDevice" type = "NSFileHandle"/>
+		<TypeResult name = "fileHandleWithStandardError" type = "NSFileHandle"/>
+		<TypeResult name = "fileHandleWithStandardInput" type = "NSFileHandle"/>
+		<TypeResult name = "fileHandleWithStandardOutput" type = "NSFileHandle"/>
 		<TypeResult name = "fileURLWithPath:"/>
 		<TypeResult name = "fileURLWithPath:isDirectory:"/>
 		<TypeResult name = "illegalCharacterSet" type = "NSCharacterSet"/>
@@ -147,6 +161,8 @@
 		<TypeResult name = "initWithDomain:code:userInfo:"/>
 		<TypeResult name = "initWithDouble:"/>
 		<TypeResult name = "initWithFileAtPath:"/>
+		<TypeResult name = "initWithFileDescriptor:"/>
+		<TypeResult name = "initWithFileDescriptor:closeOnDealloc:"/>
 		<TypeResult name = "initWithFireDate:interval:target:selector:userInfo:repeats:"/>
 		<TypeResult name = "initWithFloat:"/>
 		<TypeResult name = "initWithFormat:arguments:"/>
@@ -213,6 +229,7 @@
 		<TypeResult name = "nonBaseCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "notificationWithName:object:" type = "NSNotification"/>
 		<TypeResult name = "notificationWithName:object:userInfo:" type = "NSNotification"/>
+		<TypeResult name = "pipe" type = "NSPipe"/>
 		<TypeResult name = "punctuationCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "scannerWithString:"/>
 		<TypeResult name = "sharedDocumentController"/>
