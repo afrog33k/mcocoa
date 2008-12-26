@@ -45,6 +45,33 @@ namespace MCocoa
 			location = loc;
 			length = len;
 		}
+		
+		public NSRange(NSRange range)
+		{
+			location = range.location;
+			length = range.length;
+		}
+		
+		public bool Intersects(int index)
+		{
+			return index >= location && index < location + length;
+		}
+				
+		public bool Intersects(NSRange rhs)
+		{
+			bool intersects = false;
+			
+			if (Intersects(rhs.location))
+			{
+				intersects = true;
+			}
+			else if (rhs.Intersects(location))
+			{
+				intersects = true;
+			}
+			
+			return intersects;
+		}
 				
 		public override string ToString()
 		{
@@ -89,7 +116,7 @@ namespace MCocoa
 			
 			return hash;
 		}
-		
+
 		public static readonly NSRange Empty = new NSRange(0, 0);
 	}
 }

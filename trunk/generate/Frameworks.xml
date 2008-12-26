@@ -71,7 +71,7 @@
 		<TypeResult name = "characterSetWithCharactersInString:" type = "NSCharacterSet"/>
 		<TypeResult name = "characterSetWithContentsOfFile:" type = "NSCharacterSet"/>
 		<TypeResult name = "characterSetWithRange:" type = "NSCharacterSet"/>
-		<TypeResult name = "contentView" type = "NSView"/>
+		<TypeResult name = "contentView" type = "NSClipView"/>
 		<TypeResult name = "controlCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "copyWithZone:"/>
 		<TypeResult name = "currentCalendar" type = "NSCalendar"/>
