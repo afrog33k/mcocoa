@@ -45,7 +45,7 @@ namespace MCocoa
 			ms_startupPool = new NSObject(NSObject.CreateNative("NSAutoreleasePool"));
 		}
 		
-		public static NSApplication Create(string nibName)
+		public static NSApplication Create(string nibName, Action<NSMenu> extendDebugMenu)
 		{		
 			NSApplication app = sharedApplication();
 			
@@ -68,13 +68,18 @@ namespace MCocoa
 			
 			ms_helper = AppHelper.Create();
 #if DEBUG
-			app.BeginInvoke(() => ms_helper.Call("initDebugMenu"));
+			app.BeginInvoke(() => InitDebugMenu(extendDebugMenu));
 #endif
 
 			ms_startupPool.release();
 			ms_startupPool = null;
 			
 			return app;
+		}
+		        			
+		public static NSApplication Create(string nibName) 
+		{		
+			return Create(nibName, null);
 		}
 		        			
 		public void run()
@@ -112,8 +117,19 @@ namespace MCocoa
 		{
 			get {return Thread.CurrentThread != ms_mainThread;}
 		}
+		
+		#region Private Methods -----------------------------------------------------
+#if DEBUG
+		private static void InitDebugMenu(Action<NSMenu> extendDebugMenu)
+		{
+			NSMenu menu = ms_helper.InitDebugMenu();
+			if (extendDebugMenu != null)
+				extendDebugMenu(menu);
+		}
+#endif
+		#endregion
 									
-		#region P/Invokes -----------------------------------------------------
+		#region P/Invokes -----------------------------------------------------------
 		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 		private static extern void GetCurrentProcess(ref IntPtr psn);
 	
@@ -124,7 +140,7 @@ namespace MCocoa
 		private static extern void SetFrontProcess(ref IntPtr psn);
 		#endregion
 
-		#region Fields --------------------------------------------------------
+		#region Fields --------------------------------------------------------------
 		private static Native ms_run;								// we're not an exported class so mobjc may create new instances of our class even for the same id thus our data should be static
 		private static AppHelper ms_helper;
 		private static Thread ms_mainThread;

@@ -88,7 +88,7 @@ namespace MCocoa
 		
 		#region Event Handlers ------------------------------------------------
 #if DEBUG
-		public void initDebugMenu()
+		internal NSMenu InitDebugMenu()
 		{
 			NSMenu debugMenu = NSMenu.Create("Debug");
 			debugMenu.addItem(NSMenuItem.Create("Collect Garbage", "collectGarbage:", this));
@@ -99,6 +99,8 @@ namespace MCocoa
 			debugItem.setSubmenu(debugMenu);
 			
 			NSApplication.sharedApplication().mainMenu().addItem(debugItem);
+			
+			return debugMenu;
 		}
 
 		[DisableRule("P1017", "ExplicitGC")]

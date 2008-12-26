@@ -45,7 +45,7 @@ namespace MCocoa
 			result.autorelease();
 			return result;
 		}
-		
+				
 		public static NSAttributedString Create(string text, NSDictionary attrs) 
 		{
 			NSAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSAttributedString>();
@@ -76,6 +76,13 @@ namespace MCocoa
 		public new static NSMutableAttributedString Create(char ch, NSDictionary attrs)
 		{
 			NSMutableAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSMutableAttributedString>();
+			result.autorelease();
+			return result;
+		}
+		
+		public new static NSMutableAttributedString Create(string text) 
+		{
+			NSMutableAttributedString result = ms_class.Alloc().Call("initWithString:", NSString.Create(text)).To<NSMutableAttributedString>();
 			result.autorelease();
 			return result;
 		}

@@ -65,13 +65,23 @@ namespace MCocoa
 			Marshal.FreeHGlobal(buffer);
 		}
 						
-		public void getCharactersRange(NSRange range, out string str)
+		public void getCharacters_range(NSRange range, out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal(2*range.length);
 			Call("getCharacters:range:", buffer, range);
 			
 			str = Marshal.PtrToStringUni(buffer, range.length);
 			Marshal.FreeHGlobal(buffer);
+		}
+		
+		public char this[int index]
+		{
+			get {return characterAtIndex((uint) index);}
+		}
+						
+		public char this[uint index]
+		{
+			get {return characterAtIndex(index);}
 		}
 						
 		public override string ToString()
