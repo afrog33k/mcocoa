@@ -37,9 +37,9 @@ namespace MCocoa
 			ms_created = true;
 		}
 
-		public static new AppHelper Create()
+		public static AppHelper Create()
 		{
-			AppHelper result = new AppHelper(NSObject.CreateNative("AppHelper"));
+			AppHelper result = new AppHelper(NSObject.AllocNative("AppHelper"));
 			
 			result.m_thread = new Thread(result.DoThread);
 			result.m_thread.Name = "AppHelper";
@@ -108,8 +108,14 @@ namespace MCocoa
 		{
 			Unused.Value = sender;
 			
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			//  TODO: for some reason objects hang around if we do this only once
+			// or do not do the sleep...
+			for (int i = 0; i < 4; ++i)
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				Thread.Sleep(250);
+			}
 		}
 		
 		public void dumpObjects(NSObject sender)

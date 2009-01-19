@@ -225,6 +225,8 @@ internal sealed class Generate
 		}
 		else
 		{
+			string newStr = m_interface.BaseName != "NSObject" ? "new " : string.Empty;
+			
 			DoWrite("	[Register]");
 			DoWrite("	public partial class {0} : {1}", m_interface.Name, m_interface.BaseName);
 			DoWrite("	{");
@@ -232,7 +234,12 @@ internal sealed class Generate
 			DoWrite("		{");
 			DoWrite("		}");
 			DoWrite();
-			DoWrite("		public static new {0} Create()", m_interface.Name);
+			DoWrite("		public static {0}{1} Alloc()", newStr, m_interface.Name);
+			DoWrite("		{");
+			DoWrite("			return ({0}) ms_class.Alloc();", m_interface.Name);
+			DoWrite("		}");
+			DoWrite();
+			DoWrite("		public static {0}{1} Create()", newStr, m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			{0} result = ({0}) ms_class.Alloc().init();", m_interface.Name);
 			if (m_interface.Name != "NSAutoreleasePool")
@@ -240,14 +247,9 @@ internal sealed class Generate
 			DoWrite("			return result;");
 			DoWrite("		}");
 			DoWrite();
-			DoWrite("		public static new {0} alloc()", m_interface.Name);
+			DoWrite("		public new {0} Retain()", m_interface.Name);
 			DoWrite("		{");
-			DoWrite("			return ({0}) ms_class.Alloc();", m_interface.Name);
-			DoWrite("		}");
-			DoWrite();
-			DoWrite("		public new {0} retain()", m_interface.Name);
-			DoWrite("		{");
-			DoWrite("			Unused.Value = base.retain();");
+			DoWrite("			retain();");
 			DoWrite("			return this;");
 			DoWrite("		}");
 			DoWrite();

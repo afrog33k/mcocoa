@@ -210,6 +210,7 @@ internal class MakeBuilder
 			case "distdir":
 			case "dvi-am":
 			case "dvi":
+			case "extra-bin":
 			case "GTAGS":
 			case "html":
 			case "ID":
@@ -241,6 +242,7 @@ internal class MakeBuilder
 			case "pdf":
 			case "ps-am":
 			case "ps":
+			case "push":
 			case "tags-recursive":
 			case "tags":
 			case "TAGS":
@@ -249,6 +251,7 @@ internal class MakeBuilder
 			case "uninstall-info-am":
 			case "uninstall-info":
 			case "uninstall-pixmapDATA":
+			case "zip-bin":
 				return true;
 		}
 		
