@@ -85,7 +85,7 @@ internal sealed class SimpleLayoutView : NSView
 	{
 		NSRect frame = new NSRect(0.0f, 0.0f, BoxWidth, BoxHeight);
 		
-		NSBox box = new NSBox(NSBox.alloc().initWithFrame(frame));
+		NSBox box = new NSBox(NSBox.Alloc().initWithFrame(frame));
 		box.setBorderType(Enums.NSLineBorder);
 		box.setBoxType(Enums.NSBoxCustom);
 		box.setFillColor(this["boxColorField"].Call("color").To<NSColor>());

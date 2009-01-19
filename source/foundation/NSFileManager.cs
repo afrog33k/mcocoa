@@ -27,38 +27,38 @@ namespace MCocoa
 	public static partial class Externs
 	{
 		// File-System Attribute Keys
-		public static readonly NSString NSFileSystemSize = NSString.Create("NSFileSystemSize").retain();
-		public static readonly NSString NSFileSystemFreeSize = NSString.Create("NSFileSystemFreeSize").retain();
-		public static readonly NSString NSFileSystemNodes = NSString.Create("NSFileSystemNodes").retain();
-		public static readonly NSString NSFileSystemFreeNodes = NSString.Create("NSFileSystemFreeNodes").retain();
-		public static readonly NSString NSFileSystemNumber = NSString.Create("NSFileSystemNumber").retain();
+		public static readonly NSString NSFileSystemSize = NSString.Create("NSFileSystemSize").Retain();
+		public static readonly NSString NSFileSystemFreeSize = NSString.Create("NSFileSystemFreeSize").Retain();
+		public static readonly NSString NSFileSystemNodes = NSString.Create("NSFileSystemNodes").Retain();
+		public static readonly NSString NSFileSystemFreeNodes = NSString.Create("NSFileSystemFreeNodes").Retain();
+		public static readonly NSString NSFileSystemNumber = NSString.Create("NSFileSystemNumber").Retain();
 
 		// Item Attribute Keys
-		public static readonly NSString NSFileType = NSString.Create("NSFileType").retain();
-		public static readonly NSString NSFileTypeDirectory = NSString.Create("NSFileTypeDirectory").retain();
-		public static readonly NSString NSFileTypeRegular = NSString.Create("NSFileTypeRegular").retain();
-		public static readonly NSString NSFileTypeSymbolicLink = NSString.Create("NSFileTypeSymbolicLink").retain();
-		public static readonly NSString NSFileTypeSocket = NSString.Create("NSFileTypeSocket").retain();
-		public static readonly NSString NSFileTypeCharacterSpecial = NSString.Create("NSFileTypeCharacterSpecial").retain();
-		public static readonly NSString NSFileTypeBlockSpecial = NSString.Create("NSFileTypeBlockSpecial").retain();
-		public static readonly NSString NSFileTypeUnknown = NSString.Create("NSFileTypeUnknown").retain();
-		public static readonly NSString NSFileSize = NSString.Create("NSFileSize").retain();
-		public static readonly NSString NSFileModificationDate = NSString.Create("NSFileModificationDate").retain();
-		public static readonly NSString NSFileReferenceCount = NSString.Create("NSFileReferenceCount").retain();
-		public static readonly NSString NSFileDeviceIdentifier = NSString.Create("NSFileDeviceIdentifier").retain();
-		public static readonly NSString NSFileOwnerAccountName = NSString.Create("NSFileOwnerAccountName").retain();
-		public static readonly NSString NSFileGroupOwnerAccountName = NSString.Create("NSFileGroupOwnerAccountName").retain();
-		public static readonly NSString NSFilePosixPermissions = NSString.Create("NSFilePosixPermissions").retain();
-//		public static readonly NSString NSFileSystemNumber = NSString.Create("NSFileSystemNumber").retain();
-		public static readonly NSString NSFileSystemFileNumber = NSString.Create("NSFileSystemFileNumber").retain();
-		public static readonly NSString NSFileExtensionHidden = NSString.Create("NSFileExtensionHidden").retain();
-		public static readonly NSString NSFileHFSCreatorCode = NSString.Create("NSFileHFSCreatorCode").retain();
-		public static readonly NSString NSFileHFSTypeCode = NSString.Create("NSFileHFSTypeCode").retain();
-		public static readonly NSString NSFileImmutable = NSString.Create("NSFileImmutable").retain();
-		public static readonly NSString NSFileAppendOnly = NSString.Create("NSFileAppendOnly").retain();
-		public static readonly NSString NSFileCreationDate = NSString.Create("NSFileCreationDate").retain();
-		public static readonly NSString NSFileOwnerAccountID = NSString.Create("NSFileOwnerAccountID").retain();
-		public static readonly NSString NSFileGroupOwnerAccountID = NSString.Create("NSFileGroupOwnerAccountID").retain();
-		public static readonly NSString NSFileBusy = NSString.Create("NSFileBusy").retain();
+		public static readonly NSString NSFileType = NSString.Create("NSFileType").Retain();
+		public static readonly NSString NSFileTypeDirectory = NSString.Create("NSFileTypeDirectory").Retain();
+		public static readonly NSString NSFileTypeRegular = NSString.Create("NSFileTypeRegular").Retain();
+		public static readonly NSString NSFileTypeSymbolicLink = NSString.Create("NSFileTypeSymbolicLink").Retain();
+		public static readonly NSString NSFileTypeSocket = NSString.Create("NSFileTypeSocket").Retain();
+		public static readonly NSString NSFileTypeCharacterSpecial = NSString.Create("NSFileTypeCharacterSpecial").Retain();
+		public static readonly NSString NSFileTypeBlockSpecial = NSString.Create("NSFileTypeBlockSpecial").Retain();
+		public static readonly NSString NSFileTypeUnknown = NSString.Create("NSFileTypeUnknown").Retain();
+		public static readonly NSString NSFileSize = NSString.Create("NSFileSize").Retain();
+		public static readonly NSString NSFileModificationDate = NSString.Create("NSFileModificationDate").Retain();
+		public static readonly NSString NSFileReferenceCount = NSString.Create("NSFileReferenceCount").Retain();
+		public static readonly NSString NSFileDeviceIdentifier = NSString.Create("NSFileDeviceIdentifier").Retain();
+		public static readonly NSString NSFileOwnerAccountName = NSString.Create("NSFileOwnerAccountName").Retain();
+		public static readonly NSString NSFileGroupOwnerAccountName = NSString.Create("NSFileGroupOwnerAccountName").Retain();
+		public static readonly NSString NSFilePosixPermissions = NSString.Create("NSFilePosixPermissions").Retain();
+//		public static readonly NSString NSFileSystemNumber = NSString.Create("NSFileSystemNumber").Retain();
+		public static readonly NSString NSFileSystemFileNumber = NSString.Create("NSFileSystemFileNumber").Retain();
+		public static readonly NSString NSFileExtensionHidden = NSString.Create("NSFileExtensionHidden").Retain();
+		public static readonly NSString NSFileHFSCreatorCode = NSString.Create("NSFileHFSCreatorCode").Retain();
+		public static readonly NSString NSFileHFSTypeCode = NSString.Create("NSFileHFSTypeCode").Retain();
+		public static readonly NSString NSFileImmutable = NSString.Create("NSFileImmutable").Retain();
+		public static readonly NSString NSFileAppendOnly = NSString.Create("NSFileAppendOnly").Retain();
+		public static readonly NSString NSFileCreationDate = NSString.Create("NSFileCreationDate").Retain();
+		public static readonly NSString NSFileOwnerAccountID = NSString.Create("NSFileOwnerAccountID").Retain();
+		public static readonly NSString NSFileGroupOwnerAccountID = NSString.Create("NSFileGroupOwnerAccountID").Retain();
+		public static readonly NSString NSFileBusy = NSString.Create("NSFileBusy").Retain();
 	}
 }

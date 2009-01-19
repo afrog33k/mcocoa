@@ -42,12 +42,13 @@ namespace MCocoa
 
 			// Cocoa expects an NSAutoreleasePool to always be available so we need to
 			// create one which we can use before we enter the main event loop.
-			ms_startupPool = new NSObject(NSObject.CreateNative("NSAutoreleasePool"));
+			ms_startupPool = NSAutoreleasePool.Create();
 		}
 		
-		public static NSApplication Create(string nibName, Action<NSMenu> extendDebugMenu)
+		// Use this method if your application uses a custom NSApplication.
+		public static NSApplication Create(string appClass, string nibName, Action<NSMenu> extendDebugMenu)
 		{		
-			NSApplication app = sharedApplication();
+			NSApplication app = new Class(appClass).Call("sharedApplication").To<NSApplication>();
 			
 			ms_mainThread = Thread.CurrentThread;
 
@@ -75,6 +76,11 @@ namespace MCocoa
 			ms_startupPool = null;
 			
 			return app;
+		}
+		        			
+		public static NSApplication Create(string nibName, Action<NSMenu> extendDebugMenu)
+		{		
+			return Create("NSApplication", nibName, extendDebugMenu);
 		}
 		        			
 		public static NSApplication Create(string nibName) 

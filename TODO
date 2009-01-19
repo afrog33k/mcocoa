@@ -2,13 +2,7 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-managed 0.1 secs
-native 4.9 secs
-
-* Add some more automake targets:
-	extra-bin zip-bin push
-* Add NSPopUpButtonWillPopUpNotification
-* Seem to be problems adding custom retain methods.
+* Should talk about extensions like BeginInvoke somewhere.
 * Natty error:
 	System.Reflection.TargetInvocationException: Exception has been thrown by the target of an Objective-C method call. ---> System.NullReferenceException: Object reference not set to an instance of an object
 	  at Document.Cancel () [0x00000] in /Users/jessejones/Source/mcocoa/examples/natty/AppDelegate.cs:562 

@@ -146,7 +146,7 @@ namespace MCocoa
 		#endregion
 
 		#region P/Invokes -----------------------------------------------------
-		private static class NativeMethods
+		private static partial class NativeMethods
 		{
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static void NSBeep();

@@ -100,6 +100,6 @@ namespace MCocoa
 //			return lhs.ToString() != rhs;
 //		}
 		
-		public static readonly NSString Empty = NSString.Create(string.Empty).retain();
+		public static readonly NSString Empty = NSString.Create(string.Empty).Retain();
 	}
 }

@@ -21,37 +21,21 @@
 
 using MObjc;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
-	public partial class NSGradient : NSObject
-	{
-		public static NSGradient Create(NSColor start, NSColor end)
+	public partial class NSIndexSet : NSObject
+	{		
+		public IEnumerator<uint> GetEnumerator()
 		{
-			var result = ms_class.Call("alloc").Call("initWithStartingColor:endingColor:", start, end).To<NSGradient>();
-			result.autorelease();
-			return result;
-		}
-		
-		public static NSGradient Create(NSArray colors)
-		{
-			return Create(colors, new float[0]);
-		}
-		
-		public static NSGradient Create(NSArray colors, float[] locations)
-		{
-			return Create(colors, locations, NSColorSpace.genericRGBColorSpace());
-		}
-		
-		public static NSGradient Create(NSArray colors, float[] locations, NSColorSpace space)
-		{
-			GCHandle handle = GCHandle.Alloc(locations, GCHandleType.Pinned);
-			NSGradient result = ms_class.Call("alloc").Call("initWithColors:atLocations:colorSpace:", colors, handle.AddrOfPinnedObject(), space).To<NSGradient>();
-			result.autorelease();
-			handle.Free();
-			
-			return result;
+			uint index = firstIndex();
+			while (index != Enums.NSNotFound)
+			{
+				yield return index;
+				index = indexGreaterThanIndex(index);
+			}
 		}
 	}
 }
