@@ -103,23 +103,26 @@ namespace MCocoa
 				
 			return result;					
 		}
-			
-		public void BeginInvoke(Action action)
+		
+		// Schedule the delegate to be executed on the main thread.
+		public void BeginInvoke(Action action)		// thread safe
 		{
 			Trace.Assert(action != null, "action is null");
 
 			ms_helper.Add(action);
 		}
 		
-		public void BeginInvoke(Action action, TimeSpan delay)
+		// Schedule the delegate to be executed on the main thread
+		// after delay seconds.
+		public void BeginInvoke(Action action, TimeSpan delay)		// thread safe
 		{
 			Trace.Assert(action != null, "action is null");
 			Trace.Assert(delay >= TimeSpan.Zero, "delay is negative");
 
 			ms_helper.QueueDelayed(action, delay);
 		}
-				
-		public bool InvokeRequired
+		
+		public bool InvokeRequired		// thread safe
 		{
 			get {return Thread.CurrentThread != ms_mainThread;}
 		}

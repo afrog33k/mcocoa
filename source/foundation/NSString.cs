@@ -21,6 +21,7 @@
 
 using MObjc;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace MCocoa
@@ -84,22 +85,51 @@ namespace MCocoa
 			get {return characterAtIndex(index);}
 		}
 						
+		public IEnumerator<char> GetEnumerator()
+		{
+			uint len = length();
+			for (uint i = 0; i < len; ++i)
+			{
+				yield return characterAtIndex(i);
+			}
+		}
+
 		public override string ToString()
 		{
 			return this != IntPtr.Zero ? Marshal.PtrToStringAuto((IntPtr) Call("UTF8String")) : null;
 		}
 		
-		// We can't add this because of a compiler bug in mono 2.0.
-//		public static bool operator==(NSString lhs, string rhs)
-//		{
-//			return lhs.ToString() == rhs;
-//		}
+		public static bool operator==(NSString lhs, NSString rhs)
+		{
+			return lhs.compare(rhs) == 0;
+		}
 		
-//		public static bool operator!=(NSString lhs, string rhs)
-//		{
-//			return lhs.ToString() != rhs;
-//		}
+		public static bool operator==(NSString lhs, string rhs)
+		{
+			return lhs.ToString() == rhs;
+		}
 		
+		public static bool operator!=(NSString lhs, NSString rhs)
+		{
+			return lhs.compare(rhs) != 0;
+		}
+		
+		public static bool operator!=(NSString lhs, string rhs)
+		{
+			return lhs.ToString() != rhs;
+		}
+		
+		// Compiler requires us to define these two.
+		public override bool Equals(object rhsObj)
+		{
+			return base.Equals(rhsObj);
+		}
+	
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
 		public static readonly NSString Empty = NSString.Create(string.Empty).Retain();
 	}
 }
