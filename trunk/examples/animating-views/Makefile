@@ -57,6 +57,6 @@ localized-files := $(localized-resources)
 
 $(app-path): $(exe-path) Info.plist $(bin-path)/mobjc-glue.dylib $(localized-files)
 	@echo "building $(app-path)"
-	@$(PACK) --app=$(app-path) --exe=$(exe-path) --mono-flags=$(MONO_FLAGS) --plist=Info.plist           \
+	@$(PACK) --app=$(app-path) --exe=$(exe-path) --mono-flags='$(MONO_FLAGS)' --plist=Info.plist           \
 	--resources=$(gmcs-resources),$(bin-path)/mobjc-glue.dylib --resources=English.lproj:$(localized-resources) \
 	--vars=APPNAME:$(app-name),VERSION:$(version),BUILDNUM:$(build-num)

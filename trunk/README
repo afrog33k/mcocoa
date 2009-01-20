@@ -20,5 +20,46 @@ project's bin directory with a make target like this:
 update-libraries:
 	cp `pkg-config --variable=Libraries mobjc` bin
 	cp `pkg-config --variable=Libraries mcocoa` bin
+	
+USAGE
+
+In general using mcocoa is very much like using Cocoa natively with reference
+counting enabled. In particular memory management is the same so if you call a 
+method whose name begins with "alloc" or "new" or contains "copy" then you are 
+responsible for releasing its reference count.
+
+The Cocoa wrappers are generated when you build mcocoa. The wrappers contain
+all of the Cocoa methods except for a few which are variadic or use function pointers.
+The methods have the same name as the native methods except colons are replaced
+with underscores and the last colon is dropped (so "archiveRootObject:toFile:" becomes
+"archiveRootObject_toFile"). If the name conflicts with a C# keyword it is appended
+with an underscore.
+
+All of the generated classes also contain a few additional methods which look like this:
+
+public NSArchiver(IntPtr instance);
+Constructs a new instance using a native pointer. Note that this will do nothing to
+the object's reference count.
+
+public static new NSArchiver Alloc();
+Allocates a new native object, but does not initialize it. As the name implies the caller
+owns the object and must release it.
+
+public static new NSArchiver Create();
+Allocates the object, calls init(), and places the object into the autorelease pool. This
+is a quick and easy way to create a new default constructed object.
+
+public new NSArchiver Retain();
+This is like retain() except that it has a covariant return type which is allows you to
+write code like: "private NSString m_name = NSString.Create("joe bob").Retain();".
+
+public static new Class Class;
+Returns the Class object associated with the NSObject subclass. To get the dynamic
+type of an instance use class_().
+
+Some types also include extensions beyond what Cocoa exposes. For example,
+NSApplication provides BeginInvoke and InvokeRequired methods which are much 
+nicer to use than Cocoa's performSelectorOnMainThread methods. And NSString
+supports subscripting with the [] operator, foreach, and operator==.
 
 jesjones@mindspring.com

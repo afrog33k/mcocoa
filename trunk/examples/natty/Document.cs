@@ -133,8 +133,9 @@ internal sealed class Document : NSDocument
 
 	public void Cancel()
 	{
-		m_state = State.Canceled;		
-		m_process.Kill();
+		m_state = State.Canceled;
+		if (m_process != null)
+			m_process.Kill();
 		
 		if (StateChanged != null)
 			StateChanged(this, EventArgs.Empty);
@@ -204,9 +205,8 @@ internal sealed class Document : NSDocument
 			m_target = m_builder.Targets[0];
 	}
 	
-	#region Overrides ---------------------------------------------------------
-	[Register("readFromData:ofType:error:")]		
-	public bool ReadFromDataOfTypeError(NSData data, NSString typeName, IntPtr outError)
+	#region Overrides
+	public bool readFromData_ofType_error(NSData data, NSString typeName, IntPtr outError)
 	{
 		bool read = true;
 		
@@ -227,8 +227,7 @@ internal sealed class Document : NSDocument
 			userInfo.setObject_forKey(NSString.Create("Couldn't read the document."), Externs.NSLocalizedDescriptionKey);
 			userInfo.setObject_forKey(NSString.Create(e.Message), Externs.NSLocalizedFailureReasonErrorKey);
 			
-			NSError error = new NSError(NSError.alloc().initWithDomain_code_userInfo(
-				Externs.Cocoa3Domain, 1, userInfo));
+			NSObject error = NSError.errorWithDomain_code_userInfo(Externs.Cocoa3Domain, 1, userInfo);
 			Marshal.WriteIntPtr(outError, (IntPtr) error);
 
 			read = false;
@@ -244,8 +243,8 @@ internal sealed class Document : NSDocument
 	}
 	#endregion	
 
-	#region Private Methods ---------------------------------------------------
-	private void DoGotStdoutData(object sender, DataReceivedEventArgs e)
+	#region Private Methods
+	private void DoGotStdoutData(object sender, DataReceivedEventArgs e)	// threaded
 	{
 		if (StdoutData != null)
 		{
@@ -254,7 +253,7 @@ internal sealed class Document : NSDocument
 		}
 	}
 
-	private void DoGotStderrData(object sender, DataReceivedEventArgs e)
+	private void DoGotStderrData(object sender, DataReceivedEventArgs e)	// threaded
 	{
 		if (StderrData != null)
 		{
@@ -263,10 +262,17 @@ internal sealed class Document : NSDocument
 		}
 	}
 
-	private void DoProcessExited()
+	private void DoProcessExited()	// threaded
 	{
+		if (NSApplication.sharedApplication().InvokeRequired)
+		{
+			NSApplication.sharedApplication().BeginInvoke(this.DoProcessExited);
+			return;
+		}
+			
 		m_exitCode = m_process.ExitCode;
 		
+		m_process.Dispose();
 		m_process = null;
 		
 		if (m_state != State.Canceled)
@@ -277,7 +283,7 @@ internal sealed class Document : NSDocument
 	}
 	#endregion	
 	
-	#region Fields ------------------------------------------------------------
+	#region Fields
 	private MakeBuilder m_builder;
 	private string m_target;
 	private State m_state;

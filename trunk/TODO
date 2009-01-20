@@ -2,20 +2,25 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Should talk about extensions like BeginInvoke somewhere.
-* Natty error:
-	System.Reflection.TargetInvocationException: Exception has been thrown by the target of an Objective-C method call. ---> System.NullReferenceException: Object reference not set to an instance of an object
-	  at Document.Cancel () [0x00000] in /Users/jessejones/Source/mcocoa/examples/natty/AppDelegate.cs:562 
-	  at DocWindowController.cancel (MObjc.NSObject sender) [0x00000] in /Users/jessejones/Source/mcocoa/examples/natty/AppDelegate.cs:185 
-	  at <0x00000> <unknown method>
-	  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&)
-* Probably need to get rid of NSString.ToString, maybe can deprecate this first
-* Might want NSString.Create that takes a format string.
-* Window controllers should use the new ctor?
+* Release checklist:
+	- search for TODO
+	- run smoke
+	- make sure unit tests work
+	- make sure examples work in debug
+	- make sure examples work in release
+	- review tar target
+	- make sure everything is checked in
+	- use svn log -r 1:HEAD > CHANGE_LOG
+	- update CHANGES file
+	- update version number
+	- remove build_num file 
+	- install
+	- update README and wiki
+	- upload a new version to googlecode
+	- send an announcement
+	- make sure everything is checked in
 * Might want a white list for out arguments (can't tell from the headers if they
   are supposed to be arrays or not)
-* Submit a bug for operator== hiding
-* Need to handle NSError ** types.
 * Work on Natty:
 	- prefs could be used to save fonts, colors
 	- need to support stdin (important for install or removing files
