@@ -3,6 +3,7 @@
 CSC ?= gmcs
 MONO ?= mono
 NUNIT ?= nunit-console2
+GENDARME ?= /usr/local/bin/gendarme/gendarme.exe
 
 ifdef RELEASE
 	# Note that -debug+ just generates an mdb file.
@@ -81,18 +82,25 @@ smokey_flags += -exclude-check:D1026	# DeepInheritance
 smokey_flags += -exclude-check:D1041	# CircularReference
 smokey_flags += -exclude-check:D1047	# TooManyArgs
 smokey_flags += -exclude-check:M1000	# UseJurassicNaming
+smokey_flags += -exclude-check:MS1018	# VisibleFields
+smokey_flags += -exclude-check:MS1021	# PluralEnumFlags
 smokey_flags += -exclude-check:MS1024	# SuffixName2
 smokey_flags += -exclude-check:MS1027	# PreferredTerm
 smokey_flags += -exclude-check:MS1029	# ClassPrefix (we use NS all over)
+smokey_flags += -exclude-check:P1003	# AvoidBoxing
+smokey_flags += -exclude-check:P1004	# AvoidUnboxing
 smokey_flags += -exclude-check:PO1001	# DllImportPath
-smokey_flags += -exclude-check:PO1001	# DllImportPath
-smokey_flags += -exclude-check:PO1003	# AvoidBoxing
-smokey_flags += -exclude-check:PO1004	# AvoidUnboxing
+smokey_flags += -exclude-check:PO1002	# DllImportExtension
+smokey_flags += -exclude-check:R1016	# Const2
 smokey_flags += -exclude-check:R1034	# ValidateArgs1
 smokey_flags += -exclude-check:R1039	# ThreadSafeAttr
 smoke: bin/mcocoa.dll
 	@-smoke $(smokey_flags) bin/mcocoa.dll
 
+gendarme_flags := --severity all --confidence all --ignore gendarme.ignore --quiet
+gendarme: bin/mobjc.dll
+	@-$(MONO) "$(GENDARME)" $(gendarme_flags) bin/mcocoa.dll
+	
 # Note that we do not want to remove mobjc.
 clean:
 	-rm bin/csc_flags bin/cocoa_files
@@ -150,5 +158,6 @@ uninstall:
 	-rm $(pc_file)
 
 tar:
-	tar --create --compress --exclude \*/.svn --exclude \*/.svn/\* --file=mcocoa-$(version).tar.gz AUTHORS Dictionary.txt MIT.X11 Makefile README examples gen_version.sh get_version.sh source generate tests CHANGES CHANGE_LOG
+	tar --create --compress --exclude \*/.svn --exclude \*/.svn/\* --file=mcocoa-$(version).tar.gz \
+		AUTHORS CHANGES CHANGE_LOG Dictionary.txt MIT.X11 Makefile README examples gen_version.sh gendarme.ignore generate get_version.sh source tests
 

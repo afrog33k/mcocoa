@@ -63,16 +63,17 @@ namespace MCocoa
 			int id = m_actionID++;
 			m_delayedActions.Add(id, action);
 			
-			Call("performSelector:withObject:afterDelay:", 
+			Unused.Value = Call("performSelector:withObject:afterDelay:", 
 				new Selector("onDelayedAction:"),
 				NSNumber.Create(id),
 				delay.TotalSeconds);
 		}
 		
+		[DisableRule("D1032", "UnusedMethod")]    
 		public void onDelayedAction(NSNumber id)
 		{
 			Action action = m_delayedActions[id.intValue()];
-			m_delayedActions.Remove(id.intValue());
+			Unused.Value = m_delayedActions.Remove(id.intValue());
 
 			try
 			{
@@ -118,6 +119,7 @@ namespace MCocoa
 			}
 		}
 		
+		[DisableRule("D1032", "UnusedMethod")]    
 		public void dumpObjects(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -136,6 +138,7 @@ namespace MCocoa
 			Console.WriteLine(" ");
 		}
 		
+		[DisableRule("D1032", "UnusedMethod")]    
 		public void dumpWindows(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -149,6 +152,7 @@ namespace MCocoa
 		}
 #endif	// DEBUG
 
+		[DisableRule("D1032", "UnusedMethod")]    
 		public void execute(NSObject arg)
 		{
 			Unused.Value = arg;

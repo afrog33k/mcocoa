@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 // http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Miscellaneous/Foundation_Functions/Reference/reference.html#//apple_ref/doc/uid/TP40003774-DontLinkChapterID_1-DontLinkElementID_60
 namespace MCocoa
 {
+	[Serializable]
 	public enum NSSearchPathDirectory : uint
 	{
 		NSApplicationDirectory = 1,					// supported applications (Applications)
@@ -47,6 +48,8 @@ namespace MCocoa
 		NSAllLibrariesDirectory = 101,				// all directories where resources can occur
 	}
 	
+	[Flags]
+	[Serializable]
 	public enum NSSearchPathDomainMask : uint
 	{
 		NSUserDomainMask = 1,			// user's home directory --- place to install user's personal items (~)

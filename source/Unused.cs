@@ -19,6 +19,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using MObjc;
 using System;
 
 namespace MCocoa
@@ -27,6 +28,7 @@ namespace MCocoa
 	{
 		public static object Value 
 		{
+			[DisableRule("C1022", "UseSetterValue")]    
 			set {}
 		}
 	}

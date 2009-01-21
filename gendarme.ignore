@@ -1,0 +1,118 @@
+# Ignore lists start with a rule name (R) followed by a list of assemblies (A),
+# types (T), and methods (M) to ignore.
+
+# These rules don't really apply to cocoa.
+R: Gendarme.Rules.Naming.UseCorrectCasingRule
+A: mcocoa
+
+R: Gendarme.Rules.Naming.AvoidNonAlphanumericIdentifierRule
+A: mcocoa
+
+R: Gendarme.Rules.Design.AvoidNonAlphanumericIdentifierRule
+A: mcocoa
+
+R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
+A: mcocoa
+
+R: Gendarme.Rules.BadPractice.AvoidVisibleConstantFieldRule
+A: mcocoa
+
+R: Gendarme.Rules.Design.AvoidVisibleFieldsRule
+A: mcocoa
+
+R: Gendarme.Rules.Security.NativeFieldsShouldNotBeVisibleRule
+A: mcocoa
+
+R: Gendarme.Rules.Correctness.CheckParametersNullityInVisibleMethodsRule
+A: mcocoa
+
+R: Gendarme.Rules.Naming.UseCorrectSuffixRule
+A: mcocoa
+
+R: Gendarme.Rules.Naming.UsePreferredTermsRule
+A: mcocoa
+
+R: Gendarme.Rules.Design.ConsiderConvertingMethodToPropertyRule
+A: mcocoa
+
+R: Gendarme.Rules.BadPractice.DisableDebuggingCodeRule
+A: mcocoa
+
+R: Gendarme.Rules.Design.EnumsShouldDefineAZeroValueRule
+A: mcocoa
+
+R: Gendarme.Rules.Naming.UseSingularNameInEnumsUnlessAreFlagsRule
+T: MCocoa.NSLayoutStatus
+
+R: Gendarme.Rules.Naming.UsePluralNameInEnumFlagsRule
+T: MCocoa.NSLayoutStatus
+T: MCocoa.NSSearchPathDomainMask
+
+R: Gendarme.Rules.Performance.AvoidLargeStructureRule
+T: MCocoa.NSAffineTransformStruct
+
+R: Gendarme.Rules.BadPractice.PreferSafeHandleRule
+T: MCocoa.NSFastEnumerationState
+T: MCocoa.NSTypesetterGlyphInfo
+
+R: Gendarme.Rules.Design.PreferIntegerOrStringForIndexersRule
+M: System.Char MCocoa.NSString::get_Item(System.UInt32)
+
+R: Gendarme.Rules.Performance.AvoidLargeStructureRule
+T: MCocoa.NSTypesetterGlyphInfo
+T: MCocoa.NSFastEnumerationState
+
+R: Gendarme.Rules.Design.EnumsShouldUseInt32Rule
+A: mcocoa
+
+# These rules are lame.
+R: Gendarme.Rules.Design.Generic.DoNotExposeNestedGenericSignaturesRule
+A: mcocoa
+
+R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
+A: mcocoa
+
+R: Gendarme.Rules.Design.AvoidUnusedParametersRule
+A: mcocoa
+
+R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
+A: mcocoa
+
+R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule
+A: mcocoa
+
+# These methods do something reasonable.
+R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
+M: System.Void MCocoa.AppHelper::execute(MObjc.NSObject)
+M: System.Void MCocoa.AppHelper::onDelayedAction(MCocoa.NSNumber)
+
+R: Gendarme.Rules.Design.PreferEventsOverMethodsRule
+M: System.Void MCocoa.NSError::Raise()
+
+# We may want to enable this rule later.
+R: Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule
+A: mcocoa
+
+# Unused does not need a getter.
+R: Gendarme.Rules.Design.AvoidPropertiesWithoutGetAccessorRule
+T: MCocoa.Unused
+
+# Unused::set_Value does not need to use the argument.
+R: Gendarme.Rules.Performance.AvoidUnusedParametersRule
+M: System.Void MCocoa.Unused::set_Value(System.Object)
+
+# We call GC::Collect, but only in debug.
+R: Gendarme.Rules.BadPractice.AvoidCallingProblematicMethodsRule
+M: System.Void MCocoa.AppHelper::collectGarbage(MObjc.NSObject)
+
+# These are called by cocoa.
+R: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
+M: System.Void MCocoa.AppHelper::dumpWindows(MObjc.NSObject)
+M: System.Void MCocoa.AppHelper::execute(MObjc.NSObject)
+M: System.Void MCocoa.AppHelper::dumpObjects(MObjc.NSObject)
+M: System.Void MCocoa.AppHelper::onDelayedAction(MCocoa.NSNumber)
+
+# The application object should only be created in the main thread so this is OK.
+R: Gendarme.Rules.Concurrency.WriteStaticFieldFromInstanceMethodRule
+M: System.Void MCocoa.AppHelper::.ctor(System.IntPtr)
+

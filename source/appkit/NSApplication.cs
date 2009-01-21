@@ -69,7 +69,7 @@ namespace MCocoa
 			
 			ms_helper = AppHelper.Create();
 #if DEBUG
-			app.BeginInvoke(() => InitDebugMenu(extendDebugMenu));
+			app.BeginInvoke(() => DoInitDebugMenu(extendDebugMenu));
 #endif
 
 			ms_startupPool.release();
@@ -129,7 +129,7 @@ namespace MCocoa
 		
 		#region Private Methods -----------------------------------------------------
 #if DEBUG
-		private static void InitDebugMenu(Action<NSMenu> extendDebugMenu)
+		private static void DoInitDebugMenu(Action<NSMenu> extendDebugMenu)
 		{
 			NSMenu menu = ms_helper.InitDebugMenu();
 			if (extendDebugMenu != null)

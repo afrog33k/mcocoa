@@ -111,6 +111,7 @@ internal sealed class Generate
 				
 			if (value.Name != null)
 			{
+				DoWrite("	[Serializable]");
 				DoWrite("	public enum {0}", value.Name);
 				DoWrite("	{");
 				for (int i = 0; i < value.Names.Length; ++i)
@@ -249,7 +250,7 @@ internal sealed class Generate
 			DoWrite();
 			DoWrite("		public new {0} Retain()", m_interface.Name);
 			DoWrite("		{");
-			DoWrite("			retain();");
+			DoWrite("			Unused.Value = retain();");		// per Apple, "retain must return self"
 			DoWrite("			return this;");
 			DoWrite("		}");
 			DoWrite();

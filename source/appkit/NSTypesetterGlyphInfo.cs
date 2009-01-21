@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 namespace MCocoa
 { 
 	[Register("_NSTypesetterGlyphInfo")]
+	[DisableRule("S1022", "VisiblePointer")]    
 	public struct NSTypesetterGlyphInfo
 	{
 		public NSPoint curLocation;		// Location (relative to the baseline) for laying this glyph out 
