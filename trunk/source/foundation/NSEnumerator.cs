@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 namespace MCocoa
 {
 	[Register("NSFastEnumerationState")]
+	[DisableRule("S1022", "VisiblePointer")]    
 	public struct NSFastEnumerationState
 	{
 		public float m11, m12, m21, m22;

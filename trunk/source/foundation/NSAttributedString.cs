@@ -62,7 +62,7 @@ namespace MCocoa
 						
 		public override string ToString()
 		{
-			return this != IntPtr.Zero ? string_().ToString() : null;
+			return this != IntPtr.Zero ? string_().ToString() : "nil";
 		}
 	}
 

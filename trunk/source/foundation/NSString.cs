@@ -60,7 +60,7 @@ namespace MCocoa
 		public void getCharacters(out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal((int) (2*length()));
-			Call("getCharacters:", buffer);
+			Unused.Value = Call("getCharacters:", buffer);
 			
 			str = Marshal.PtrToStringUni(buffer, (int) length());
 			Marshal.FreeHGlobal(buffer);
@@ -69,7 +69,7 @@ namespace MCocoa
 		public void getCharacters_range(NSRange range, out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal(2*range.length);
-			Call("getCharacters:range:", buffer, range);
+			Unused.Value = Call("getCharacters:range:", buffer, range);
 			
 			str = Marshal.PtrToStringUni(buffer, range.length);
 			Marshal.FreeHGlobal(buffer);
@@ -96,27 +96,33 @@ namespace MCocoa
 
 		public override string ToString()
 		{
-			return this != IntPtr.Zero ? Marshal.PtrToStringAuto((IntPtr) Call("UTF8String")) : null;
+			return this != IntPtr.Zero ? Marshal.PtrToStringAuto((IntPtr) Call("UTF8String")) : "nil";
 		}
 		
 		public static bool operator==(NSString lhs, NSString rhs)
 		{
+			if ((object) rhs == null)
+				return (object) lhs == null;
+			
 			return lhs.compare(rhs) == 0;
 		}
 		
 		public static bool operator==(NSString lhs, string rhs)
 		{
+			if ((object) rhs == null)
+				return (object) lhs == null;
+			
 			return lhs.ToString() == rhs;
 		}
 		
 		public static bool operator!=(NSString lhs, NSString rhs)
 		{
-			return lhs.compare(rhs) != 0;
+			return !(lhs == rhs);
 		}
 		
 		public static bool operator!=(NSString lhs, string rhs)
 		{
-			return lhs.ToString() != rhs;
+			return !(lhs == rhs);
 		}
 		
 		// Compiler requires us to define these two.

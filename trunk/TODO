@@ -3,15 +3,13 @@ set a symbolic breakpoint at -[NSException raise]
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
 * Release checklist:
-	- search for TODO
-	- run smoke
-	- make sure unit tests work
-	- make sure examples work in debug
 	- make sure examples work in release
 	- review tar target
+	- make sure tar is working
 	- make sure everything is checked in
 	- use svn log -r 1:HEAD > CHANGE_LOG
 	- update CHANGES file
+	- release mobjc
 	- update version number
 	- remove build_num file 
 	- install
@@ -20,7 +18,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- send an announcement
 	- make sure everything is checked in
 * Might want a white list for out arguments (can't tell from the headers if they
-  are supposed to be arrays or not)
+  are supposed to be arrays or not, see NSBezierPath.getLineDashCountPhase)
 * Work on Natty:
 	- prefs could be used to save fonts, colors
 	- need to support stdin (important for install or removing files
@@ -30,8 +28,9 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- might be neat to have a lookup error command
 * Probably should add interfaces for protocols.
 * Release checklist:
-	- search for TODO
+	- search for TODO (everywhere)
 	- run smoke
+	- run gendarme
 	- make sure unit tests work
 	- make sure examples work in debug
 	- make sure examples work in release
