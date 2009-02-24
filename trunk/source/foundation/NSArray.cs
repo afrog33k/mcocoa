@@ -58,4 +58,31 @@ namespace MCocoa
 				yield return objectAtIndex(i);
 		}
 	}
+
+	public partial class NSMutableArray : NSArray
+	{		
+		public static new NSMutableArray Create(params string[] args)
+		{
+			NSString[] strs = new NSString[args.Length];
+			for (int i = 0; i < args.Length; ++i)
+				strs[i] = NSString.Create(args[i]);
+				
+			return Create(strs);
+		}
+
+		public static new NSMutableArray Create(params NSObject[] args) 
+		{
+			IntPtr[] ptrs = new IntPtr[args.Length];
+			for (int i = 0; i < args.Length; ++i)
+				ptrs[i] = (IntPtr) args[i];
+				
+			GCHandle handle = GCHandle.Alloc(ptrs, GCHandleType.Pinned);
+			IntPtr objects = handle.AddrOfPinnedObject();
+
+			NSMutableArray result = ms_class.Call("arrayWithObjects:count:", objects, (uint) args.Length).To<NSMutableArray>();
+			handle.Free();
+			
+			return result;
+		}
+	}
 }

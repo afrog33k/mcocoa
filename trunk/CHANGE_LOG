@@ -316,3 +316,194 @@ Fixed a typo.
 
 
 ------------------------------------------------------------------------
+r35 | jesjones@mindspring.com | 2008-11-20 22:04:42 -0800 (Thu, 20 Nov 2008) | 3 lines
+
+Updated changes docs.
+
+
+------------------------------------------------------------------------
+r36 | jesjones@mindspring.com | 2008-11-21 13:14:10 -0800 (Fri, 21 Nov 2008) | 6 lines
+
+* Generated code no longer attempts to replace NSString with System.String.
+* Fixed some leaks where HGlobals were not being freed.
+* Updated for mobjc changes, notably marshaling strings to IntPtr.
+* Hand coded NSString.getCharacters and getCharactersRange.
+
+
+------------------------------------------------------------------------
+r37 | jesjones@mindspring.com | 2008-11-24 17:18:20 -0800 (Mon, 24 Nov 2008) | 13 lines
+
+Index: source/foundation/NSFileManager.cs
+* Added attribute keys.
+
+Index: source/foundation/NSAttributedString.cs
+* Added Create(string) overload.
+* Overrides ToString.
+
+Index: source/foundation/NSError.cs
+* Domains and keys are now NSStrings instead of System.String.
+
+Index: source/appkit/NSWindowController.cs
+* Added a ctor to allow custom controllers to be created in a nicer way.
+
+------------------------------------------------------------------------
+r38 | jesjones@mindspring.com | 2008-12-01 22:44:17 -0800 (Mon, 01 Dec 2008) | 22 lines
+
+Index: generate/Generate.cs
+* Methods with native NSError ** arguments are now generated using out NSError
+  instead of IntPtr. Ditto for NSRange ** and NSStringEncoding **.
+  
+Index: source/foundation/NSError.cs
+* Raise calls description() on localizedDescription and localizedFailureReason
+  instead of relying on ToString.
+  
+Index: source/appkit/Functions.cs
+* Added alert functions.
+
+Index: source/foundation/NSString.cs
+* Added a Create overload that takes a format string.
+
+Index: generate/Frameworks.xml
+* Fix defaultCenter so that it returns NSNotificationCenter.
+* Fix notificationWithName:object: and notificationWithName:object:userInfo: so 
+  that they return NSNotification.
+* Fix sharedUserDefaultsController so that it returns NSUserDefaultsController.
+
+
+
+------------------------------------------------------------------------
+r39 | jesjones@mindspring.com | 2008-12-02 14:04:19 -0800 (Tue, 02 Dec 2008) | 4 lines
+
+Generates names like initWithDomain_code_userInfo instead of 
+initWithDomainCodeUserInfo.
+
+
+------------------------------------------------------------------------
+r40 | jesjones@mindspring.com | 2008-12-07 16:59:01 -0800 (Sun, 07 Dec 2008) | 6 lines
+
+Index: source/foundation/NSRange.cs
+* Added Empty field.
+
+Index: source/appkit/NSWindow.cs
+* Added notification externs.
+
+------------------------------------------------------------------------
+r41 | jesjones@mindspring.com | 2008-12-14 23:22:25 -0800 (Sun, 14 Dec 2008) | 6 lines
+
+Index: source/appkit/Functions.cs
+* Added NSBeginAlertSheet, NSBeginInformationalAlertSheet, and NSBeginCriticalAlertSheet.
+
+Index: generate/Frameworks.xml
+* Fixed some array and fileHandle methods so that they return a better type than NSObject.
+
+------------------------------------------------------------------------
+r42 | jesjones@mindspring.com | 2008-12-14 23:22:56 -0800 (Sun, 14 Dec 2008) | 3 lines
+
+Added NSOrdered enums.
+
+
+------------------------------------------------------------------------
+r43 | jesjones@mindspring.com | 2008-12-26 00:38:37 -0800 (Fri, 26 Dec 2008) | 17 lines
+
+Index: source/foundation/NSString.cs
+* Renamed getCharactersRange getCharacters_range.
+* Added indexer methods.
+
+Index: source/appkit/AppHelper.cs
+Index: source/appkit/NSApplication.cs
+* Added a Create overload to make it easier for clients to extend the debug menu.
+
+Index: source/foundation/NSRange.cs
+* Added a copy ctor and Intersects methods.
+
+Index: source/foundation/NSAttributedString.cs
+* Added NSMutableAttributedString(string) ctor.
+
+Index: generate/Frameworks.xml
+* Fixed contentView method so it returns a NSClipView instead of an NSView.
+
+------------------------------------------------------------------------
+r44 | jesjones@mindspring.com | 2009-01-19 05:57:29 -0800 (Mon, 19 Jan 2009) | 43 lines
+
+Index: source/foundation/NSError.cs
+Index: source/foundation/NSString.cs
+Index: source/appkit/NSAttributedString.cs
+* Generated classes now define Retain instead of retain so that exported classes can define
+   their own Retain methods (to support covaraint returns) without causing the Registrar to
+   think that those types are overriding retain. The Retain methods are also more efficient
+   than the old retain methods.
+   
+Index: generate/Generate.cs
+Index: examples/animating-views/SimpleLayoutView.cs
+* Generated classes now have Alloc instead of alloc methods (so the API is more consistent).
+
+Index: source/appkit/NSApplication.cs
+* Added some Create overloads to make mcocoa easier to use with apps which have custom
+   NSApplication subclasses.
+    
+Index: source/foundation/Notifications.cs
+Index: source/foundation/NSFileManager.cs
+* Added all of the appkit and foundation notification externs to Notifications.cs
+
+Index: source/foundation/NSIndexSet.cs
+* Added NSIndexSet::GetEnumerator so that it can be used with foreach.
+
+Index: source/foundation/Functions.cs
+* Added path utilities.
+
+Index: source/appkit/AppHelper.cs
+* Debug collectGarbage method calls GC.Collect and GC.WaitForPendingFinalizers four times
+   times because objects were not being collected with one or two calls.
+
+Index: source/appkit/NSGradient.cs
+* Added missing autorelease calls to the Create methods.
+
+Index: source/appkit/NSWorkspace.cs
+* Added getInfoForFile and performFileOperation externs.
+
+Index: generate/Frameworks.xml
+* Made contentView return an NSView instead of a NSClipView.
+
+Index: examples/natty/MakeBuilder.cs
+* Ignore some more automake targets: extra-bin, push, and zip-bin.
+ 		
+
+------------------------------------------------------------------------
+r45 | jesjones@mindspring.com | 2009-01-19 23:32:58 -0800 (Mon, 19 Jan 2009) | 14 lines
+
+Index: source/foundation/NSString.cs
+* Added GetEnumerator, operator==, and operator!=.
+
+Index: README
+* Added usage notes.
+
+Index: examples/natty/Document.cs
+* Fixed a potential threading problem.
+
+Index: examples/natty/Makefile
+Index: examples/animating-views/Makefile
+* Quote MONO_FLAGS so that multiple flags work.
+
+
+------------------------------------------------------------------------
+r46 | jesjones@mindspring.com | 2009-01-20 23:40:43 -0800 (Tue, 20 Jan 2009) | 18 lines
+
+Index: source/foundation/NSAttributedString.cs
+Index: source/foundation/NSString.cs
+* ToString returns "nil" instead of null if the instance is nil.
+* Added null arg checks to operator== methods.
+
+Index: source/foundation/Functions.cs
+Index: source/Unused.cs
+Index: source/appkit/AppHelper.cs
+Index: source/appkit/NSApplication.cs
+Index: source/appkit/NSTypesetterGlyphInfo.cs
+Index: generate/Generate.cs
+Index: source/foundation/NSEnumerator.cs
+* Minor smokey/gendarme fixes.
+
+Index: Makefile
+* Added gendarme target.
+
+
+------------------------------------------------------------------------
