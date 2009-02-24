@@ -2,21 +2,13 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Release checklist:
-	- make sure examples work in release
-	- review tar target
-	- make sure tar is working
-	- make sure everything is checked in
-	- use svn log -r 1:HEAD > CHANGE_LOG
-	- update CHANGES file
-	- release mobjc
-	- update version number
-	- remove build_num file 
-	- install
-	- update README and wiki
-	- upload a new version to googlecode
-	- send an announcement
-	- make sure everything is checked in
+* NSRange intersects test isn't quite right for zero lengths. Probably best to treat
+  this as a test of the length of the intersection of the two ranges.
+* NSArray, NSIndexSet, etc should implement IEnumerable.
+* openDocumentWithContentsOfURL_display_error should return an NSDocument.
+* Might want to either get rid of one of the NSString::operator== overloads (causes
+   problems comparing them to null).
+* Make sure none of the example code is using RegisterAttribute.
 * Might want a white list for out arguments (can't tell from the headers if they
   are supposed to be arrays or not, see NSBezierPath.getLineDashCountPhase)
 * Work on Natty:
@@ -40,6 +32,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- update CHANGES file
 	- update version number
 	- remove build_num file 
+	- update libraries
 	- install
 	- update README and wiki
 	- upload a new version to googlecode

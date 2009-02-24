@@ -1,3 +1,25 @@
+-- Version 0.4.0.0 (r46) ----
+
+* Methods with native NSError ** arguments are now generated using out NSError
+  instead of IntPtr. Ditto for NSRange ** and NSStringEncoding **.
+* Generated code uses NSString instead of System.String.
+* Generated method names use underscores instead of case changes (e.g.
+   initWithDomain_code_userInfo instead of initWithDomainCodeUserInfo).
+* Generated classes now define Retain instead of retain so that exported classes can 
+   define their own Retain methods (to support covaraint returns) without causing the 
+   Registrar to think that those types are overriding retain. 
+* Generated classes now have Alloc instead of alloc methods (so the API is more 
+   consistent).
+* Added an overload of NSApplication::Create to make it easier for clients to
+  extend the Debug menu.
+* Added some Create overloads to make mcocoa easier to use with apps which have 
+   custom NSApplication subclasses.
+* Added a custom NSWindowController to make custom controllers easier to create.
+* Added alert and path functions.
+* Added a bunch more Enums and Externs.
+* Fixed some leaks where HGlobals were not being freed.
+* Added usage notes to the README.
+
 -- Version 0.3.0.0 (r34) ----
 
 * 85% of foundation methods and 77% of appkit methods now use a fast path
