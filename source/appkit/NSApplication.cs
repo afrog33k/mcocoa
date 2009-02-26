@@ -34,11 +34,17 @@ namespace MCocoa
 			// Make our app a foreground app (this is redundant if we were started via the
 			// Finder or the open command, but important if we were started by directly
 			// executing the launcher script).
-			IntPtr psn = IntPtr.Zero;
-			GetCurrentProcess(ref psn);
+			var psn = new ProcessSerialNumber();
+			psn.highLongOfPSN = 0;
+			psn.lowLongOfPSN = kCurrentProcess;
 			
-			TransformProcessType(ref psn, 1);
-			SetFrontProcess(ref psn);
+			int err = TransformProcessType(ref psn, kProcessTransformToForegroundApplication);
+			if (err != 0)
+				throw new InvalidOperationException("TransformProcessType returned " + err + ".");
+			
+			err = SetFrontProcess(ref psn);
+			if (err != 0)
+				throw new InvalidOperationException("SetFrontProcess returned " + err + ".");
 			
 			// Cocoa expects an NSAutoreleasePool to always be available so we need to
 			// create one which we can use before we enter the main event loop.
@@ -54,7 +60,7 @@ namespace MCocoa
 			
 			// Load our nib. This will instantiate all of the native objects and wire them together.
 			// The C# objects will be created the first time a managed method is called.
-			NSMutableDictionary dict = NSMutableDictionary.Create();					
+			NSMutableDictionary dict = NSMutableDictionary.Create();
 			bool loaded = NSBundle.mainBundle().loadNibFile_externalNameTable_withZone_i(
 				NSString.Create(nibName), dict, IntPtr.Zero);
 			
@@ -83,7 +89,7 @@ namespace MCocoa
 			return Create("NSApplication", nibName, extendDebugMenu);
 		}
 		
-		public static NSApplication Create(string nibName) 
+		public static NSApplication Create(string nibName)
 		{
 			return Create(nibName, null);
 		}
@@ -139,14 +145,21 @@ namespace MCocoa
 		#endregion
 		
 		#region P/Invokes
-		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private static extern void GetCurrentProcess(ref IntPtr psn);
+		private const uint kCurrentProcess = 2;
+		private const uint kProcessTransformToForegroundApplication = 1;
+		
+		[StructLayout(LayoutKind.Sequential, Pack = 2)]
+		private struct ProcessSerialNumber
+		{
+			public uint highLongOfPSN;
+			public uint lowLongOfPSN;
+		}
 		
 		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private static extern void TransformProcessType(ref IntPtr psn, uint type);
-		
+		private static extern int TransformProcessType(ref ProcessSerialNumber psn, uint type);
+	
 		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
-		private static extern void SetFrontProcess(ref IntPtr psn);
+		private static extern short SetFrontProcess(ref ProcessSerialNumber psn);
 		#endregion
 		
 		#region Fields
