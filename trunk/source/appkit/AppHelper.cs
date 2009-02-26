@@ -36,7 +36,7 @@ namespace MCocoa
 			Trace.Assert(!ms_created, "AppHelper should be created only once");
 			ms_created = true;
 		}
-
+		
 		public static AppHelper Create()
 		{
 			AppHelper result = new AppHelper(NSObject.AllocNative("AppHelper"));
@@ -63,18 +63,18 @@ namespace MCocoa
 			int id = m_actionID++;
 			m_delayedActions.Add(id, action);
 			
-			Unused.Value = Call("performSelector:withObject:afterDelay:", 
+			Unused.Value = Call("performSelector:withObject:afterDelay:",
 				new Selector("onDelayedAction:"),
 				NSNumber.Create(id),
 				delay.TotalSeconds);
 		}
 		
-		[DisableRule("D1032", "UnusedMethod")]    
+		[DisableRule("D1032", "UnusedMethod")]
 		public void onDelayedAction(NSNumber id)
 		{
 			Action action = m_delayedActions[id.intValue()];
 			Unused.Value = m_delayedActions.Remove(id.intValue());
-
+			
 			try
 			{
 				action();
@@ -87,7 +87,7 @@ namespace MCocoa
 			}
 		}
 		
-		#region Event Handlers ------------------------------------------------
+		#region Event Handlers
 #if DEBUG
 		internal NSMenu InitDebugMenu()
 		{
@@ -103,12 +103,10 @@ namespace MCocoa
 			
 			return debugMenu;
 		}
-
+		
 		[DisableRule("P1017", "ExplicitGC")]
 		public void collectGarbage(NSObject sender)
 		{
-			Unused.Value = sender;
-			
 			//  TODO: for some reason objects hang around if we do this only once
 			// or do not do the sleep...
 			for (int i = 0; i < 4; ++i)
@@ -119,14 +117,12 @@ namespace MCocoa
 			}
 		}
 		
-		[DisableRule("D1032", "UnusedMethod")]    
+		[DisableRule("D1032", "UnusedMethod")]
 		public void dumpObjects(NSObject sender)
 		{
-			Unused.Value = sender;
-			
 			collectGarbage(null);
-
-			List<string> lines = new List<string>();			
+			
+			List<string> lines = new List<string>();
 			foreach (NSObject o in NSObject.Snapshot())
 			{
 				lines.Add(o.ToString("G", null));
@@ -138,11 +134,9 @@ namespace MCocoa
 			Console.WriteLine(" ");
 		}
 		
-		[DisableRule("D1032", "UnusedMethod")]    
+		[DisableRule("D1032", "UnusedMethod")]
 		public void dumpWindows(NSObject sender)
 		{
-			Unused.Value = sender;
-			
 			for (int i = 0; i < NSApplication.sharedApplication().windows().Length; ++i)
 			{
 				int indent = 0;
@@ -152,20 +146,18 @@ namespace MCocoa
 		}
 #endif	// DEBUG
 
-		[DisableRule("D1032", "UnusedMethod")]    
+		[DisableRule("D1032", "UnusedMethod")]
 		public void execute(NSObject arg)
 		{
-			Unused.Value = arg;
-			
 			List<Action> actions;
-
+			
 			lock (m_lock)
 			{
 				actions = new List<Action>(m_actions);
 				m_actions.Clear();
 				m_pendingExecute = false;
 			}
-						
+			
 			foreach (Action action in actions)
 			{
 				try
@@ -182,7 +174,7 @@ namespace MCocoa
 		}
 		#endregion
 		
-		#region Private Methods	 ----------------------------------------------
+		#region Private Methods
 #if DEBUG
 		private void DoDump(NSResponder o, ref int indent)
 		{
@@ -196,11 +188,11 @@ namespace MCocoa
 				DoDump1(o, ref indent);
 			}
 		}
-
+		
 		private void DoDump1(NSResponder o, ref int indent)
 		{
 			Console.Write("{0}{1}", new string(' ', 3*indent), o);
-					
+			
 			List<string> extras = new List<string>();
 			if (o == NSApplication.sharedApplication().keyWindow())
 				extras.Add("key");
@@ -214,7 +206,7 @@ namespace MCocoa
 				Console.Write(" [{0}]", string.Join(", ", extras.ToArray()));
 				
 			Console.WriteLine();
-
+			
 			if (o.respondsToSelector("delegate"))
 			{
 				NSObject d = (NSObject) o.Call("delegate");
@@ -232,7 +224,7 @@ namespace MCocoa
 			Selector selector = new Selector("execute:");		
 			NSObject pool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
 			Unused.Value = pool;		// shut compiler up
-
+			
 			while (true)
 			{
 				lock (m_lock)
@@ -248,18 +240,18 @@ namespace MCocoa
 						m_pendingExecute = true;
 					}
 				}
-			}			
+			}
 		}
 		#endregion
 		
-		#region Fields -------------------------------------------------------
-	    private readonly object m_lock = new object();
+		#region Fields
+		private readonly object m_lock = new object();
 		private List<Action> m_actions = new List<Action>();
 		private bool m_pendingExecute;
 		private Thread m_thread;
 		private int m_actionID;
 		private Dictionary<int, Action> m_delayedActions = new Dictionary<int, Action>();
-
+		
 		private static bool ms_created;
 		#endregion
 	}
