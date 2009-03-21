@@ -3,7 +3,7 @@
 CSC ?= gmcs
 MONO ?= mono
 NUNIT ?= nunit-console2
-GENDARME ?= /usr/local/bin/gendarme/gendarme.exe
+GENDARME ?= /usr/bin/gendarme/gendarme.exe
 
 ifdef RELEASE
 	# Note that -debug+ just generates an mdb file.
@@ -12,8 +12,8 @@ else
 	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -d:DEBUG -d:TRACE
 endif
 
-INSTALL_DIR ?= /usr/local/lib
-PKG_CONFIG_DIR ?= /usr/local/lib/pkgconfig
+INSTALL_DIR ?= /usr/lib
+PKG_CONFIG_DIR ?= /usr/lib/pkgconfig
 
 # ------------------
 # Internal variables
