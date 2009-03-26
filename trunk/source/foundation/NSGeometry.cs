@@ -1,4 +1,4 @@
-// Copyright (C) 2008 Jesse Jones
+// Copyright (C) 2008-2009 Jesse Jones
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -46,29 +46,29 @@ namespace MCocoa
 		{
 			return new NSPoint(lhs.x - rhs.x, lhs.y - rhs.y);
 		}
-	
+		
 		public override string ToString()
 		{
 			return string.Format("({0}, {1})", x, y);
 		}
-	
+		
 		public override bool Equals(object rhsObj)
 		{
-			if (rhsObj == null)						
+			if (rhsObj == null)
 				return false;
 			
-			if (GetType() != rhsObj.GetType()) 
+			if (GetType() != rhsObj.GetType())
 				return false;
-		
-			NSPoint rhs = (NSPoint) rhsObj;					
+			
+			NSPoint rhs = (NSPoint) rhsObj;
 			return this == rhs;
 		}
-			
+		
 		public bool Equals(NSPoint rhs)	
 		{
 			return this == rhs;
 		}
-	 
+		
 		public static bool operator==(NSPoint lhs, NSPoint rhs)
 		{
 			return lhs.x == rhs.x && lhs.y == rhs.y;
@@ -110,24 +110,24 @@ namespace MCocoa
 		{
 			return string.Format("({0}, {1})", width, height);
 		}
-	
+		
 		public override bool Equals(object rhsObj)
 		{
-			if (rhsObj == null)						
+			if (rhsObj == null)
 				return false;
 			
-			if (GetType() != rhsObj.GetType()) 
+			if (GetType() != rhsObj.GetType())
 				return false;
 		
-			NSSize rhs = (NSSize) rhsObj;					
+			NSSize rhs = (NSSize) rhsObj;
 			return this == rhs;
 		}
 			
-		public bool Equals(NSSize rhs)	
+		public bool Equals(NSSize rhs)
 		{
 			return this == rhs;
 		}
-	 
+		
 		public static bool operator==(NSSize lhs, NSSize rhs)
 		{
 			return lhs.width == rhs.width && lhs.height == rhs.height;
@@ -167,7 +167,7 @@ namespace MCocoa
 		
 		public NSRect Inset(float dx, float dy)
 		{
-			float x, width;			
+			float x, width;
 			if (size.width > 2.0*dx)
 			{
 				x = origin.x + dx;
@@ -179,7 +179,7 @@ namespace MCocoa
 				width = 0.0f;
 			}
 			
-			float y, height;			
+			float y, height;
 			if (size.height > 2.0*dy)
 			{
 				y = origin.y + dy;
@@ -203,21 +203,21 @@ namespace MCocoa
 		{
 			return NSIntegralRect(this);
 		}
-	
+		
 		public override string ToString()
 		{
 			return string.Format("({0}, {1})", origin, size);
 		}
-	
+		
 		public override bool Equals(object rhsObj)
 		{
-			if (rhsObj == null)						
+			if (rhsObj == null)
 				return false;
 			
-			if (GetType() != rhsObj.GetType()) 
+			if (GetType() != rhsObj.GetType())
 				return false;
-		
-			NSRect rhs = (NSRect) rhsObj;					
+			
+			NSRect rhs = (NSRect) rhsObj;
 			return this == rhs;
 		}
 			
@@ -225,7 +225,7 @@ namespace MCocoa
 		{
 			return this == rhs;
 		}
-	 
+		
 		public static bool operator==(NSRect lhs, NSRect rhs)
 		{
 			return lhs.origin == rhs.origin && lhs.size == rhs.size;
