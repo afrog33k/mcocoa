@@ -30,18 +30,18 @@ namespace MCocoa
 		public const int NSNotFound = 0x7fffffff;
 	}
 	
-	[DisableRule("R1016", "Const2")]	
+	[DisableRule("R1016", "Const2")]
 	[Register("_NSRange")]
 	public struct NSRange : IEquatable<NSRange>
-	{		
+	{
 		public int location;
 		public int length;
-
+		
 		public NSRange(int loc, int len)
 		{
 			Trace.Assert(loc >= 0, "loc is negative");
 			Trace.Assert(len >= 0, "len is negative");
-
+			
 			location = loc;
 			length = len;
 		}
@@ -56,7 +56,7 @@ namespace MCocoa
 		{
 			return index >= location && index < location + length;
 		}
-				
+		
 		public bool Intersects(NSRange rhs)
 		{
 			bool intersects = false;
@@ -72,7 +72,7 @@ namespace MCocoa
 			
 			return intersects;
 		}
-				
+		
 		public override string ToString()
 		{
 			return string.Format("[{0}, {1}]", location, location + length);
@@ -80,21 +80,21 @@ namespace MCocoa
 	
 		public override bool Equals(object rhsObj)
 		{
-			if (rhsObj == null)						
+			if (rhsObj == null)
 				return false;
 			
-			if (GetType() != rhsObj.GetType()) 
+			if (GetType() != rhsObj.GetType())
 				return false;
-		
-			NSRange rhs = (NSRange) rhsObj;					
+			
+			NSRange rhs = (NSRange) rhsObj;
 			return this == rhs;
 		}
-			
+		
 		public bool Equals(NSRange rhs)	
 		{
 			return this == rhs;
 		}
-	 
+		
 		public static bool operator==(NSRange lhs, NSRange rhs)
 		{
 			return lhs.location == rhs.location && lhs.length == rhs.length;
@@ -116,7 +116,7 @@ namespace MCocoa
 			
 			return hash;
 		}
-
+		
 		public static readonly NSRange Empty = new NSRange(0, 0);
 	}
 }
