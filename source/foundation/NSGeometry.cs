@@ -21,6 +21,8 @@
 
 using MObjc;
 using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace MCocoa
@@ -37,19 +39,67 @@ namespace MCocoa
 			this.y = y;
 		}
 		
-		public static NSPoint operator+(NSPoint lhs, NSPoint rhs) 
+		public static NSPoint operator+(NSPoint lhs, NSPoint rhs)
 		{
 			return new NSPoint(lhs.x + rhs.x, lhs.y + rhs.y);
 		}
 		
-		public static NSPoint operator-(NSPoint lhs, NSPoint rhs) 
+		public static NSPoint operator-(NSPoint lhs, NSPoint rhs)
 		{
 			return new NSPoint(lhs.x - rhs.x, lhs.y - rhs.y);
 		}
 		
 		public override string ToString()
 		{
-			return string.Format("({0}, {1})", x, y);
+			return ToString("G", null);
+		}
+		
+		public string ToString(string format)
+		{
+			return ToString(format, null);
+		}
+		
+		public string ToString(string format, IFormatProvider provider)
+		{
+			if (provider != null)
+			{
+				ICustomFormatter formatter = provider.GetFormat(GetType()) as ICustomFormatter;
+				if (formatter != null)
+					return formatter.Format(format, this, provider);
+			}
+			
+			switch (format)
+			{
+				case "":
+				case null:	
+				case "g":
+				case "G":
+					return string.Format("({0}, {1})", x, y);
+				
+				case "r":			// round trip version
+				case "R":
+					IFormatProvider invariant = CultureInfo.InvariantCulture.NumberFormat;
+					return string.Format("{0}:{1}", x.ToString("R", invariant), y.ToString("R", invariant));
+				
+				default:
+					string message = string.Format("{0} isn't a valid {1} format string.", format, GetType());
+					throw new FormatException(message);
+			}
+		}
+		
+		public static NSPoint Parse(string text)
+		{
+			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			
+			string[] fields = text.Split(':');
+			if (fields.Length != 2)
+			{
+				string message = string.Format("{0} isn't a valid round trippable NSPoint value.", text);
+				throw new FormatException(message);
+			}
+			
+			IFormatProvider format = CultureInfo.InvariantCulture.NumberFormat;
+			return new NSPoint(float.Parse(fields[0], format), float.Parse(fields[1], format));
 		}
 		
 		public override bool Equals(object rhsObj)
@@ -108,7 +158,55 @@ namespace MCocoa
 		
 		public override string ToString()
 		{
-			return string.Format("({0}, {1})", width, height);
+			return ToString("G", null);
+		}
+		
+		public string ToString(string format)
+		{
+			return ToString(format, null);
+		}
+		
+		public string ToString(string format, IFormatProvider provider)
+		{
+			if (provider != null)
+			{
+				ICustomFormatter formatter = provider.GetFormat(GetType()) as ICustomFormatter;
+				if (formatter != null)
+					return formatter.Format(format, this, provider);
+			}
+			
+			switch (format)
+			{
+				case "":
+				case null:
+				case "g":
+				case "G":
+					return string.Format("({0}, {1})", width, height);
+				
+				case "r":			// round trip version
+				case "R":
+					IFormatProvider invariant = CultureInfo.InvariantCulture.NumberFormat;
+					return string.Format("{0}:{1}", width.ToString("R", invariant), height.ToString("R", invariant));
+				
+				default:
+					string message = string.Format("{0} isn't a valid {1} format string.", format, GetType());
+					throw new FormatException(message);
+			}
+		}
+		
+		public static NSSize Parse(string text)
+		{
+			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			
+			string[] fields = text.Split(':');
+			if (fields.Length != 2)
+			{
+				string message = string.Format("{0} isn't a valid round trippable NSSize value.", text);
+				throw new FormatException(message);
+			}
+			
+			IFormatProvider format = CultureInfo.InvariantCulture.NumberFormat;
+			return new NSSize(float.Parse(fields[0], format), float.Parse(fields[1], format));
 		}
 		
 		public override bool Equals(object rhsObj)
@@ -159,6 +257,12 @@ namespace MCocoa
 		public NSPoint origin;
 		public NSSize size;
 		
+		public NSRect(NSPoint origin, NSSize size)
+		{
+			this.origin = origin;
+			this.size = size;
+		}
+		
 		public NSRect(float x, float y, float width, float height)
 		{
 			origin = new NSPoint(x, y);
@@ -206,7 +310,53 @@ namespace MCocoa
 		
 		public override string ToString()
 		{
-			return string.Format("({0}, {1})", origin, size);
+			return ToString("G", null);
+		}
+		
+		public string ToString(string format)
+		{
+			return ToString(format, null);
+		}
+		
+		public string ToString(string format, IFormatProvider provider)
+		{
+			if (provider != null)
+			{
+				ICustomFormatter formatter = provider.GetFormat(GetType()) as ICustomFormatter;
+				if (formatter != null)
+					return formatter.Format(format, this, provider);
+			}
+			
+			switch (format)
+			{
+				case "":
+				case null:
+				case "g":
+				case "G":
+					return string.Format("({0}, {1})", origin, size);
+				
+				case "r":			// round trip version
+				case "R":
+					return string.Format("{0};{1}", origin.ToString("R"), size.ToString("R"));
+				
+				default:
+					string message = string.Format("{0} isn't a valid {1} format string.", format, GetType());
+					throw new FormatException(message);
+			}
+		}
+		
+		public static NSRect Parse(string text)
+		{
+			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			
+			string[] fields = text.Split(';');
+			if (fields.Length != 2)
+			{
+				string message = string.Format("{0} isn't a valid round trippable NSRect value.", text);
+				throw new FormatException(message);
+			}
+			
+			return new NSRect(NSPoint.Parse(fields[0]), NSSize.Parse(fields[1]));
 		}
 		
 		public override bool Equals(object rhsObj)
@@ -247,6 +397,8 @@ namespace MCocoa
 			
 			return hash;
 		}
+		
+		public static readonly NSRect Empty = new NSRect(0.0f, 0.0f, 0.0f, 0.0f);
 		
 		[DllImport("/System/Library/Frameworks/Foundation.framework/Foundation")]
 		private extern static NSRect NSIntegralRect(NSRect aRect);
