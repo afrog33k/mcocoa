@@ -22,6 +22,7 @@
 using MObjc;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace MCocoa
 {
@@ -75,9 +76,57 @@ namespace MCocoa
 		
 		public override string ToString()
 		{
-			return string.Format("[{0}, {1}]", location, location + length);
+			return ToString("G", null);
 		}
-	
+		
+		public string ToString(string format)
+		{
+			return ToString(format, null);
+		}
+		
+		public string ToString(string format, IFormatProvider provider)
+		{
+			if (provider != null)
+			{
+				ICustomFormatter formatter = provider.GetFormat(GetType()) as ICustomFormatter;
+				if (formatter != null)
+					return formatter.Format(format, this, provider);
+			}
+			
+			switch (format)
+			{
+				case "":
+				case null:	
+				case "g":
+				case "G":
+					return string.Format("[{0}, {1}]", location, location + length);
+				
+				case "r":			// round trip version
+				case "R":
+					IFormatProvider invariant = CultureInfo.InvariantCulture.NumberFormat;
+					return string.Format("{0}:{1}", location.ToString("G", invariant), length.ToString("G", invariant));
+				
+				default:
+					string message = string.Format("{0} isn't a valid {1} format string.", format, GetType());
+					throw new FormatException(message);
+			}
+		}
+		
+		public static NSRange Parse(string text)
+		{
+			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			
+			string[] fields = text.Split(':');
+			if (fields.Length != 2)
+			{
+				string message = string.Format("{0} isn't a valid round trippable NSRange value.", text);
+				throw new FormatException(message);
+			}
+			
+			IFormatProvider format = CultureInfo.InvariantCulture.NumberFormat;
+			return new NSRange(int.Parse(fields[0], format), int.Parse(fields[1], format));
+		}
+		
 		public override bool Equals(object rhsObj)
 		{
 			if (rhsObj == null)
