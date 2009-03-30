@@ -49,6 +49,14 @@ namespace MCocoa
 			return new NSPoint(lhs.x - rhs.x, lhs.y - rhs.y);
 		}
 		
+		public static float Distance(NSPoint lhs, NSPoint rhs)
+		{
+			float dx = lhs.x - rhs.x;
+			float dy = lhs.y - rhs.y;
+			
+			return (float) Math.Sqrt(dx*dx + dy*dy);
+		}
+		
 		public override string ToString()
 		{
 			return ToString("G", null);
@@ -154,6 +162,11 @@ namespace MCocoa
 		{
 			this.width = width;
 			this.height = height;
+		}
+		
+		public float Area
+		{
+			get {return width*height;}
 		}
 		
 		public override string ToString()
@@ -269,6 +282,87 @@ namespace MCocoa
 			size = new NSSize(width, height);
 		}
 		
+		public float Left
+		{
+			get {return origin.x;}
+		}
+		
+		public float Bottom
+		{
+			get {return origin.y;}
+		}
+		
+		public float Right
+		{
+			get {return origin.x + size.width;}
+		}
+		
+		public float Top
+		{
+			get {return origin.y + size.height;}
+		}
+		
+		public NSPoint Center
+		{
+			get {return new NSPoint(origin.x + size.width/2.0f, origin.y + size.height/2.0f);}
+		}
+		
+		public bool Contains(NSPoint pt)
+		{
+			return pt.y >= Bottom && pt.y < Top && pt.x >= Left && pt.x < Right;
+		}
+		
+		public bool Contains(NSRect rect)
+		{
+			return rect.Bottom >= Bottom && rect.Top < Top && rect.Left >= Left && rect.Right < Right;
+		}
+		
+		public bool Intersects(NSRect rhs)
+		{
+			return Bottom <= rhs.Top && Top > rhs.Bottom && Left <= rhs.Right && Right > rhs.Left;
+		}
+		
+		public NSRect Intersect(NSRect rhs)
+		{
+			float top = Math.Min(Top, rhs.Top);
+			float left = Math.Max(Left, rhs.Left);
+			float bottom = Math.Max(Bottom, rhs.Bottom);
+			float right = Math.Min(Right, rhs.Right);
+			
+			NSRect result;
+			if (left <= right && bottom <= top)
+				result = new NSRect(left, bottom, right - left, top - bottom);
+			else
+				result = Empty;
+			
+			return result;
+		}
+		
+		public NSRect Union(NSRect rhs)
+		{
+			NSRect result;
+			
+			if (size == NSSize.Zero)
+			{
+				result = rhs;
+			}
+			else if (rhs.size == NSSize.Zero)
+			{
+				result = this;
+			}
+			else
+			{
+				float top = Math.Max(Top, rhs.Top);
+				float left = Math.Min(Left, rhs.Left);
+				float bottom = Math.Min(Bottom, rhs.Bottom);
+				float right = Math.Max(Right, rhs.Right);
+				
+				result = new NSRect(left, bottom, right - left, top - bottom);
+			}
+			
+			return result;
+		}
+		
 		public NSRect Inset(float dx, float dy)
 		{
 			float x, width;
@@ -298,11 +392,6 @@ namespace MCocoa
 			return new NSRect(x, y, width, height);
 		}
 		
-		public NSPoint Center
-		{
-			get {return new NSPoint(origin.x + size.width/2.0f, origin.y + size.height/2.0f);}
-		}
-	
 		public NSRect ToIntegral()
 		{
 			return NSIntegralRect(this);
