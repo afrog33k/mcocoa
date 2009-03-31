@@ -40,9 +40,6 @@ namespace MCocoa
 		
 		public NSRange(int loc, int len)
 		{
-			Trace.Assert(loc >= 0, "loc is negative");
-			Trace.Assert(len >= 0, "len is negative");
-			
 			location = loc;
 			length = len;
 		}
