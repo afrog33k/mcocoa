@@ -2,6 +2,8 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
+* rectArrayForCharacterRange_withinSelectedCharacterRange_inTextContainer_rectCount
+   should have an out parameter.
 * make help needs to mention make generate.
 * NSRange intersects test isn't quite right for zero lengths. Probably best to treat
   this as a test of the length of the intersection of the two ranges.
