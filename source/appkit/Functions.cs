@@ -139,6 +139,16 @@ namespace MCocoa
 		{
 			NativeMethods.NSRectFillUsingOperation(rect, op);
 		}
+		
+		public static void NSShowAnimationEffect(int animationEffect, NSPoint centerLocation)
+		{
+			NativeMethods.NSShowAnimationEffect(animationEffect, centerLocation, NSSize.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+		}
+		
+		public static void NSShowAnimationEffect(int animationEffect, NSPoint centerLocation, NSSize size, NSObject animationDelegate, Selector didEndSelector, IntPtr contextInfo)
+		{
+			NativeMethods.NSShowAnimationEffect(animationEffect, centerLocation, size, animationDelegate, didEndSelector, contextInfo);
+		}
 		#endregion
 		
 		#region P/Invokes
@@ -191,6 +201,9 @@ namespace MCocoa
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static int NSRunCriticalAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);
+			
+			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			public extern static void NSShowAnimationEffect(int animationEffect, NSPoint centerLocation, NSSize size, IntPtr animationDelegate, IntPtr didEndSelector, IntPtr contextInfo);
 		}
 		#endregion
 	}
