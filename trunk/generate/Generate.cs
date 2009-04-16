@@ -25,12 +25,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-internal sealed class Generate	
+internal sealed class Generate
 {
 	public Generate(ObjectModel objects)
 	{
 		m_objects = objects;
-
+		
 		foreach (NativeFile file in m_objects.Files)
 		{
 			foreach (NativeInterface ni in file.Interfaces)
@@ -46,7 +46,7 @@ internal sealed class Generate
 					ri = m_objects.FindInterface(ni.Name);
 					DoAddMethods(ri, ni.Methods);
 				}
-									
+				
 				foreach (string p in ni.Protocols)
 				{
 					NativeProtocol pp = m_objects.FindProtocol(p);
@@ -55,20 +55,20 @@ internal sealed class Generate
 			}
 		}
 	}
-					
+	
 	public void Code(string outDir, Blacklist[] blacklist)
 	{	
 		m_blacklist = blacklist;
 		m_fastCalls = 0;
 		m_slowCalls = 0;
-
+		
 		foreach (NativeFile file in m_objects.Files)
 		{
 			string hfile = Path.GetFileNameWithoutExtension(file.Path);
 			if (hfile != "NSObjCRuntime" && hfile != "NSObject" && hfile != "NSProxy" && hfile != "NSDistantObject" && hfile != "NSProtocolChecker")
 			{
 				m_inPath = file.Path;
-					
+				
 				StringBuilder buffer = new StringBuilder();
 				m_buffer = buffer;
 				
@@ -78,19 +78,19 @@ internal sealed class Generate
 				DoWrite("using System;");
 				DoWrite("using System.Runtime.InteropServices;");
 				DoWrite();
-		
+				
 				DoWrite("namespace MCocoa");
 				DoWrite("{");
-							
+				
 				DoEnums(buffer, file);
 				DoInterfaces(buffer, file);
-		
+				
 				m_buffer = buffer;
 				DoWrite("}");
-		
+				
 				string outPath = Path.Combine(outDir, hfile + ".cs");
 				File.WriteAllText(outPath, buffer.ToString());
-		
+				
 				// These files should not normally be hand edited so we'll lock them.
 				File.SetAttributes(outPath, FileAttributes.ReadOnly);
 			}
@@ -100,7 +100,7 @@ internal sealed class Generate
 		Console.WriteLine("{0:0.0}% of {1} {2} methods are fast path", 100.0*m_fastCalls/(m_fastCalls+m_slowCalls), m_fastCalls+m_slowCalls, components[components.Length - 2]);
 	}
 	
-	#region Private Methods ---------------------------------------------------
+	#region Private Methods
 	private void DoEnums(StringBuilder buffer, NativeFile file)
 	{
 		m_buffer = buffer;
@@ -129,11 +129,11 @@ internal sealed class Generate
 				
 				int? v = 0;
 				for (int i = 0; i < value.Names.Length; ++i)
-				{	
+				{
 					if (value.Values[i].Length > 0)
 					{
 						string vv = DoMapEnumValue(value.Values[i].Trim());
-
+						
 						int tmp;
 						if (vv.StartsWith("0x") && vv.Length >= 10 && vv[2] >= '8')
 						{
@@ -173,7 +173,7 @@ internal sealed class Generate
 				}
 			}
 			
-			DoWrite("	}");	
+			DoWrite("	}");
 			DoWrite();
 		}
 	}
@@ -181,26 +181,26 @@ internal sealed class Generate
 	private void DoInterfaces(StringBuilder buffer, NativeFile file)
 	{
 		for (int i = 0; i < file.Interfaces.Count; ++i)
-		{			
+		{
 			m_interface = file.Interfaces[i];
 			
 			if (m_interface.Category == null || m_interface.Category != "NSDeprecated")
 			{
 				m_buffer = new StringBuilder();
-				if (i > 0)	
+				if (i > 0)
 					DoWrite();
-
+				
 				DoWriteInterfaceHeader();	
 				DoGenerateMethods();
 				DoWriteInterfaceTrailer();
-						
+				
 				buffer.Append(m_buffer.ToString());
 			}
 		}
 	}
-		
+	
 	private void DoWriteInterfaceHeader()
-	{		
+	{
 		if (m_interface.Category != null)
 		{
 			if (m_interface.Name == "CIColor" || m_interface.Name == "CIImage")
@@ -218,7 +218,7 @@ internal sealed class Generate
 			else
 			{
 				NativeInterface ri = m_objects.FindInterface(m_interface.Name);
-	
+				
 				DoWrite("	// {0} category", m_interface.Category);
 				DoWrite("	public partial class {0} : {1}", m_interface.Name, ri.BaseName);
 				DoWrite("	{");
@@ -284,7 +284,7 @@ internal sealed class Generate
 		for (int i = 0; i < m_interface.Methods.Count; ++i)
 		{
 			NativeMethod method = m_interface.Methods[i];
-
+			
 			if (names.IndexOf(method.Name) < 0)
 			{
 				if (DoGenerateMethod(method, writeBlank, null))
@@ -308,7 +308,7 @@ internal sealed class Generate
 			if (!DoHasProtocol(m_interface.BaseName, protocol))
 				if (protocol != "NSObject")
 					DoGenerateProtocolMethods(names, protocol);
-					
+		
 		return numMethods;
 	}
 		
@@ -349,7 +349,7 @@ internal sealed class Generate
 			else
 				DoWrite("		// skipping {0} (it's already defined)", method.Name);
 		}
-			
+		
 		foreach (string p2 in protocol.Protocols)
 			if (p2 != "NSObject")
 				DoGenerateProtocolMethods(names, p2);
@@ -365,17 +365,17 @@ internal sealed class Generate
 		if (protocol != null)
 		{
 			defined = DoPriorProtocolHasMethod(protocol, nm.Name, nm.IsClass);
-
+			
 			if (!defined)
 				defined = DoInterfaceHasMethod(nm.Name, nm.IsClass);
-
+			
 			if (!defined)
 				defined = DoBaseHasMethod(m_interface.BaseName, nm.Name, nm.IsClass);
 		}
 		else if (m_interface.Category != null)
 		{
 			defined = DoInterfaceHasMethod(nm.Name, nm.IsClass);
-
+			
 			if (!defined && m_interface.Name != "NSOject" && m_interface.Name != "CIColor" && m_interface.Name != "CIImage")
 			{
 				NativeInterface ri = m_objects.FindInterface(m_interface.Name);
@@ -428,14 +428,14 @@ internal sealed class Generate
 	}
 	
 	private void DoWriteMethod(NativeMethod method)
-	{		
+	{
 		MethodInfo minfo = new MethodInfo(m_objects, m_interface, method);
 		
 		// signature		
 		m_buffer.Append("		public ");
 		if (method.IsClass || (m_interface.Category != null && m_interface.Name == "NSObject"))
 			m_buffer.Append("static ");
-								
+		
 		m_buffer.Append(minfo.ResultType.Managed);
 		m_buffer.Append(" ");
 		DoWriteMethodName(method.Name, DoGetMethodSuffix(method));
@@ -447,7 +447,7 @@ internal sealed class Generate
 				m_buffer.Append(", ");
 		}
 		for (int i = 0; i < minfo.ArgNames.Length; ++i)
-		{			
+		{
 			m_buffer.Append(minfo.ArgTypes[i].Managed);
 			m_buffer.Append(" ");
 			m_buffer.Append(minfo.ArgNames[i].Managed);
@@ -456,7 +456,7 @@ internal sealed class Generate
 				m_buffer.Append(", ");
 		}
 		m_buffer.AppendLine(")");
-
+		
 		DoWrite("		{");
 		
 		// body
@@ -466,7 +466,7 @@ internal sealed class Generate
 			++m_fastCalls;
 		}
 		else
-		{	
+		{
 			++m_slowCalls;
 			DoWriteCall(method, minfo);
 		}
@@ -480,7 +480,7 @@ internal sealed class Generate
 	private int m_slowCalls;
 	
 	private void DoWriteProlog(MethodInfo minfo)
-	{		
+	{
 		if (minfo.HasOutArgs)
 		{
 			for (int i = 0; i < minfo.ArgNames.Length; ++i)
@@ -525,7 +525,7 @@ internal sealed class Generate
 			m_buffer.Append("_instance.");
 		else if (method.IsClass)
 			m_buffer.Append("ms_class.");
-
+		
 		m_buffer.Append("Call(\"");
 		m_buffer.Append(method.Name);
 		m_buffer.Append("\"");
@@ -562,10 +562,10 @@ internal sealed class Generate
 		{
 			if (minfo.ArgNames.Length == 0)
 				return DoTryFastCall0(method, minfo);
-
+			
 			else if (minfo.ArgNames.Length == 1)
 				return DoTryFastCall1(method, minfo);
-
+			
 			else if (minfo.ArgNames.Length == 2)
 				return DoTryFastCall2(method, minfo);
 		}
@@ -576,7 +576,7 @@ internal sealed class Generate
 	// managed type name => method name label
 	private Dictionary<string, string> m_labels = new Dictionary<string, string>
 	{
-		{"*", "p"},				
+		{"*", "p"},
 		{"bool", "C"},
 		{"byte", "C"},
 		{"char", "s"},
@@ -631,7 +631,7 @@ internal sealed class Generate
 		
 		string rtype = minfo.ResultType.Managed;
 		string rlabel;
-
+		
 		string rkey = DoGetKey(minfo.ResultType);
 		if (m_labels.TryGetValue(rkey, out rlabel))
 		{
@@ -644,13 +644,13 @@ internal sealed class Generate
 				thisPtr = "this";
 				
 			m_buffer.AppendLine("			IntPtr exception_ = IntPtr.Zero;");
-
+			
 			m_buffer.Append("			");
 			if (rkey != "void")
 				m_buffer.AppendFormat("{0} result_ = ", m_dtypes[rkey]);
 			m_buffer.AppendFormat("DirectCalls.Call{0}({1}, new Selector(\"{2}\"), ", rlabel, thisPtr, method.Name);
 			m_buffer.AppendLine("ref exception_);");
-
+			
 			m_buffer.AppendLine("			if (exception_ != IntPtr.Zero)");
 			m_buffer.AppendLine("				CocoaException.Raise(exception_);");
 			DoAppendFastResult(rkey, rtype, minfo);
@@ -667,7 +667,7 @@ internal sealed class Generate
 		
 		string rtype = minfo.ResultType.Managed;
 		string rlabel, a0label;
-
+		
 		string rkey = DoGetKey(minfo.ResultType);
 		string a0key = DoGetKey(minfo.ArgTypes[0]);
 		
@@ -694,8 +694,8 @@ internal sealed class Generate
 			DoAppendFastArgEpilog(minfo, 0);
 			m_buffer.AppendLine("			if (exception_ != IntPtr.Zero)");
 			m_buffer.AppendLine("				CocoaException.Raise(exception_);");
-			DoAppendFastResult(rkey, rtype, minfo);			
-
+			DoAppendFastResult(rkey, rtype, minfo);
+			
 			done = true;
 		}
 		
@@ -708,7 +708,7 @@ internal sealed class Generate
 		
 		string rtype = minfo.ResultType.Managed;
 		string rlabel, a0label, a1label;
-
+		
 		string rkey = DoGetKey(minfo.ResultType);
 		string a0key = DoGetKey(minfo.ArgTypes[0]);
 		string a1key = DoGetKey(minfo.ArgTypes[1]);
@@ -739,7 +739,7 @@ internal sealed class Generate
 			DoAppendFastArgEpilog(minfo, 1);
 			m_buffer.AppendLine("			if (exception_ != IntPtr.Zero)");
 			m_buffer.AppendLine("				CocoaException.Raise(exception_);");
-			DoAppendFastResult(rkey, rtype, minfo);			
+			DoAppendFastResult(rkey, rtype, minfo);
 
 			done = true;
 		}
@@ -778,7 +778,7 @@ internal sealed class Generate
 	private void DoAppendFastArg(MethodInfo minfo, int i)
 	{
 		string aname = minfo.ArgNames[i].Managed;
-
+		
 		if (minfo.ArgTypes[i].Native == "SEL")
 		{
 			m_buffer.Append(aname + " != null ? new Selector(");
@@ -813,7 +813,7 @@ internal sealed class Generate
 		{
 			m_buffer.AppendFormat("buffer_{0}", minfo.ArgNames[i].Managed);
 		}
-
+		
 		m_buffer.Append(", ");
 	}
 	
@@ -839,37 +839,37 @@ internal sealed class Generate
 			m_buffer.AppendLine("");
 			if (rtype == "byte" || rtype == "Int16" || rtype == "Int32")
 				m_buffer.AppendLine("			return result_;");
-
+			
 			else if (rtype == "bool")
 				m_buffer.AppendLine("			return result_ != 0;");
-
+			
 			else if (rtype == "char")
 				m_buffer.AppendLine("			return unchecked((char) result_);");
-
+			
 			else if (rtype == "sbyte")
 				m_buffer.AppendLine("			return unchecked((SByte) result_);");
-
+			
 			else if (rtype == "UInt16")
 				m_buffer.AppendLine("			return unchecked((UInt16) result_);");
-
+			
 			else if (rtype == "UInt32")
 				m_buffer.AppendLine("			return unchecked((UInt32) result_);");
-
+			
 			else if (rtype == "IntPtr")
 				m_buffer.AppendLine("			return result_;");
-
+			
 			else if (rtype == "Selector")
 				m_buffer.AppendLine("			return new Selector(result_);");
-
+			
 			else if (rtype == "Class")
 				m_buffer.AppendLine("			return new Class(result_);");
-
+			
 			else if (rtype == "NSObject")
 				m_buffer.AppendLine("			return result_.To<" + rtype + ">();");
-
+			
 			else if (rkey == "*")
 				m_buffer.AppendLine("			return result_.To<" + rtype + ">();");
-
+			
 			else
 				m_buffer.AppendLine("			return bad_result_type;");
 		}
@@ -908,7 +908,7 @@ internal sealed class Generate
 							m_buffer.AppendFormat("			{0} = ({1}) Marshal.PtrToStructure({0}Ptr, typeof({1}));{2}", minfo.ArgNames[i].Managed, minfo.ArgTypes[i].ManagedOut, Environment.NewLine);
 						break;
 				}
-
+				
 				if (minfo.ArgTypes[i].ManagedOut.Length > 0)
 					m_buffer.AppendFormat("			Marshal.FreeHGlobal({0}Ptr);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 			}
@@ -920,7 +920,7 @@ internal sealed class Generate
 			}
 		}
 	}
-
+	
 	// Checks the interface methods, but not categories, protocols, or bases.
 	private bool DoInterfaceHasMethod(string mname, bool isClass)
 	{
@@ -932,7 +932,7 @@ internal sealed class Generate
 			if (ni.Methods.Count > 0)
 				has = ni.Methods.Any(m => m.Name == mname && m.IsClass == isClass);
 		}
-				
+		
 		return has;
 	}
 	
@@ -1043,7 +1043,7 @@ internal sealed class Generate
 		}
 		m_buffer.Append(suffix);
 	}
-		
+	
 	private void DoWrite()
 	{
 		m_buffer.AppendLine();
@@ -1070,167 +1070,167 @@ internal sealed class Generate
 		
 		m.AddRange(methods);
 	}
-		
+	
 	private string DoMapEnumValue(string value)
 	{
 		switch (value)
 		{
 			case "CFByteOrderUnknown":
 				return "0";
-
+			
 			case "CFByteOrderLittleEndian":
 				return "1";
-
+			
 			case "CFByteOrderBigEndian":
 				return "2";
-
+			
 			case "kCFCalendarUnitEra":
 				return "(1 << 1)";
-
+			
 			case "kCFCalendarUnitYear":
 				return "(1 << 2)";
-
+			
 			case "kCFCalendarUnitMonth":
 				return "(1 << 3)";
-
+			
 			case "kCFCalendarUnitDay":
 				return "(1 << 4)";
-
+			
 			case "kCFCalendarUnitHour":
 				return "(1 << 5)";
-
+			
 			case "kCFCalendarUnitMinute":
 				return "(1 << 6)";
-
+			
 			case "kCFCalendarUnitSecond":
 				return "(1 << 7)";
-
+			
 			case "kCFCalendarUnitWeek":
 				return "(1 << 8)";
-
+			
 			case "kCFCalendarUnitWeekday":
 				return "(1 << 9)";
-
+			
 			case "kCFCalendarUnitWeekdayOrdinal":
 				return "(1 << 10)";
-
+			
 			case "kCFCalendarComponentsWrap":
 				return "(1 << 0)";
-
+			
 			case "kCFDateFormatterNoStyle":
 				return "0";
-
+			
 			case "kCFDateFormatterShortStyle":
 				return "1";
-
+			
 			case "kCFDateFormatterMediumStyle":
 				return "2";
-
+			
 			case "kCFDateFormatterLongStyle":
 				return "3";
-
+			
 			case "kCFDateFormatterFullStyle":
 				return "4";
-
+			
 			case "kCFNumberFormatterNoStyle":
 				return "0";
-
+			
 			case "kCFNumberFormatterDecimalStyle":
 				return "1";
-
+			
 			case "kCFNumberFormatterCurrencyStyle":
 				return "2";
-
+			
 			case "kCFNumberFormatterPercentStyle":
 				return "3";
-
+			
 			case "kCFNumberFormatterScientificStyle":
 				return "4";
-
+			
 			case "kCFNumberFormatterSpellOutStyle":
 				return "5";
-
+			
 			case "kCFNumberFormatterPadBeforePrefix":
 				return "0";
-
+			
 			case "kCFNumberFormatterPadAfterPrefix":
 				return "1";
-
+			
 			case "kCFNumberFormatterPadBeforeSuffix":
 				return "2";
-
+			
 			case "kCFNumberFormatterPadAfterSuffix":
 				return "3";
-
+			
 			case "kCFNumberFormatterRoundCeiling":
 				return "0";
-
+			
 			case "kCFNumberFormatterRoundFloor":
 				return "1";
-
+			
 			case "kCFNumberFormatterRoundDown":
 				return "2";
-
+			
 			case "kCFNumberFormatterRoundUp":
 				return "3";
-
+			
 			case "kCFNumberFormatterRoundHalfEven":
 				return "4";
-
+			
 			case "kCFNumberFormatterRoundHalfDown":
 				return "5";
-
+			
 			case "kCFNumberFormatterRoundHalfUp":
 				return "6";
-
+			
 			case "kCFPropertyListImmutable":
 				return "0";
-
+			
 			case "kCFPropertyListMutableContainers":
 				return "1";
-
+			
 			case "kCFPropertyListMutableContainersAndLeaves":
 				return "2";
-
+			
 			case "kCFPropertyListOpenStepFormat":
 				return "1";
-
+			
 			case "kCFPropertyListXMLFormat_v1_0":
 				return "100";
-
+			
 			case "kCFPropertyListBinaryFormat_v1_0":
 				return "200";
-
+			
 			case "NSIntegerMax":
 				return "int.MaxValue";
 				
 			case "NX_TABLET_POINTER_UNKNOWN":
 				return "0";
-
+			
 			case "NX_TABLET_POINTER_PEN":
 				return "1";
-
+			
 			case "NX_TABLET_POINTER_CURSOR":
 				return "2";
-
+			
 			case "NX_TABLET_POINTER_ERASER":
 				return "3";
-
+			
 			case "NX_TABLET_BUTTON_PENTIPMASK":
 				return "0x0001";
-
+			
 			case "NX_TABLET_BUTTON_PENLOWERSIDEMASK":
 				return "0x0002";
-
+			
 			case "NX_TABLET_BUTTON_PENUPPERSIDEMASK":
 				return "0x0004";
-
+			
 			case "NX_SUBTYPE_DEFAULT":
 				return "0";
-
+			
 			case "NX_SUBTYPE_TABLET_POINT":
 				return "1";
-
+			
 			case "NX_SUBTYPE_TABLET_PROXIMITY":
 				return "2";
 		}
@@ -1239,7 +1239,7 @@ internal sealed class Generate
 	}
 	#endregion
 	
-	#region Private Types -----------------------------------------------------
+	#region Private Types
 	private sealed class NameInfo
 	{
 		public NameInfo(string name)
@@ -1249,7 +1249,7 @@ internal sealed class Generate
 		}
 		
 		public string Native {get; private set;}
-	
+		
 		public string Managed {get; private set;}
 		
 		private string DoSanitize(string name)
@@ -1359,7 +1359,7 @@ internal sealed class Generate
 		public TypeInfo(ObjectModel objects, NativeInterface ni, NativeMethod method)
 		{
 			Native = method.ReturnType;
-
+			
 			string type = objects.MapResult(ni.Name, method.Name, method.ReturnType);
 			Managed = MapType(objects, type);
 			if (Managed == "IBAction")
@@ -1371,17 +1371,17 @@ internal sealed class Generate
 			Native = native;
 			Managed = managed;
 		}
-			
+		
 		// This will be "NSObject *", "NSString *", "int *", etc.
 		public string Native {get; private set;}
 	
 		// This will be "NSObject", "NSString", "out Int32", etc.
 		public string Managed {get; private set;}
-	
+		
 		protected static string MapType(ObjectModel objects, string type)
 		{
 			type = objects.MapType(type);				// note that this is word to word with no spaces in the words
-	
+			
 			switch (type)
 			{
 				case "BOOL":
@@ -1458,16 +1458,16 @@ internal sealed class Generate
 				case "NSFetchRequest *":
 				case "NSManagedObjectContext *":
 					return "NSObject";
-																	
+				
 				case "CGPoint":
 					return "NSPoint";
-																	
+				
 				case "CGRect":
 					return "NSRect";
-																	
+				
 				case "CGSize":
 					return "NSSize";
-																	
+				
 				case "AEArrayType":
 				case "signed char":
 					return "sbyte";
@@ -1521,7 +1521,7 @@ internal sealed class Generate
 					{
 						type = type.Substring(0, type.Length - 1).Trim();
 						type = objects.MapType(type);
-	
+						
 						if (type.StartsWith("NS") && type != "NSInteger" && type != "NSUInteger")
 						{
 							return type;
@@ -1535,8 +1535,8 @@ internal sealed class Generate
 					{
 						type = objects.MapType(type);
 						return type;
-					}					
-			}		
+					}
+			}
 		}
 	}
 	
@@ -1545,9 +1545,9 @@ internal sealed class Generate
 		public ArgTypeInfo(ObjectModel objects, string name) : base(name, DoMapArgType(objects, name))
 		{
 		}
-				
+		
 		// This will be "", "", "Int32", etc.
-		public string ManagedOut 
+		public string ManagedOut
 		{
 			get
 			{
@@ -1557,11 +1557,11 @@ internal sealed class Generate
 					return string.Empty;
 			}
 		}
-	
+		
 		private static string DoMapArgType(ObjectModel objects, string inType)
 		{
 			string type = objects.MapType(inType);				// note that this is word to word with no spaces in the words
-	
+			
 			switch (type)
 			{
 				case "BOOL *":
@@ -1613,7 +1613,7 @@ internal sealed class Generate
 					
 				case "signed char *":
 					return "out sbyte";
-										
+				
 				case "uint16_t *":
 				case "unsigned short *":
 					return "out UInt16";
@@ -1633,7 +1633,7 @@ internal sealed class Generate
 					
 				default:
 					return MapType(objects, inType);
-			}		
+			}
 		}
 	}
 	
@@ -1659,19 +1659,19 @@ internal sealed class Generate
 			ArgNames = argNames.ToArray();
 			ArgTypes = argTypes.ToArray();
 		}
-						
+		
 		public string Name {get; private set;}
-	
+		
 		public TypeInfo ResultType {get; private set;}
-	
+		
 		public NameInfo[] ArgNames {get; private set;}
 		public ArgTypeInfo[] ArgTypes {get; private set;}
-
+		
 		public bool HasOutArgs {get; private set;}
 	}
 	#endregion
-
-	#region Fields ------------------------------------------------------------
+	
+	#region Fields
 	private string m_inPath;
 	private ObjectModel m_objects;
 	private StringBuilder m_buffer;
