@@ -20,42 +20,41 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
 	public static class FastPath
-	{		
-		// NSObject
+	{
 		public static IntPtr CreateBuffer(NSObject instance)
 		{
 			return instance;
 		}
-
+		
 		public static void FreeBuffer(NSObject instance, IntPtr buffer)
 		{
 			Unused.Value = instance;		// instance is just used to pick the correct overload
-			Unused.Value = buffer;			
+			Unused.Value = buffer;
 		}
-
-		// string
+		
 		public static IntPtr CreateU8Buffer(string instance)
 		{
 			return Marshal.StringToHGlobalAuto(instance);
 		}
-
+		
 		public static IntPtr CreateU32Buffer(string instance)
 		{
 			return Marshal.StringToHGlobalUni(instance);
 		}
-
+		
 		public static void FreeBuffer(string instance, IntPtr buffer)
 		{
-			Unused.Value = instance;		
+			Unused.Value = instance;
 			Marshal.FreeHGlobal(buffer);
 		}
-
+		
 		// structs
 		public static IntPtr CreateBuffer(ValueType instance)
 		{
@@ -63,10 +62,10 @@ namespace MCocoa
 			Marshal.StructureToPtr(instance, buffer, false);
 			return buffer;
 		}
-
+		
 		public static void FreeBuffer(ValueType instance, IntPtr buffer)
 		{
-			Unused.Value = instance;	
+			Unused.Value = instance;
 			Marshal.FreeHGlobal(buffer);
 		}
 	}

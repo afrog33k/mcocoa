@@ -20,22 +20,23 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
 	[Register("NSFastEnumerationState")]
-	[DisableRule("S1022", "VisiblePointer")]    
+	[DisableRule("S1022", "VisiblePointer")]
 	public struct NSFastEnumerationState
 	{
 		public float m11, m12, m21, m22;
 		public float tX, tY;
-
+		
 		public UInt64 state;
 		public IntPtr itemsPtr;
 		public IntPtr mutationsPtr;
-
+		
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
 		public UInt64[] extra;
 	}

@@ -26,13 +26,11 @@ using System;
 
 // Simple smoke test to verify that the wrappers are not completely hosed.
 [TestFixture]
-public class FoundationTest 	
+public class FoundationTest 
 {
 	[TestFixtureSetUp]
 	public void Init()
 	{
-		AssertListener.Install();
-
 		Registrar.CanInit = true;
 	}
 	
@@ -45,7 +43,7 @@ public class FoundationTest
 		array.addObject(NSNumber.numberWithInt(100));
 		array.addObject(NSNumber.numberWithBool(true));
 		array.addObject(NSString.Create("hmm"));
-
+		
 		Assert.AreEqual(3, array.count());
 		Assert.AreEqual(100, (int) array.objectAtIndex(0).Call("intValue"));
 		Assert.AreEqual(1, (sbyte) array.objectAtIndex(1).Call("boolValue"));

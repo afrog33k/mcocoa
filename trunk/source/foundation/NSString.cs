@@ -20,6 +20,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -39,7 +40,7 @@ namespace MCocoa
 			return result;
 		}
 		
-		public static NSString Create(string str) 
+		public static NSString Create(string str)
 		{
 			IntPtr buffer = Marshal.StringToHGlobalAuto(str);
 			NSString result = ms_class.Call("stringWithUTF8String:", buffer).To<NSString>();
@@ -47,8 +48,8 @@ namespace MCocoa
 			
 			return result;
 		}
-				
-		public static NSString Create(string format, params object[] args) 
+		
+		public static NSString Create(string format, params object[] args)
 		{
 			IntPtr buffer = Marshal.StringToHGlobalAuto(string.Format(format, args));
 			NSString result = ms_class.Call("stringWithUTF8String:", buffer).To<NSString>();
@@ -56,7 +57,7 @@ namespace MCocoa
 			
 			return result;
 		}
-				
+		
 		public void getCharacters(out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal((int) (2*length()));
@@ -65,7 +66,7 @@ namespace MCocoa
 			str = Marshal.PtrToStringUni(buffer, (int) length());
 			Marshal.FreeHGlobal(buffer);
 		}
-						
+		
 		public void getCharacters_range(NSRange range, out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal(2*range.length);
@@ -79,12 +80,12 @@ namespace MCocoa
 		{
 			get {return characterAtIndex((uint) index);}
 		}
-						
+		
 		public char this[uint index]
 		{
 			get {return characterAtIndex(index);}
 		}
-						
+		
 		public IEnumerator<char> GetEnumerator()
 		{
 			uint len = length();
@@ -93,7 +94,7 @@ namespace MCocoa
 				yield return characterAtIndex(i);
 			}
 		}
-
+		
 		public override string ToString()
 		{
 			return this != IntPtr.Zero ? Marshal.PtrToStringAuto((IntPtr) Call("UTF8String")) : "nil";
@@ -135,7 +136,7 @@ namespace MCocoa
 		{
 			return base.GetHashCode();
 		}
-
+		
 		public static readonly NSString Empty = NSString.Create(string.Empty).Retain();
 	}
 }

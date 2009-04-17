@@ -75,6 +75,7 @@ internal sealed class Generate
 				DoWrite("// machine generated on {0} using {1}", DateTime.Now, Path.GetFullPath(m_inPath));
 				DoWrite();
 				DoWrite("using MObjc;");
+				DoWrite("using MObjc.Helpers;");
 				DoWrite("using System;");
 				DoWrite("using System.Runtime.InteropServices;");
 				DoWrite();
@@ -190,7 +191,7 @@ internal sealed class Generate
 				if (i > 0)
 					DoWrite();
 				
-				DoWriteInterfaceHeader();	
+				DoWriteInterfaceHeader();
 				DoGenerateMethods();
 				DoWriteInterfaceTrailer();
 				
@@ -234,12 +235,12 @@ internal sealed class Generate
 			DoWrite("		public {0}(IntPtr instance) : base(instance)", m_interface.Name);
 			DoWrite("		{");
 			DoWrite("		}");
-			DoWrite();
+			DoWrite("		");
 			DoWrite("		public static {0}{1} Alloc()", newStr, m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			return ({0}) ms_class.Alloc();", m_interface.Name);
 			DoWrite("		}");
-			DoWrite();
+			DoWrite("		");
 			DoWrite("		public static {0}{1} Create()", newStr, m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			{0} result = ({0}) ms_class.Alloc().init();", m_interface.Name);
@@ -247,13 +248,13 @@ internal sealed class Generate
 				DoWrite("			result.autorelease();");
 			DoWrite("			return result;");
 			DoWrite("		}");
-			DoWrite();
+			DoWrite("		");
 			DoWrite("		public new {0} Retain()", m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			Unused.Value = retain();");		// per Apple, "retain must return self"
 			DoWrite("			return this;");
 			DoWrite("		}");
-			DoWrite();
+			DoWrite("		");
 			DoWrite("		public static new Class Class");
 			DoWrite("		{");
 			DoWrite("			get {return ms_class;}");
@@ -265,19 +266,19 @@ internal sealed class Generate
 	{
 		if (m_interface.Category == null)
 		{
-			DoWrite();
+			DoWrite("		");
 			DoWrite("		private static Class ms_class = new Class(\"{0}\");", m_interface.Name);
 		}
 		
 		DoWrite("	}");
 	}
 	
-	private int DoGenerateMethods()	
+	private int DoGenerateMethods()
 	{
 		int numMethods = 0;
 		
 		if (m_interface.Methods.Count > 0 && m_interface.Category == null)
-			DoWrite();
+			DoWrite("\t\t");
 		
 		bool writeBlank = false;
 		List<string> names = new List<string>();
@@ -330,11 +331,11 @@ internal sealed class Generate
 		
 	private void DoGenerateProtocolMethods(List<string> names, string pname)
 	{
-		DoWrite();
+		DoWrite("\t\t");
 		DoWrite("		#region {0} Methods", pname);
 		
 		bool writeBlank = false;
-		NativeProtocol protocol = m_objects.FindProtocol(pname);		
+		NativeProtocol protocol = m_objects.FindProtocol(pname);
 		for (int i = 0; i < protocol.Methods.Count; ++i)
 		{
 			NativeMethod method = protocol.Methods[i];
@@ -410,7 +411,7 @@ internal sealed class Generate
 				else
 				{
 					if (writeBlank)
-						DoWrite();
+						DoWrite("\t\t");
 					
 					DoWriteMethod(nm);
 					wrote = true;
@@ -740,7 +741,7 @@ internal sealed class Generate
 			m_buffer.AppendLine("			if (exception_ != IntPtr.Zero)");
 			m_buffer.AppendLine("				CocoaException.Raise(exception_);");
 			DoAppendFastResult(rkey, rtype, minfo);
-
+			
 			done = true;
 		}
 		
@@ -836,7 +837,7 @@ internal sealed class Generate
 	{
 		if (rtype != "void")
 		{
-			m_buffer.AppendLine("");
+			m_buffer.AppendLine("			");
 			if (rtype == "byte" || rtype == "Int16" || rtype == "Int32")
 				m_buffer.AppendLine("			return result_;");
 			

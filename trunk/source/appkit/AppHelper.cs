@@ -20,6 +20,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,6 +48,10 @@ namespace MCocoa
 			result.m_thread.Start();
 			
 			return result;
+		}
+		
+		public void Aaa()
+		{
 		}
 		
 		public void Add(Action action)
@@ -81,7 +86,7 @@ namespace MCocoa
 			}
 			catch (Exception e)
 			{
-				Console.Error.WriteLine("Ignoring BeginInvoke exception:");	// TODO: this kind of sucks, however appkit doesn't do any better if we let the exception escape
+				Console.Error.WriteLine("Ignoring BeginInvoke exception: ");	// TODO: this kind of sucks, however appkit doesn't do any better if we let the exception escape
 				Console.Error.WriteLine(e.Message);
 				Console.Error.WriteLine(e.StackTrace);
 			}
@@ -98,6 +103,7 @@ namespace MCocoa
 			
 			NSMenuItem debugItem = NSMenuItem.Create("Debug");
 			debugItem.setSubmenu(debugMenu);
+//			debugItem
 			
 			NSApplication.sharedApplication().mainMenu().addItem(debugItem);
 			
