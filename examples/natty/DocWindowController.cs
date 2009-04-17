@@ -21,6 +21,7 @@
 
 using MCocoa;
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,7 +34,7 @@ internal sealed class DocWindowController : NSWindowController
 	public DocWindowController(IntPtr instance) : base(instance)
 	{
 	}
-
+	
 	public static DocWindowController Create(string nibName)
 	{
 		DocWindowController result = new Class("DocWindowController").Call("alloc").Call("initWithWindowNibName:", NSString.Create(nibName)).To<DocWindowController>();
@@ -41,7 +42,7 @@ internal sealed class DocWindowController : NSWindowController
 		result.m_env = new IBOutlet<EnvController>(result, "envSheet");
 		result.m_flags = new IBOutlet<FlagsController>(result, "flagsSheet");
 		result.m_prefs = new IBOutlet<NSWindow>(result, "prefSheet");
-
+		
 		result.m_errorWindow = new IBOutlet<NSWindow>(result, "errorWindow");
 		result.m_transcriptWindow = new IBOutlet<NSWindow>(result, "outputWindow");	
 		result.m_errorTable = new IBOutlet<ErrorTable>(result, "errors");
@@ -65,17 +66,17 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		m_doc.Build();
 	}
-
+	
 	public void cancel(NSObject sender)
 	{
 		m_doc.Cancel();
 	}
-
+	
 	public void clearTranscript(NSObject sender)
 	{
 		m_outputView.Value.textStorage().mutableString().setString(NSString.Empty);
 	}
-
+	
 	public void environment(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))
@@ -84,7 +85,7 @@ internal sealed class DocWindowController : NSWindowController
 	
 		m_env.Value.Open(m_doc, window());
 	}
-
+	
 	public void flags(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_flags.Value))
@@ -92,16 +93,16 @@ internal sealed class DocWindowController : NSWindowController
 		Contract.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
 	
 		m_flags.Value.Open(m_doc, window());
-    }
-
+	}
+	
 	public void showPrefs(NSObject sender)
-	{		
+	{
 		NSBundle.loadNibNamed_owner(NSString.Create("Preferences"), this);
 		Contract.Assert(!NSObject.IsNullOrNil(m_prefs.Value), "nib didn't set prefSheet");
-
+		
 		m_prefs.Value.makeKeyAndOrderFront(this);
 	}
-		
+	
 	public void rebuildTargets()
 	{
 		string[] ignored = m_doc.IgnoredTargets().Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries);

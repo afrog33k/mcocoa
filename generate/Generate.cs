@@ -175,7 +175,7 @@ internal sealed class Generate
 			}
 			
 			DoWrite("	}");
-			DoWrite();
+			DoWrite("	");
 		}
 	}
 	
@@ -432,14 +432,19 @@ internal sealed class Generate
 	{
 		MethodInfo minfo = new MethodInfo(m_objects, m_interface, method);
 		
+		// pure attribute
+		string name = DoGetMethodName(method.Name, DoGetMethodSuffix(method));
+		if (PureMethods.IsPure(name))
+			m_buffer.AppendLine("		[Pure]");
+		
 		// signature		
-		m_buffer.Append("		public ");
+		m_buffer.Append("		public ");  
 		if (method.IsClass || (m_interface.Category != null && m_interface.Name == "NSObject"))
 			m_buffer.Append("static ");
 		
 		m_buffer.Append(minfo.ResultType.Managed);
 		m_buffer.Append(" ");
-		DoWriteMethodName(method.Name, DoGetMethodSuffix(method));
+		m_buffer.Append(name);
 		m_buffer.Append("(");
 		if (m_interface.Category != null && m_interface.Name == "NSObject")
 		{
@@ -492,7 +497,7 @@ internal sealed class Generate
 					{
 						m_buffer.AppendFormat("			IntPtr {0}Ptr = Marshal.AllocHGlobal(4);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 						m_buffer.AppendFormat("			Marshal.WriteInt32({0}Ptr, 0);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
-						m_buffer.AppendLine();
+						m_buffer.AppendLine("			"); 
 					}
 					else
 					{
@@ -916,7 +921,7 @@ internal sealed class Generate
 			
 			if (minfo.ResultType.Managed != "void")
 			{
-				m_buffer.AppendLine();
+				m_buffer.AppendLine("			");
 				m_buffer.AppendLine("			return result_;");
 			}
 		}
@@ -1012,37 +1017,40 @@ internal sealed class Generate
 		return suffix;
 	}
 	
-	private void DoWriteMethodName(string name, string suffix)
+	private string DoGetMethodName(string name, string suffix)
 	{
+		string result;
+		
 		if (name == "delegate")
 		{
-			m_buffer.Append("delegate_");
+			result = "delegate_";
 		}
 		else if (name == "class")
 		{
-			m_buffer.Append("class_");
+			result = "class_";
 		}
 		else if (name == "object")
 		{
-			m_buffer.Append("object_");
+			result = "object_";
 		}
 		else if (name == "null")
 		{
-			m_buffer.Append("null_");
+			result = "null_";
 		}
 		else if (name == "string")
 		{
-			m_buffer.Append("string_");
+			result = "string_";
 		}
 		else if (name == "lock")
 		{
-			m_buffer.Append("lock_");
+			result = "lock_";
 		}
 		else
 		{
-			m_buffer.Append(name.Replace(":", "_").TrimEnd('_'));
+			result = name.Replace(":", "_").TrimEnd('_');
 		}
-		m_buffer.Append(suffix);
+		
+		return result + suffix;
 	}
 	
 	private void DoWrite()

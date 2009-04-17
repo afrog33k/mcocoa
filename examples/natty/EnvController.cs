@@ -21,6 +21,7 @@
 
 using MCocoa;
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,7 +39,7 @@ internal sealed class EnvController : NSObject
 	{
 		m_doc = doc;
 		m_vars = new List<EnvVar>(m_doc.Variables);
-
+		
 		m_sheet.Value.setDelegate(this);
 		m_table.Value.setDataSource(this);
 		NSApplication.sharedApplication().beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(
@@ -61,7 +62,7 @@ internal sealed class EnvController : NSObject
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
 		m_sheet.Value.orderOut(this);
 	}
-
+	
 	public void restoreDefaults(NSObject sender)
 	{
 		foreach (EnvVar v in m_vars)
