@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 namespace MCocoa
 {
 	public partial class NSIndexSet : NSObject
-	{		
+	{
 		public IEnumerator<uint> GetEnumerator()
 		{
 			uint index = firstIndex();

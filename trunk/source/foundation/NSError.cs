@@ -31,7 +31,7 @@ namespace MCocoa
 		public static readonly NSString NSOSStatusErrorDomain = NSString.Create("NSOSStatusErrorDomain").Retain();
 		public static readonly NSString NSMachErrorDomain = NSString.Create("NSMachErrorDomain").Retain();
 		public static readonly NSString Cocoa3Domain = NSString.Create("Cocoa3Domain").Retain();
-
+		
 		// standard userInfo keys
 		public static readonly NSString NSLocalizedDescriptionKey = NSString.Create("NSLocalizedDescription").Retain();
 		public static readonly NSString NSErrorFailingURLStringKey = NSString.Create("NSErrorFailingURLStringKey").Retain();

@@ -25,7 +25,7 @@ using System;
 namespace MCocoa
 {
 	public partial class NSNumber : NSValue
-	{		
+	{
 		public static NSNumber Create(bool value)
 		{
 			return ms_class.Call("numberWithBool:", value).To<NSNumber>();

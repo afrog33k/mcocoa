@@ -308,21 +308,25 @@ namespace MCocoa
 			get {return new NSPoint(origin.x + size.width/2.0f, origin.y + size.height/2.0f);}
 		}
 		
+		[Pure]
 		public bool Contains(NSPoint pt)
 		{
 			return pt.y >= Bottom && pt.y < Top && pt.x >= Left && pt.x < Right;
 		}
 		
+		[Pure]
 		public bool Contains(NSRect rect)
 		{
 			return rect.Bottom >= Bottom && rect.Top < Top && rect.Left >= Left && rect.Right < Right;
 		}
 		
+		[Pure]
 		public bool Intersects(NSRect rhs)
 		{
 			return Bottom <= rhs.Top && Top > rhs.Bottom && Left <= rhs.Right && Right > rhs.Left;
 		}
 		
+		[Pure]
 		public NSRect Intersect(NSRect rhs)
 		{
 			float top = Math.Min(Top, rhs.Top);
@@ -339,6 +343,7 @@ namespace MCocoa
 			return result;
 		}
 		
+		[Pure]
 		public NSRect Union(NSRect rhs)
 		{
 			NSRect result;
@@ -364,6 +369,7 @@ namespace MCocoa
 			return result;
 		}
 		
+		[Pure]
 		public NSRect Inset(float dx, float dy)
 		{
 			float x, width;
@@ -393,6 +399,7 @@ namespace MCocoa
 			return new NSRect(x, y, width, height);
 		}
 		
+		[Pure]
 		public NSRect ToIntegral()
 		{
 			return NSIntegralRect(this);

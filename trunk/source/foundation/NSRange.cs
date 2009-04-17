@@ -51,11 +51,13 @@ namespace MCocoa
 			length = range.length;
 		}
 		
+		[Pure]
 		public bool Intersects(int index)
 		{
 			return index >= location && index < location + length;
 		}
 		
+		[Pure]
 		public bool Intersects(NSRange rhs)
 		{
 			bool intersects = false;
@@ -137,7 +139,7 @@ namespace MCocoa
 			return this == rhs;
 		}
 		
-		public bool Equals(NSRange rhs)	
+		public bool Equals(NSRange rhs)
 		{
 			return this == rhs;
 		}

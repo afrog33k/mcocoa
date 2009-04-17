@@ -58,6 +58,7 @@ namespace MCocoa
 			return result;
 		}
 		
+		[Pure]
 		public void getCharacters(out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal((int) (2*length()));
@@ -67,6 +68,7 @@ namespace MCocoa
 			Marshal.FreeHGlobal(buffer);
 		}
 		
+		[Pure]
 		public void getCharacters_range(NSRange range, out string str)
 		{
 			IntPtr buffer = Marshal.AllocHGlobal(2*range.length);

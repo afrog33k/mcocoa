@@ -36,7 +36,7 @@ namespace MCocoa
 				
 			return Create(strs);
 		}
-
+		
 		public static NSArray Create(params NSObject[] args) 
 		{
 			IntPtr[] ptrs = new IntPtr[args.Length];
@@ -45,22 +45,22 @@ namespace MCocoa
 				
 			GCHandle handle = GCHandle.Alloc(ptrs, GCHandleType.Pinned);
 			IntPtr objects = handle.AddrOfPinnedObject();
-
+			
 			NSArray result = ms_class.Call("arrayWithObjects:count:", objects, (uint) args.Length).To<NSArray>();
 			handle.Free();
 			
 			return result;
 		}
-
+		
 		public IEnumerator<NSObject> GetEnumerator()
 		{
 			for (uint i = 0; i < count(); ++i)
 				yield return objectAtIndex(i);
 		}
 	}
-
+	
 	public partial class NSMutableArray : NSArray
-	{		
+	{
 		public static new NSMutableArray Create(params string[] args)
 		{
 			NSString[] strs = new NSString[args.Length];
@@ -69,7 +69,7 @@ namespace MCocoa
 				
 			return Create(strs);
 		}
-
+		
 		public static new NSMutableArray Create(params NSObject[] args) 
 		{
 			IntPtr[] ptrs = new IntPtr[args.Length];
@@ -78,7 +78,7 @@ namespace MCocoa
 				
 			GCHandle handle = GCHandle.Alloc(ptrs, GCHandleType.Pinned);
 			IntPtr objects = handle.AddrOfPinnedObject();
-
+			
 			NSMutableArray result = ms_class.Call("arrayWithObjects:count:", objects, (uint) args.Length).To<NSMutableArray>();
 			handle.Free();
 			
