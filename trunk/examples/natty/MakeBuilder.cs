@@ -21,6 +21,7 @@
 
 using MCocoa;
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +33,7 @@ internal class MakeBuilder
 	public MakeBuilder(string contents)
 	{
 		Contract.Requires(contents != null, "contents is null, is the file ascii?");
-
+		
 		try
 		{
 			m_scanner = NSScanner.scannerWithString(NSString.Create(contents));
@@ -42,12 +43,12 @@ internal class MakeBuilder
 			m_nameChars = NSMutableCharacterSet.Create();
 			m_nameChars.formUnionWithCharacterSet(NSCharacterSet.alphanumericCharacterSet());		
 			m_nameChars.addCharactersInString(NSString.Create("_-"));		
-	
+			
 			m_eolChars = NSMutableCharacterSet.Create();
 			m_eolChars.addCharactersInString(NSString.Create("\r\n#"));		// lines are ended by comments or new line characters
 			
 			DoParse();
-
+			
 			for (int i = 0; i < 4; ++i)			// add some blank lines so the user can define new variables that we couldn't pull out of the make file
 				m_variables.Add(new EnvVar(string.Empty, string.Empty));
 		}
@@ -61,7 +62,7 @@ internal class MakeBuilder
 					Console.Error.WriteLine("--------- {0} Exception{1}", ee == e ? "Outer" : "Inner", Environment.NewLine);
 				Console.Error.WriteLine("{0}", ee.Message + Environment.NewLine);
 				Console.Error.WriteLine("{0}", ee.StackTrace + Environment.NewLine);
-
+				
 				ee = ee.InnerException;
 			}
 			throw;
@@ -71,11 +72,11 @@ internal class MakeBuilder
 	public Process Build(string buildFile, string target, List<EnvVar> vars, Dictionary<string, int> flags)
 	{	
 		string args = string.Empty;
-
+		
 		foreach (KeyValuePair<string, int> f in flags)
 			if (f.Value == 1)
 				args += string.Format("--{0} ", f.Key);
-
+		
 		foreach (EnvVar v in vars)
 			if (v.Value.Length > 0 && v.Value != v.DefaultValue)
 				if (v.Value.IndexOf(" ") >= 0)
@@ -113,9 +114,9 @@ internal class MakeBuilder
 		get {return m_command;}
 	}
 	
-	#region Private Methods ---------------------------------------------------
+	#region Private Methods
 	public void DoParse()
-	{		
+	{
 		while (!m_scanner.isAtEnd())
 		{
 			NSString name, token;
@@ -151,7 +152,7 @@ internal class MakeBuilder
 			DoSkipToNextLine();
 		}
 	}
-			
+	
 	// Target := Name '?=' .+
 	private EnvVar DoParseVariable(string name)
 	{
@@ -259,7 +260,7 @@ internal class MakeBuilder
 	}
 	#endregion
 	
-	#region Fields ------------------------------------------------------------
+	#region Fields
 	private List<string> m_targets = new List<string>();
 	private List<EnvVar> m_variables = new List<EnvVar>();
 	private string m_command;
@@ -268,4 +269,3 @@ internal class MakeBuilder
 	private NSMutableCharacterSet m_eolChars;
 	#endregion
 }
- 

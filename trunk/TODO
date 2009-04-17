@@ -4,9 +4,6 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 
 * Work on mcocoa:
 	- make pure:
-		NSTableColumn::identifier
-	  NSTextView::textStorage
-	  NSURL::scheme
 * openDocumentWithContentsOfURL_display_error should return an NSDocument.
 * rectArrayForCharacterRange_withinSelectedCharacterRange_inTextContainer_rectCount
    should have an out parameter.
