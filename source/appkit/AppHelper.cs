@@ -34,7 +34,7 @@ namespace MCocoa
 	{
 		public AppHelper(IntPtr instance) : base(instance)
 		{
-			Trace.Assert(!ms_created, "AppHelper should be created only once");
+			Contract.Assert(!ms_created, "AppHelper should be created only once");
 			ms_created = true;
 		}
 		

@@ -114,7 +114,7 @@ namespace MCocoa
 		// Schedule the delegate to be executed on the main thread.
 		public void BeginInvoke(Action action)		// thread safe
 		{
-			Trace.Assert(action != null, "action is null");
+			Contract.Requires(action != null, "action is null");
 			
 			ms_helper.Add(action);
 		}
@@ -123,8 +123,8 @@ namespace MCocoa
 		// after delay seconds.
 		public void BeginInvoke(Action action, TimeSpan delay)		// thread safe
 		{
-			Trace.Assert(action != null, "action is null");
-			Trace.Assert(delay >= TimeSpan.Zero, "delay is negative");
+			Contract.Requires(action != null, "action is null");
+			Contract.Requires(delay >= TimeSpan.Zero, "delay is negative");
 			
 			ms_helper.QueueDelayed(action, delay);
 		}

@@ -20,6 +20,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -97,7 +98,7 @@ namespace MCocoa
 		
 		public static NSPoint Parse(string text)
 		{
-			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");
 			
 			string[] fields = text.Split(':');
 			if (fields.Length != 2)
@@ -209,7 +210,7 @@ namespace MCocoa
 		
 		public static NSSize Parse(string text)
 		{
-			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");
 			
 			string[] fields = text.Split(':');
 			if (fields.Length != 2)
@@ -436,7 +437,7 @@ namespace MCocoa
 		
 		public static NSRect Parse(string text)
 		{
-			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");
 			
 			string[] fields = text.Split(';');
 			if (fields.Length != 2)

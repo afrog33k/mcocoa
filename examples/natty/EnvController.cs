@@ -28,13 +28,13 @@ using System.Diagnostics;
 [ExportClass("EnvController", "NSObject", Outlets = "sheet table")]
 internal sealed class EnvController : NSObject
 {
-	private EnvController(IntPtr instance) : base(instance) 
+	private EnvController(IntPtr instance) : base(instance)
 	{
 		m_sheet = new IBOutlet<NSWindow>(this, "sheet");
 		m_table = new IBOutlet<NSTableView>(this, "table");
 	}
-						
-	public void Open(Document doc, NSWindow window) 
+	
+	public void Open(Document doc, NSWindow window)
 	{
 		m_doc = doc;
 		m_vars = new List<EnvVar>(m_doc.Variables);
@@ -43,9 +43,9 @@ internal sealed class EnvController : NSObject
 		m_table.Value.setDataSource(this);
 		NSApplication.sharedApplication().beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(
 			m_sheet.Value, window, this, null, IntPtr.Zero);
-    }
-
-	#region Action Handlers ---------------------------------------------------
+	}
+	
+	#region Action Handlers
 	public void envOK(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
@@ -53,14 +53,14 @@ internal sealed class EnvController : NSObject
 		
 		m_doc.Variables.Clear();
 		m_doc.Variables.AddRange(m_vars);
- 		m_doc.SavePrefs();
-    }
+		m_doc.SavePrefs();
+	}
 
 	public void envCancel(NSObject sender)
 	{
 		NSApplication.sharedApplication().endSheet(m_sheet.Value);
 		m_sheet.Value.orderOut(this);
-   	}
+	}
 
 	public void restoreDefaults(NSObject sender)
 	{
@@ -68,44 +68,44 @@ internal sealed class EnvController : NSObject
 			v.Value = v.DefaultValue;
 			
 		m_table.Value.reloadData();
-   	}
+	}
 	#endregion
 	
-	#region Data Source -------------------------------------------------------
+	#region Data Source
 	public int numberOfRowsInTableView(NSTableView table)
 	{
 		return m_vars.Count;
 	}
-
-	[Register("tableView:objectValueForTableColumn:row:")]		
+	
+	[Register("tableView:objectValueForTableColumn:row:")]
 	public NSObject GetCell(NSTableView table, NSTableColumn column, int row)
 	{
 		EnvVar variable = m_vars[row];
-	
+		
 		if (column.identifier().ToString() == "1")
 			return NSString.Create(variable.Name);
-		else 
+		else
 			if (variable.Value.Length > 0)
 				return NSString.Create(variable.Value);
 			else
 				return NSString.Create(variable.DefaultValue);
 	}
-
-	[Register("tableView:setObjectValue:forTableColumn:row:")]		
+	
+	[Register("tableView:setObjectValue:forTableColumn:row:")]
 	public void SetCell(NSTableView table, NSObject v, NSTableColumn column, int row)
 	{		
 		if ("1" == column.identifier().ToString())
 			m_vars[row].Name = v.ToString();
-
+		
 		else if ("2" == column.identifier().ToString())
 			m_vars[row].Value = v.ToString();
 			
 		else
-			Trace.Fail("how did we get identifier: " + column.identifier());
+			Contract.Assert(false, "how did we get identifier: " + column.identifier());
 	}
 	#endregion
 	
-	#region Fields ------------------------------------------------------------
+	#region Fields
 	private IBOutlet<NSWindow> m_sheet;
 	private IBOutlet<NSTableView> m_table;
 	private Document m_doc;

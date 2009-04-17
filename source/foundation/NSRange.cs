@@ -112,7 +112,7 @@ namespace MCocoa
 		
 		public static NSRange Parse(string text)
 		{
-			Trace.Assert(!string.IsNullOrEmpty(text), "text is null or empty");
+			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");
 			
 			string[] fields = text.Split(':');
 			if (fields.Length != 2)

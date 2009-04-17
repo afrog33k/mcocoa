@@ -80,16 +80,16 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		if (NSObject.IsNullOrNil(m_env.Value))
 			NSBundle.loadNibNamed_owner(NSString.Create("Environment"), this);
-		Trace.Assert(!NSObject.IsNullOrNil(m_env.Value), "nib didn't set envSheet");
+		Contract.Assert(!NSObject.IsNullOrNil(m_env.Value), "nib didn't set envSheet");
 	
 		m_env.Value.Open(m_doc, window());
-    }
+	}
 
 	public void flags(NSObject sender)
 	{
 		if (NSObject.IsNullOrNil(m_flags.Value))
 			NSBundle.loadNibNamed_owner(NSString.Create("Flags"), this);
-		Trace.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
+		Contract.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
 	
 		m_flags.Value.Open(m_doc, window());
     }
@@ -97,7 +97,7 @@ internal sealed class DocWindowController : NSWindowController
 	public void showPrefs(NSObject sender)
 	{		
 		NSBundle.loadNibNamed_owner(NSString.Create("Preferences"), this);
-		Trace.Assert(!NSObject.IsNullOrNil(m_prefs.Value), "nib didn't set prefSheet");
+		Contract.Assert(!NSObject.IsNullOrNil(m_prefs.Value), "nib didn't set prefSheet");
 
 		m_prefs.Value.makeKeyAndOrderFront(this);
 	}
@@ -331,7 +331,7 @@ internal sealed class DocWindowController : NSWindowController
 				m_errorTable.Value.noteNumberOfRowsChanged();
 				m_errorWindow.Value.orderOut(this);
 				break;
-
+			
 			case State.Built:
 				DoSetBuiltStatus();
 				m_buildBtn.Value.setEnabled(true);
@@ -341,7 +341,7 @@ internal sealed class DocWindowController : NSWindowController
 				if (m_doc.ExitCode != 0 && m_errors.Count > 0)
 					m_errorWindow.Value.makeKeyAndOrderFront(this);
 				break;
-
+			
 			case State.Canceled:
 				m_statusLabel.Value.setStringValue(NSString.Create("canceled"));
 				m_statusLabel.Value.setTextColor(NSColor.orangeColor());
@@ -354,7 +354,7 @@ internal sealed class DocWindowController : NSWindowController
 				break;
 				
 			default:
-				Trace.Fail(string.Format("unknown state: {0}", m_doc.State));
+				Contract.Assert(false, string.Format("unknown state: {0}", m_doc.State));
 				break;
 		}
 	}
