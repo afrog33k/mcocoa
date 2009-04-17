@@ -23,11 +23,17 @@ using MObjc;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using OldCollections = System.Collections;
 
 namespace MCocoa
 {
-	public partial class NSIndexSet : NSObject
+	public partial class NSIndexSet : NSObject, IEnumerable<uint>
 	{
+		OldCollections.IEnumerator OldCollections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+		
 		public IEnumerator<uint> GetEnumerator()
 		{
 			uint index = firstIndex();

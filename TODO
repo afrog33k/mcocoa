@@ -1,14 +1,9 @@
 set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
-
-* Work on mcocoa:
-	- make pure:
-* openDocumentWithContentsOfURL_display_error should return an NSDocument.
+   
 * rectArrayForCharacterRange_withinSelectedCharacterRange_inTextContainer_rectCount
    should have an out parameter.
-* NSArray, NSIndexSet, etc should implement IEnumerable.
-   
 * make help needs to mention make generate.
 * NSRange intersects test isn't quite right for zero lengths. Probably best to treat
   this as a test of the length of the intersection of the two ranges.

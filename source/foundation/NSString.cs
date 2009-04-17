@@ -24,10 +24,11 @@ using MObjc.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using OldCollections = System.Collections;
 
 namespace MCocoa
 {
-	public partial class NSString : NSObject
+	public partial class NSString : NSObject, IEnumerable<char>
 	{		
 		public static NSString Create(char ch)
 		{
@@ -86,6 +87,11 @@ namespace MCocoa
 		public char this[uint index]
 		{
 			get {return characterAtIndex(index);}
+		}
+		
+		OldCollections.IEnumerator OldCollections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 		
 		public IEnumerator<char> GetEnumerator()

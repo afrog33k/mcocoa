@@ -224,11 +224,16 @@
 		<TypeResult name = "letterCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "localizedScannerWithString:"/>
 		<TypeResult name = "lowercaseLetterCharacterSet" type = "NSCharacterSet"/>
+		<TypeResult name = "makeDocumentForURL:withContentsOfURL:ofType:error:" type = "NSDocument"/>
+		<TypeResult name = "makeDocumentWithContentsOfURL:ofType:error:" type = "NSDocument"/>
+		<TypeResult name = "makeUntitledDocumentOfType:error:" type = "NSDocument"/>
 		<TypeResult name = "mutableCopyWithZone:"/>
 		<TypeResult name = "newlineCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "nonBaseCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "notificationWithName:object:" type = "NSNotification"/>
 		<TypeResult name = "notificationWithName:object:userInfo:" type = "NSNotification"/>
+		<TypeResult name = "openDocumentWithContentsOfURL:display:error:" type = "NSDocument"/>
+		<TypeResult name = "openUntitledDocumentAndDisplay:error:" type = "NSDocument"/>
 		<TypeResult name = "pipe" type = "NSPipe"/>
 		<TypeResult name = "punctuationCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "scannerWithString:"/>

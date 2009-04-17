@@ -22,11 +22,17 @@
 using MObjc;
 using System;
 using System.Collections.Generic;
+using OldCollections = System.Collections;
 
 namespace MCocoa
 {
-	public partial class NSDictionary : NSObject
-	{		
+	public partial class NSDictionary : NSObject, IEnumerable<KeyValuePair<NSObject, NSObject>>
+	{
+		OldCollections.IEnumerator OldCollections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+		
 		public IEnumerator<KeyValuePair<NSObject, NSObject>> GetEnumerator()
 		{
 			NSEnumerator keys = keyEnumerator();
@@ -36,7 +42,7 @@ namespace MCocoa
 			{
 				NSObject value = objectForKey(key);
 				yield return new KeyValuePair<NSObject, NSObject>(key, value);
-
+				
 				key = keys.nextObject();
 			}
 		}
