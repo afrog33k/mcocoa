@@ -31,7 +31,7 @@ internal class MakeBuilder
 {
 	public MakeBuilder(string contents)
 	{
-		Trace.Assert(contents != null, "contents is null, is the file ascii?");
+		Contract.Requires(contents != null, "contents is null, is the file ascii?");
 
 		try
 		{

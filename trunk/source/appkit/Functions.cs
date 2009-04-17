@@ -20,6 +20,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -123,14 +124,14 @@ namespace MCocoa
 		
 		public static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors)
 		{
-			Trace.Assert(rects.Length == colors.Length, "rects and colors have different lengths");
+			Contract.Requires(rects.Length == colors.Length, "rects and colors have different lengths");
 			
 			NativeMethods.NSRectFillListWithColors(rects, colors, rects.Length);
 		}
 		
 		public static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int op)
 		{
-			Trace.Assert(rects.Length == colors.Length, "rects and colors have different lengths");
+			Contract.Requires(rects.Length == colors.Length, "rects and colors have different lengths");
 			
 			NativeMethods.NSRectFillListWithColorsUsingOperation(rects, colors, rects.Length, op);
 		}

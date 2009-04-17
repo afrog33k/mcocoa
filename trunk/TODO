@@ -3,7 +3,6 @@ set a symbolic breakpoint at -[NSException raise]
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
 * Work on mcocoa:
-	- removed Unused
 	- get rid of Trace.Assert
 	- use the MObjc.Helpers goo
 	- make pure:
