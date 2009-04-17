@@ -23,11 +23,12 @@ using MObjc;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using OldCollections = System.Collections;
 
 namespace MCocoa
 {
-	public partial class NSArray : NSObject
-	{		
+	public partial class NSArray : NSObject, IEnumerable<NSObject>
+	{
 		public static NSArray Create(params string[] args)
 		{
 			NSString[] strs = new NSString[args.Length];
@@ -37,7 +38,7 @@ namespace MCocoa
 			return Create(strs);
 		}
 		
-		public static NSArray Create(params NSObject[] args) 
+		public static NSArray Create(params NSObject[] args)
 		{
 			IntPtr[] ptrs = new IntPtr[args.Length];
 			for (int i = 0; i < args.Length; ++i)
@@ -50,6 +51,11 @@ namespace MCocoa
 			handle.Free();
 			
 			return result;
+		}
+		
+		OldCollections.IEnumerator OldCollections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 		
 		public IEnumerator<NSObject> GetEnumerator()
