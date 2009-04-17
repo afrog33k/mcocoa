@@ -100,6 +100,7 @@ namespace MCocoa
 			Unused.Value = ms_run.Invoke();
 		}
 		
+		[Pure]
 		public NSWindow[] windows()
 		{
 			NSArray items = (NSArray) Call("windows");

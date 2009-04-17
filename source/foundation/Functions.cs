@@ -66,59 +66,59 @@ namespace MCocoa
 		{
 			return NativeMethods.NSUserName().To<NSString>();
 		}
-
+		
 		public static NSString NSFullUserName()
 		{
 			return NativeMethods.NSFullUserName().To<NSString>();
 		}
-
+		
 		public static NSString NSHomeDirectory()
 		{
 			return NativeMethods.NSHomeDirectory().To<NSString>();
 		}
-
+		
 		public static NSString NSHomeDirectoryForUser(NSString userName)
 		{
 			return NativeMethods.NSHomeDirectoryForUser(userName).To<NSString>();
 		}
-
+		
 		public static NSString NSTemporaryDirectory()
 		{
 			return NativeMethods.NSTemporaryDirectory().To<NSString>();
 		}
-
+		
 		public static NSString NSOpenStepRootDirectory()
 		{
 			return NativeMethods.NSOpenStepRootDirectory().To<NSString>();
 		}
-
+		
 		public static NSArray NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory directory, NSSearchPathDomainMask domainMask, bool expandTilde)
 		{
 			return NativeMethods.NSSearchPathForDirectoriesInDomains(directory, domainMask, expandTilde).To<NSArray>();
 		}
 		#endregion
-
+		
 		#region P/Invokes
 		private static partial class NativeMethods
 		{
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static IntPtr NSUserName();
-
+			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static IntPtr NSFullUserName();
-
+			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static IntPtr NSHomeDirectory();
-
+			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static IntPtr NSHomeDirectoryForUser(IntPtr userName);
-
+			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static IntPtr NSTemporaryDirectory();
-
+			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static IntPtr NSOpenStepRootDirectory();
-
+			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 			public extern static IntPtr NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory directory, NSSearchPathDomainMask domainMask, [MarshalAs(UnmanagedType.U1)] bool expandTilde);
 		}

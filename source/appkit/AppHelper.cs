@@ -50,10 +50,6 @@ namespace MCocoa
 			return result;
 		}
 		
-		public void Aaa()
-		{
-		}
-		
 		public void Add(Action action)
 		{
 			lock (m_lock)

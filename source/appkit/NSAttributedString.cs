@@ -23,7 +23,7 @@ using MObjc;
 using System;
 
 namespace MCocoa
-{ 
+{
 	// http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/NSAttributedString_AppKitAdditions/Reference/Reference.html#//apple_ref/doc/uid/20000167-SW6
 	public static partial class Externs
 	{

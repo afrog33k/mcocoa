@@ -28,8 +28,9 @@ using System.Linq;
 
 namespace MCocoa
 {
-	public partial class NSView : NSResponder 
+	public partial class NSView : NSResponder
 	{
+		[Pure]
 		public NSView[] subviews()
 		{
 			NSArray items = (NSArray) Call("subviews");

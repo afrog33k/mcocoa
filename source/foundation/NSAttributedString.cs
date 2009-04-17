@@ -26,53 +26,53 @@ using System.Runtime.InteropServices;
 namespace MCocoa
 {
 	public partial class NSAttributedString : NSObject
-	{		
+	{
 		public static NSAttributedString Create(string text)
 		{
 			NSAttributedString result = ms_class.Alloc().Call("initWithString:", NSString.Create(text)).To<NSAttributedString>();
 			result.autorelease();
 			return result;
 		}
-				
+		
 		public static NSAttributedString Create(string text, NSString attr, NSObject value)
 		{
 			return Create(text, CreateDict(attr, value));
 		}
-				
+		
 		public static NSAttributedString Create(char ch, NSDictionary attrs)
 		{
 			NSAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSAttributedString>();
 			result.autorelease();
 			return result;
 		}
-				
+		
 		public static NSAttributedString Create(string text, NSDictionary attrs) 
 		{
 			NSAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSAttributedString>();
 			result.autorelease();
 			return result;
 		}
-
+		
 		protected static NSDictionary CreateDict(NSString attr, NSObject value)
 		{
 			NSMutableDictionary dict = NSMutableDictionary.Create();
 			dict.setObject_forKey(value, attr);
 			return dict;
 		}
-						
+		
 		public override string ToString()
 		{
 			return this != IntPtr.Zero ? string_().ToString() : "nil";
 		}
 	}
-
+	
 	public partial class NSMutableAttributedString : NSAttributedString
-	{		
+	{
 		public new static NSMutableAttributedString Create(string text, NSString attr, NSObject value)
 		{
 			return Create(text, CreateDict(attr, value));
 		}
-				
+		
 		public new static NSMutableAttributedString Create(char ch, NSDictionary attrs)
 		{
 			NSMutableAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSMutableAttributedString>();
@@ -80,7 +80,7 @@ namespace MCocoa
 			return result;
 		}
 		
-		public new static NSMutableAttributedString Create(string text) 
+		public new static NSMutableAttributedString Create(string text)
 		{
 			NSMutableAttributedString result = ms_class.Alloc().Call("initWithString:", NSString.Create(text)).To<NSMutableAttributedString>();
 			result.autorelease();
