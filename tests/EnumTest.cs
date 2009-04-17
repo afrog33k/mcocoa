@@ -26,18 +26,12 @@ using System.Diagnostics;
 
 // Verify that we can find the various forms of enum declarations.
 [TestFixture]
-public class EnumTest 	
+public class EnumTest
 {
-	[TestFixtureSetUp]
-	public void Init()
-	{
-		AssertListener.Install();
-	}
-	
 	[Test]
-	public void NoName()	 
+	public void NoName()
 	{
-		EnumParser parser = new EnumParser("test", 
+		EnumParser parser = new EnumParser("test",
 @"blah
 enum {
     NSASCIIStringEncoding = 1,		/* 0..127 only */
@@ -47,10 +41,10 @@ enum {
 #if MAC_OS_X_VERSION_10_4 <= MAC_OS_X_VERSION_MAX_ALLOWED
     NSUTF16BigEndianStringEncoding = 0x90000100,          /* NSUTF16StringEncoding encoding with explicit endianness specified */
 #endif
-}; blah blah");				
+}; blah blah");
 		NativeEnum native = parser.Enum;
 		Assert.IsNull(native.Name);
-
+		
 		Assert.AreEqual(4, native.Names.Length);
 		Assert.AreEqual(4, native.Values.Length);
 

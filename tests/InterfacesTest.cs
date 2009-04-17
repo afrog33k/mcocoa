@@ -26,14 +26,8 @@ using System.Diagnostics;
 
 // Verify that we can find the various forms of @interface declarations.
 [TestFixture]
-public class InterfacesTest 	
+public class InterfacesTest
 {
-	[TestFixtureSetUp]
-	public void Init()
-	{
-		AssertListener.Install();
-	}
-	
 	[Test]
 	public void Simple()	
 	{

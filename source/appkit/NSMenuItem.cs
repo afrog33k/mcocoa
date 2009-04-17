@@ -46,7 +46,7 @@ namespace MCocoa
 			NSMenuItem result = (NSMenuItem) ms_class.Call("alloc").
 				Call("initWithTitle:action:keyEquivalent:", NSString.Create(title), 
 					selector != null ? new Selector(selector) : null, NSString.Create(charCode));
-			result.autorelease();			
+			result.autorelease();
 
 			if (target != null)
 				result.setTarget(target);

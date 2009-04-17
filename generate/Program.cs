@@ -28,23 +28,21 @@ using System.Xml;
 
 internal static class Program
 {
-	public static void Main(string[] args) 
-	{	
-		AssertListener.Install();
-
+	public static void Main(string[] args)
+	{
 		foreach (string arg in args)
 			DoProcessArg(arg);
 		
 		if (!m_exiting)
 			DoValidateArgs();
-
+		
 		if (!m_exiting)
 		{
 			if (ms_file != null)
-			{	
+			{
 				ObjectModel objects = new ObjectModel();
 				objects.Parse(ms_file);
-
+				
 				Generate generate = new Generate(objects);
 				generate.Code(ms_outDir, new Blacklist[0]);
 			}
@@ -59,24 +57,24 @@ internal static class Program
 				{
 					if (child.Name == "Generate")
 					{
-						foreach (XmlNode gchild in child.ChildNodes)	
+						foreach (XmlNode gchild in child.ChildNodes)
 						{
 							if (gchild.Name == "TypeResults")
 							{
-								DoAddResultType(objects, gchild);			
+								DoAddResultType(objects, gchild);
 							}
 						}
 					}
 				}
-
+				
 				foreach (XmlNode child in xml.ChildNodes)	
 				{
 					if (child.Name == "Generate")
 					{
-						foreach (XmlNode gchild in child.ChildNodes)	
+						foreach (XmlNode gchild in child.ChildNodes)
 						{
 							if (gchild.Name == "Framework")
-								DoGenerateFromXML(objects, gchild);			
+								DoGenerateFromXML(objects, gchild);
 						}
 					}
 				}
@@ -90,7 +88,7 @@ internal static class Program
 		{
 			foreach (XmlNode child in tr.ChildNodes)
 			{
-				if (child.Name == "TypeResult") 
+				if (child.Name == "TypeResult")
 				{
 					string name = child.Attributes["name"].Value;
 					string type = child.Attributes["type"] != null ? child.Attributes["type"].Value : null;
@@ -119,7 +117,7 @@ internal static class Program
 			Directory.Delete(outPath, true);
 		}
 		Directory.CreateDirectory(outPath);
-
+		
 		objects.Reset();									// resets everything but typedefs
 		files = Directory.GetFiles(dir, "*.h");
 		foreach (string inFile in files)
@@ -127,7 +125,7 @@ internal static class Program
 			if (!inFile.EndsWith("NSObjCRuntime.h"))
 				objects.Parse(inFile);
 		}
-
+		
 		Generate generate = new Generate(objects);
 		generate.Code(outPath, blacklist);
 	}
@@ -164,7 +162,7 @@ internal static class Program
 		{
 			ms_outDir = arg.Substring("--out=".Length);
 		}
-		else 
+		else
 		{
 			DoHelp();
 			m_exiting = true;
@@ -191,13 +189,13 @@ internal static class Program
 			Console.Error.WriteLine("One of --xml or --file must be used.");
 			m_exiting = true;
 		}
-
+		
 		if (ms_file != null && ms_xml != null)
 		{
 			Console.Error.WriteLine("Can't use both --xml and --file.");
 			m_exiting = true;
 		}
-
+		
 		if (ms_outDir == null)
 		{
 			Console.Error.WriteLine("Missing --out switch.");
@@ -210,4 +208,3 @@ internal static class Program
 	private static string ms_outDir;
 	private static bool m_exiting;
 }
- 

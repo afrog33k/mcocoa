@@ -20,24 +20,27 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MCocoa
-{ 
+{
 	public partial class NSView : NSResponder 
-	{		
+	{
 		public NSView[] subviews()
 		{
 			NSArray items = (NSArray) Call("subviews");
-
+			
 			NSView[] result = new NSView[items.count()];
 			for (int i = 0; i < items.count(); ++i)
 				result[i] = items.objectAtIndex((uint) i).To<NSView>();
 				
-			return result;					
+			return result;
 		}
-
+		
 		public void setSubviews(NSView[] newSubviews)
 		{
 			NSMutableArray array = NSMutableArray.Create();
