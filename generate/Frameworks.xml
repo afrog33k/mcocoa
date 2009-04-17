@@ -6,10 +6,10 @@
 			<Method interface = "NSArray" method = "initWithObjects:" reason = "because it is variadic"/>
 			<Method interface = "NSArray" method = "sortedArrayUsingFunction:context:" reason = "because it has a function pointer"/>
 			<Method interface = "NSArray" method = "sortedArrayUsingFunction:context:hint:" reason = "because it has a function pointer"/>
-	
+			
 			<Method interface = "NSAssertionHandler" method = "handleFailureInMethod:object:file:lineNumber:description:" reason = "because it is variadic"/>
 			<Method interface = "NSAssertionHandler" method = "handleFailureInFunction:file:lineNumber:description:" reason = "because it is variadic"/>
-
+			
 			<Method interface = "NSCoder" method = "encodeValuesOfObjCTypes:" reason = "because it is variadic"/>
 			<Method interface = "NSCoder" method = "decodeValuesOfObjCTypes:" reason = "because it is variadic"/>
 			
@@ -19,14 +19,14 @@
 			<Method interface = "NSException" method = "raise:format:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSMutableArray" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
-
+			
 			<Method interface = "NSMutableString" method = "appendFormat:" reason = "because it is variadic"/>
-
+			
 			<Method interface = "NSPredicate" method = "predicateWithFormat:" reason = "because it is variadic"/>
 
 			<Method interface = "NSSet" method = "setWithObjects:" reason = "because it is variadic"/>
 			<Method interface = "NSSet" method = "initWithObjects:" reason = "because it is variadic"/>
-
+			
 			<Method interface = "NSString" method = "initWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "initWithFormat:locale:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "initWithCharactersNoCopy:length:freeWhenDone:" reason = "because the characters need to be copied"/>
@@ -36,8 +36,8 @@
 			<Method interface = "NSString" method = "stringByAppendingFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "stringWithFormat:" reason = "because it is variadic"/>
 		</Blacklist>
-	</Framework> 
-
+	</Framework>
+	
 	<Framework name = "appkit" path = "/System/Library/Frameworks/AppKit.framework/Versions/Current/Headers">
 		<Blacklist>
 			<Method interface = "NSApplication" method = "run" reason = "because there is a hand-written version"/>
@@ -45,13 +45,13 @@
 			<Method interface = "NSBezierPath" method = "appendBezierPathWithPoints:count:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "subviews" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "setSubviews:" reason = "because there is a hand-written version"/>
-
+			
 			<Method interface = "NSAlert" method = "alertWithMessageText:defaultButton:alternateButton:otherButton:informativeTextWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSGradient" method = "initWithColorsAndLocations:" reason = "because it is variadic"/>
 			<Method interface = "NSMatrix" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
 			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because it has a function pointer"/>			
 		</Blacklist>
-	</Framework> 
+	</Framework>
 	
 	<!-- A lot of Cocoa methods are typed to return an id which is really annoying. To make these methods more
 	pleasant to deal with you can add their names here and the generator will type them with either the specified
@@ -254,4 +254,3 @@
 		<TypeResult name = "windowController" type = "NSWindowController"/>
 	</TypeResults>
 </Generate>
-
