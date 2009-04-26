@@ -1,7 +1,12 @@
 set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
-   
+
+NativeMethod
+
+
+* Mention continuum somewhere.
+* Might want to provide an example of talking to carbon.
 * rectArrayForCharacterRange_withinSelectedCharacterRange_inTextContainer_rectCount
    should have an out parameter.
 * make help needs to mention make generate.
@@ -25,7 +30,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- run smoke
 	- run gendarme
 	- make sure unit tests work
-	- make sure examples work in debug		string
+	- make sure examples work in debug		NSTextStorage
 	- make sure examples work in release
 	- review tar target
 	- make sure everything is checked in
