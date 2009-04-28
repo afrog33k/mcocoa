@@ -35,19 +35,19 @@ test: bin/tests.dll
 
 generate: bin/generate.exe
 	cd bin && "$(MONO)" generate.exe --xml=../generate/Frameworks.xml --out=../source
-				
+
 animating-views: bin/mcocoa.dll
 	cd examples/animating-views && make app
-	
+
 run-animating-views: bin/mcocoa.dll
 	cd examples/animating-views && make run
-	
+
 natty: bin/mcocoa.dll
 	cd examples/natty && make app
-	
+
 run-natty: bin/mcocoa.dll
 	cd examples/natty && make run
-	
+
 update-libraries:
 	cp `pkg-config --variable=Libraries mobjc` bin
 
@@ -100,27 +100,27 @@ smoke: bin/mcocoa.dll
 gendarme_flags := --severity all --confidence all --ignore gendarme.ignore --quiet
 gendarme: bin/mobjc.dll
 	@-"$(GENDARME)" $(gendarme_flags) bin/mcocoa.dll
-	
+
 # Note that we do not want to remove mobjc.
 clean:
 	-rm bin/csc_flags bin/cocoa_files
 	-rm -rf bin/AnimatingViews.app
 	-rm -rf bin/Natty.app
-	-rm bin/animating-views.exe bin/animating-views.exe.mdb 
-	-rm bin/natty.exe bin/natty.exe.mdb 
+	-rm bin/animating-views.exe bin/animating-views.exe.mdb
+	-rm bin/natty.exe bin/natty.exe.mdb
 	-rm bin/mcocoa.dll bin/mcocoa.dll.mdb
 
 help:
 	@echo "mcocoa version $(version)"
 	@echo " "
 	@echo "The primary targets are:"
+	@echo "generate             - create the cocoa wrapper classes"
 	@echo "lib                  - build the library"
 	@echo "test                 - run the unit tests"
-	@echo "animating-views      - build the animating-views sample app"
-	@echo "run-animating-views  - build the animating-views sample app"
-	@echo "natty                - build the natty sample app"
-	@echo "run-natty            - build the natty sample app"
+	@echo "run-animating-views  - build and run the animating-views sample app"
+	@echo "run-natty            - build and run the natty sample app"
 	@echo "update-libraries     - copy the current mobjc libs into bin"
+	@echo "clean                - remove the app bundles and executables from bin"
 	@echo "install              - install the dll and a pkg-config file"
 	@echo "uninstall            - remove the dll and the pkg-config file"
 	@echo " "

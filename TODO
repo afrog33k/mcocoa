@@ -2,18 +2,7 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Mention continuum somewhere.
-* Might want to provide an example of talking to carbon.
-* rectArrayForCharacterRange_withinSelectedCharacterRange_inTextContainer_rectCount
-   should have an out parameter.
-* make help needs to mention make generate.
-* NSRange intersects test isn't quite right for zero lengths. Probably best to treat
-  this as a test of the length of the intersection of the two ranges.
-* Might want to either get rid of one of the NSString::operator== overloads (causes
-   problems comparing them to null).
-* Make sure none of the example code is using RegisterAttribute.
 * Release checklist:
-	- search for TODO (everywhere)
 	- run smoke
 	- run gendarme
 	- make sure unit tests work

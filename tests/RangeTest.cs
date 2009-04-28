@@ -21,34 +21,33 @@
 
 using MCocoa;
 using MObjc;
+using NUnit.Framework;
 using System;
-using System.IO;
+using System.Diagnostics;
 
-[ExportClass("DocController", "NSDocumentController")]
-internal sealed class DocController : NSDocumentController
+[TestFixture]
+public class RangeTest
 {
-	private DocController(IntPtr instance) : base(instance)
+	[Test]
+	public void Intersects()
 	{
-	}
-	
-	#region Overrides
-	public int runModalOpenPanel_forTypes(NSOpenPanel openPanel, NSObject extensions)
-	{
-		openPanel.setDelegate(this);
+		// Zero length ranges never intersect.
+		Assert.IsFalse(NSRange.Empty.Intersects(NSRange.Empty));
+		Assert.IsFalse(new NSRange(10, 100).Intersects(new NSRange(11, 0)));
+		Assert.IsFalse(new NSRange(11, 0).Intersects(new NSRange(10, 100)));
 		
-		return (int) SuperCall("runModalOpenPanel:forTypes:", openPanel, extensions);
+		// Disjunct ranges don't intersect.
+		Assert.IsFalse(new NSRange(10, 100).Intersects(new NSRange(200, 100)));
+		Assert.IsFalse(new NSRange(200, 100).Intersects(new NSRange(10, 100)));
+		Assert.IsFalse(new NSRange(10, 1).Intersects(new NSRange(9, 1)));
+		Assert.IsFalse(new NSRange(9, 1).Intersects(new NSRange(0, 1)));
+		
+		// Overlapping ranges intersect.
+		Assert.IsTrue(new NSRange(9, 2).Intersects(new NSRange(10, 1)));
+		Assert.IsTrue(new NSRange(10, 1).Intersects(new NSRange(9, 2)));
+		
+		// Interior ranges also intersect.
+		Assert.IsTrue(new NSRange(10, 100).Intersects(new NSRange(20, 50)));
+		Assert.IsTrue(new NSRange(20, 50).Intersects(new NSRange(10, 100)));
 	}
-	#endregion	
-
-	#region Delegate Methods
-	public bool panel_shouldShowFilename(NSObject sender, NSString fileName)
-	{
-		string name = fileName.ToString();
-		if (Directory.Exists(name))
-			return true;
-			
-		name = Path.GetFileName(name);
-		return name == "Makefile";
-	}
-	#endregion	
 }

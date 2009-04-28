@@ -116,20 +116,7 @@ namespace MCocoa
 			return lhs.compare(rhs) == 0;
 		}
 		
-		public static bool operator==(NSString lhs, string rhs)
-		{
-			if ((object) rhs == null)
-				return (object) lhs == null;
-			
-			return lhs.ToString() == rhs;
-		}
-		
 		public static bool operator!=(NSString lhs, NSString rhs)
-		{
-			return !(lhs == rhs);
-		}
-		
-		public static bool operator!=(NSString lhs, string rhs)
 		{
 			return !(lhs == rhs);
 		}
@@ -139,7 +126,7 @@ namespace MCocoa
 		{
 			return base.Equals(rhsObj);
 		}
-	
+		
 		public override int GetHashCode()
 		{
 			return base.GetHashCode();
