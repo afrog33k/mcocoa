@@ -21,6 +21,10 @@ update-libraries:
 	cp `pkg-config --variable=Libraries mobjc` bin
 	cp `pkg-config --variable=Libraries mcocoa` bin
 	
+You'll also need to ensure that pkg-config can find the pc files in /usr/lib. To 
+do this you can add a line like export PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/local/lib/pkgconfig" 
+to your ~/.bash_profile script.
+	
 USAGE
 
 In general using mcocoa is very much like using Cocoa natively with reference

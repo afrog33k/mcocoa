@@ -83,8 +83,7 @@ namespace MCocoa
 			catch (Exception e)
 			{
 				Console.Error.WriteLine("Ignoring BeginInvoke exception: ");	// TODO: this kind of sucks, however appkit doesn't do any better if we let the exception escape
-				Console.Error.WriteLine(e.Message);
-				Console.Error.WriteLine(e.StackTrace);
+				Console.Error.WriteLine("{0}", e);
 			}
 		}
 		
@@ -169,8 +168,7 @@ namespace MCocoa
 				catch (Exception e)
 				{
 					Console.Error.WriteLine("Ignoring BeginInvoke exception:");	// TODO: this kind of sucks, however appkit doesn't do any better if we let the exception escape
-					Console.Error.WriteLine(e.Message);
-					Console.Error.WriteLine(e.StackTrace);
+					Console.Error.WriteLine("{0}", e);
 				}
 			}
 		}
