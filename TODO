@@ -3,10 +3,6 @@ set a symbolic breakpoint at -[NSException raise]
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
 * Release checklist:
-	- run smoke
-	- run gendarme
-	- make sure unit tests work
-	- make sure examples work in debug
 	- make sure examples work in release
 	- review tar target
 	- make sure everything is checked in
@@ -21,6 +17,9 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- send an announcement
 	- make sure everything is checked in
 
+* Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
+   methods use unsigned typed. Perhaps we can fix this by generating signed
+   overloads and decorating the original versions with CLSCompliant.
 * Might want a white list for out arguments (can't tell from the headers if they
   are supposed to be arrays or not, see NSBezierPath.getLineDashCountPhase)
 * Work on Natty:

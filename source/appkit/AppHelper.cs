@@ -108,6 +108,8 @@ namespace MCocoa
 		[DisableRule("P1017", "ExplicitGC")]
 		public void collectGarbage(NSObject sender)
 		{
+			Unused.Value = sender;
+
 			//  TODO: for some reason objects hang around if we do this only once
 			// or do not do the sleep...
 			for (int i = 0; i < 4; ++i)
@@ -121,6 +123,7 @@ namespace MCocoa
 		[DisableRule("D1032", "UnusedMethod")]
 		public void dumpObjects(NSObject sender)
 		{
+			Unused.Value = sender;
 			collectGarbage(null);
 			
 			List<string> lines = new List<string>();
@@ -138,6 +141,7 @@ namespace MCocoa
 		[DisableRule("D1032", "UnusedMethod")]
 		public void dumpWindows(NSObject sender)
 		{
+			Unused.Value = sender;
 			for (int i = 0; i < NSApplication.sharedApplication().windows().Length; ++i)
 			{
 				int indent = 0;
@@ -150,6 +154,7 @@ namespace MCocoa
 		[DisableRule("D1032", "UnusedMethod")]
 		public void execute(NSObject arg)
 		{
+			Unused.Value = arg;
 			List<Action> actions;
 			
 			lock (m_lock)

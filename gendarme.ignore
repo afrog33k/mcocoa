@@ -116,3 +116,11 @@ M: System.Void MCocoa.AppHelper::onDelayedAction(MCocoa.NSNumber)
 R: Gendarme.Rules.Concurrency.WriteStaticFieldFromInstanceMethodRule
 M: System.Void MCocoa.AppHelper::.ctor(System.IntPtr)
 
+# We do want to use equality for floating point here.
+R: Gendarme.Rules.Correctness.AvoidFloatingPointEqualityRule
+M: System.Boolean MCocoa.NSSize::op_Equality(MCocoa.NSSize,MCocoa.NSSize)
+M: System.Boolean MCocoa.NSPoint::op_Equality(MCocoa.NSPoint,MCocoa.NSPoint)
+
+# We do want to throw in these places.
+R: Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule
+M: System.Void MCocoa.NSApplication::.cctor()
