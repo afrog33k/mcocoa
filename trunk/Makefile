@@ -3,21 +3,21 @@
 CSC ?= gmcs
 MONO ?= mono
 NUNIT ?= nunit-console2
-GENDARME ?= /usr/bin/gendarme/gendarme.exe
+GENDARME ?= /usr/local/bin/gendarme
 
 ifdef RELEASE
 	# Note that -debug+ just generates an mdb file.
-	export CSC_FLAGS ?= -checked+ -debug+ -warn:4 -optimize+ -d:TRACE
+	export CSC_FLAGS ?= -checked+ -debug+ -warn:4 -optimize+ -d:TRACE -d:CONTRACTS_PRECONDITIONS
 else
-	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -d:DEBUG -d:TRACE
+	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -d:DEBUG -d:TRACE -d:CONTRACTS_FULL
 endif
 
-INSTALL_DIR ?= /usr/lib
-PKG_CONFIG_DIR ?= /usr/lib/pkgconfig
+INSTALL_DIR ?= /usr/local
+PACKAGE_DIR ?= $(INSTALL_DIR)/lib/pkgconfig
 
 # ------------------
 # Internal variables
-dummy1 := $(shell mkdir bin 2> /dev/null)			
+dummy1 := $(shell mkdir bin 2> /dev/null)
 export dummy2 := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
 
 base_version := 0.4.xxx.0										# major.minor.build.revision
@@ -69,7 +69,7 @@ bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs bin/mcocoa.dll
 
 # ------------------
 # Misc targets
-keys: 
+keys:
 	sn -k keys
 
 smokey_flags ?= --not-localized -set:naming:jurassic -set:dictionary:Dictionary.txt
@@ -99,7 +99,7 @@ smoke: bin/mcocoa.dll
 
 gendarme_flags := --severity all --confidence all --ignore gendarme.ignore --quiet
 gendarme: bin/mobjc.dll
-	@-$(MONO) "$(GENDARME)" $(gendarme_flags) bin/mcocoa.dll
+	@-"$(GENDARME)" $(gendarme_flags) bin/mcocoa.dll
 	
 # Note that we do not want to remove mobjc.
 clean:
@@ -126,21 +126,24 @@ help:
 	@echo " "
 	@echo "Variables include:"
 	@echo "RELEASE - define to enable release builds, defaults to not defined"
-	@echo "INSTALL_DIR - where to put the dll, defaults to $(INSTALL_DIR)"
+	@echo "INSTALL_DIR - where to put the dll, defaults to $(INSTALL_DIR)/lib"
 	@echo " "
 	@echo "Here's an example:"	
 	@echo "sudo make RELEASE=1 install"	
 
-pc_file := $(PKG_CONFIG_DIR)/mcocoa.pc
+pc_file := $(PACKAGE_DIR)/mcocoa.pc
 install: bin/mcocoa.dll
-	cp "bin/mcocoa.dll" "$(INSTALL_DIR)"
+	install -d "$(PACKAGE_DIR)"
+	install -d "$(INSTALL_DIR)/lib"
+	install "bin/mcocoa.dll" "$(INSTALL_DIR)/lib"
 ifndef RELEASE
-	cp "bin/mcocoa.dll.mdb" "$(INSTALL_DIR)"
+	install "bin/mcocoa.dll.mdb" "$(INSTALL_DIR)/lib"
 endif
 	@echo "generating $(pc_file)"
 	@echo "# Use 'cp \x60pkg-config --variable=Libraries mcocoa\x60 bin' to copy the libraries into your build directory." > $(pc_file)
+	@echo "# You may also need to set PKG_CONFIG_PATH in your .bash_profile script so that it includes /usr/local/lib/pkgconfig." >> $(pc_file)
 	@echo "# 'pkg-config --libs mcocoa' can be used to get the gmcs flags." >> $(pc_file)
-	@echo "prefix=$(INSTALL_DIR)" >> $(pc_file)
+	@echo "prefix=$(INSTALL_DIR)/lib" >> $(pc_file)
 	@echo "Libraries=\x24{prefix}/mcocoa.dll\c" >> $(pc_file)
 ifndef RELEASE
 	@echo " \x24{prefix}/mcocoa.dll.mdb\c" >> $(pc_file)
@@ -153,8 +156,8 @@ endif
 	@echo "Libs: -r:mcocoa.dll" >> $(pc_file)
 
 uninstall:
-	-rm $(INSTALL_DIR)/mcocoa.dll
-	-rm $(INSTALL_DIR)/mcocoa.dll.mdb
+	-rm $(INSTALL_DIR)/lib/mcocoa.dll
+	-rm $(INSTALL_DIR)/lib/mcocoa.dll.mdb
 	-rm $(pc_file)
 
 tar:
