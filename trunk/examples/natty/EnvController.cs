@@ -78,8 +78,7 @@ internal sealed class EnvController : NSObject
 		return m_vars.Count;
 	}
 	
-	[Register("tableView:objectValueForTableColumn:row:")]
-	public NSObject GetCell(NSTableView table, NSTableColumn column, int row)
+	public NSObject tableView_objectValueForTableColumn_row(NSTableView table, NSTableColumn column, int row)
 	{
 		EnvVar variable = m_vars[row];
 		
@@ -92,8 +91,7 @@ internal sealed class EnvController : NSObject
 				return NSString.Create(variable.DefaultValue);
 	}
 	
-	[Register("tableView:setObjectValue:forTableColumn:row:")]
-	public void SetCell(NSTableView table, NSObject v, NSTableColumn column, int row)
+	public void tableView_setObjectValue_forTableColumn_row(NSTableView table, NSObject v, NSTableColumn column, int row)
 	{		
 		if ("1" == column.identifier().ToString())
 			m_vars[row].Name = v.ToString();

@@ -54,7 +54,7 @@ namespace MCocoa
 		[Pure]
 		public bool Intersects(int index)
 		{
-			return index >= location && index < location + length;
+			return Intersects(new NSRange(index, 1));
 		}
 		
 		[Pure]
@@ -62,13 +62,16 @@ namespace MCocoa
 		{
 			bool intersects = false;
 			
-			if (Intersects(rhs.location))
+			if (this.length > 0 && rhs.length > 0)
 			{
-				intersects = true;
-			}
-			else if (rhs.Intersects(location))
-			{
-				intersects = true;
+				if (rhs.location < this.location)
+					intersects = rhs.location + rhs.length > this.location;
+				
+				else if (rhs.location > this.location)
+					intersects = this.location + this.length > rhs.location;
+				
+				else
+					intersects = true;
 			}
 			
 			return intersects;

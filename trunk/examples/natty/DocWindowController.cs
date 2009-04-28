@@ -55,8 +55,8 @@ internal sealed class DocWindowController : NSWindowController
 		
 		return result;
 	}
-						
-	#region Action Handlers ---------------------------------------------------
+	
+	#region Action Handlers
 	public void targetChanged(NSPopUpButton sender)
 	{
 		m_doc.Target = sender.titleOfSelectedItem().ToString();
@@ -111,22 +111,21 @@ internal sealed class DocWindowController : NSWindowController
 		NSPopUpButton popup = new NSPopUpButton(this["targets"]);
 		popup.removeAllItems();	
 		popup.addItemsWithTitles(NSArray.Create(targets.ToArray()));
-						
+		
 		m_buildBtn.Value.setEnabled(targets.Any());
-
+		
 		if (m_doc.Target != null && targets.Contains(m_doc.Target))
-			popup.selectItemWithTitle(NSString.Create(m_doc.Target));			
+			popup.selectItemWithTitle(NSString.Create(m_doc.Target));
 	}	
 	#endregion
 	
-	#region Errors Data Source ------------------------------------------------
+	#region Errors Data Source
 	public int numberOfRowsInTableView(NSTableView table)
 	{
 		return m_errors.Count;
 	}
 
-	[Register("tableView:objectValueForTableColumn:row:")]		
-	public NSObject TableObjectForCell(NSTableView table, NSTableColumn column, int row)
+	public NSObject tableView_objectValueForTableColumn_row(NSTableView table, NSTableColumn column, int row)
 	{
 		Error error = m_errors[row];
 		if (column.identifier().ToString() == "1")
@@ -136,7 +135,7 @@ internal sealed class DocWindowController : NSWindowController
 		else
 			return NSString.Create(error.Line);
 	}
-
+	
 	public void openSelection(NSObject sender)
 	{
 		bool opened = false;
@@ -175,7 +174,7 @@ internal sealed class DocWindowController : NSWindowController
 			--range.location;
 			++range.length;
 		}
-
+		
 		while (DoIsFileChar(text, range.location + range.length))
 			++range.length;
 			
@@ -200,12 +199,12 @@ internal sealed class DocWindowController : NSWindowController
 		
 		return false;
 	}
-
+	
 	public void openFile(int row)
 	{
 		DoTryOpenFile(m_errors[row].File, m_errors[row].Line);
 	}
-
+	
 	public bool DoTryOpenFile(string file, string line)
 	{
 		string path = Path.GetDirectoryName(m_doc.Path);
@@ -220,10 +219,10 @@ internal sealed class DocWindowController : NSWindowController
 					return true;
 			}
 		}
-
+		
 		return false;
 	}
-
+	
 	public bool DoOpenFile(string root, string file, string line)
 	{
 		string path = Path.Combine(root, file);
@@ -245,10 +244,10 @@ internal sealed class DocWindowController : NSWindowController
 				ProcessStartInfo info = new ProcessStartInfo();
 				info.FileName = command;
 				info.UseShellExecute = false;
-		
+				
 				if (args != null)
 					info.Arguments = string.Format(args, path, line);
-	
+				
 				Process.Start(info);
 			}
 			catch (Exception e)
@@ -265,21 +264,21 @@ internal sealed class DocWindowController : NSWindowController
 	#endregion
 	
 	public bool validateMenuItem(NSMenuItem item)
-	{		
+	{
 		if (item.action().Name == "build:")
 			return m_doc.State != State.Building;
 		
 		return true;
 	}
 	
-	#region Overrides ---------------------------------------------------------
+	#region Overrides
 	public new NSString windowTitleForDocumentDisplayName(NSString displayName)
-	{		
+	{
 		return NSString.Create(DoGetTitle());
 	}
 	
 	public new void windowDidLoad()
-	{		
+	{
 		try
 		{
 			m_doc = Call("document").To<Document>();	
@@ -297,7 +296,7 @@ internal sealed class DocWindowController : NSWindowController
 			
 			m_transcriptWindow.Value.windowController().setNextResponder(this);
 			m_errorWindow.Value.windowController().setNextResponder(this);
-							
+			
 			m_doc.StateChanged += this.DoDocChanged;
 			m_doc.CommandData += this.DoGotCommand;
 			m_doc.StdoutData += this.DoGotStdout;
@@ -306,7 +305,7 @@ internal sealed class DocWindowController : NSWindowController
 			rebuildTargets();
 		}
 		catch (Exception e)
-		{	
+		{
 			// By default cocoa just logs a lame message to the console...
 			NSAlert alert = NSAlert.Create();
 			alert.setMessageText(NSString.Create("Couldn't open the document."));
@@ -380,7 +379,7 @@ internal sealed class DocWindowController : NSWindowController
 				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} warnings", numWarnings)));
 			else
 				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} errors, {1} warnings", numErrors, numWarnings)));
-
+			
 			if (numErrors > 0)
 				m_statusLabel.Value.setTextColor(NSColor.redColor());
 			else
@@ -443,7 +442,7 @@ internal sealed class DocWindowController : NSWindowController
 		m_transcriptWindow.Value.makeKeyAndOrderFront(this);
 		m_transcriptWindow.Value.setTitle(NSString.Create(DoGetTitle() + " Transcript"));
 	}
-
+	
 	private string DoGetTitle()
 	{
 		NSURL url = m_doc.fileURL();
@@ -454,7 +453,7 @@ internal sealed class DocWindowController : NSWindowController
 		
 		return s;
 	}
-		
+	
 	private static NSDictionary DoCreateCommandAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
@@ -462,7 +461,7 @@ internal sealed class DocWindowController : NSWindowController
 		dict.retain();
 		return dict;
 	}
-
+	
 	private static NSDictionary DoCreateStdoutAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
@@ -470,7 +469,7 @@ internal sealed class DocWindowController : NSWindowController
 		dict.retain();
 		return dict;
 	}
-
+	
 	private static NSDictionary DoCreateStderrAttrs()
 	{
 		NSMutableDictionary dict = NSMutableDictionary.Create();
@@ -479,8 +478,8 @@ internal sealed class DocWindowController : NSWindowController
 		dict.retain();
 		return dict;
 	}
-
-	#region Fields ------------------------------------------------------------
+	
+	#region Fields
 	private Document m_doc;
 	private IBOutlet<EnvController> m_env;
 	private IBOutlet<FlagsController> m_flags;
