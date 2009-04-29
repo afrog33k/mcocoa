@@ -1,3 +1,22 @@
+-- Version 0.5.0.0 (r46) ----
+
+* Fixed the SetFrontProcess code which (sometimes) crashed horribly on intel.
+* Added NSMutableArray.Create methods.
+* Added NSRange, NSPoint, NSSize, and NSRect ToString overloads which
+support culture invariant round tripping. Also added Parse methods.
+* Added NSPoint.Distance.
+* Added NSSize.Area.
+* Added NSRect.Left, Right, Bottom, Top, Contains, Intersects, Intersect,
+   and Union.
+* NSArray, NSIndexSet, NSDictionary, and NSString implement System.Collections.Generic.IEnumerable.
+* Made some NSDocumentController methods return NSDocument instead of NSObject.
+* Replaced the NSString operator== and != string overloads with an Equals
+  overload to avoid ambiguities with null.
+* Added NSShowAnimationEffect functions.
+* Added NSNib.NSNibOwner and NSNibTopLevelObjects constants.
+* Added NSPasteboard and NSDocumentType externs.
+* make install creates the /usr/local directories if they don't exist.
+
 -- Version 0.4.0.0 (r46) ----
 
 * Methods with native NSError ** arguments are now generated using out NSError

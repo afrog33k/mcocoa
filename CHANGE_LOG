@@ -507,3 +507,240 @@ Index: Makefile
 
 
 ------------------------------------------------------------------------
+r47 | jesjones@mindspring.com | 2009-02-24 11:11:32 -0800 (Tue, 24 Feb 2009) | 11 lines
+
+Index: Makefile
+* Bumped version number.
+
+Index: CHANGES
+Index: CHANGE_LOG
+* Updated.
+
+Index: source/foundation/NSArray.cs
+* Added NSMutableArray.Create methods.
+
+
+------------------------------------------------------------------------
+r48 | jesjones@mindspring.com | 2009-02-25 21:38:50 -0800 (Wed, 25 Feb 2009) | 3 lines
+
+Whitespace.
+
+
+------------------------------------------------------------------------
+r49 | jesjones@mindspring.com | 2009-02-25 21:52:26 -0800 (Wed, 25 Feb 2009) | 3 lines
+
+Index: source/appkit/NSApplication.cs
+* Fixed the SetFrontProcess code which (sometimes) crashed horribly on intel.
+
+------------------------------------------------------------------------
+r50 | jesjones@mindspring.com | 2009-03-21 08:27:54 -0700 (Sat, 21 Mar 2009) | 3 lines
+
+Index: Makefile
+* Install to /usr/lib instead of /usr/local/lib (not all macs have /usr/local).
+
+------------------------------------------------------------------------
+r51 | jesjones@mindspring.com | 2009-03-26 15:52:23 -0700 (Thu, 26 Mar 2009) | 3 lines
+
+Whitespace.
+
+
+------------------------------------------------------------------------
+r52 | jesjones@mindspring.com | 2009-03-26 17:27:37 -0700 (Thu, 26 Mar 2009) | 3 lines
+
+Whitespace.
+
+
+------------------------------------------------------------------------
+r53 | jesjones@mindspring.com | 2009-03-26 17:45:16 -0700 (Thu, 26 Mar 2009) | 4 lines
+
+Added NSRange, NSPoint, NSSize, and NSRect ToString overloads which
+support culture invariant round tripping. Also added Parse methods.
+
+
+------------------------------------------------------------------------
+r54 | jesjones@mindspring.com | 2009-03-29 08:30:40 -0700 (Sun, 29 Mar 2009) | 3 lines
+
+Added NSNibOwner and NSNibTopLevelObjects constants.
+
+
+------------------------------------------------------------------------
+r55 | jesjones@mindspring.com | 2009-03-30 10:25:25 -0700 (Mon, 30 Mar 2009) | 6 lines
+
+Index: source/foundation/NSGeometry.cs
+* Added NSPoint.Distance.
+* Added NSSize.Area.
+* Added NSRect.Left, Right, Bottom, Top, Contains, Intersects, Intersect,
+   and Union.
+
+------------------------------------------------------------------------
+r56 | jesjones@mindspring.com | 2009-03-30 18:05:36 -0700 (Mon, 30 Mar 2009) | 4 lines
+
+NSRange ctor no longer asserts that location and length
+are non-negative.
+
+
+------------------------------------------------------------------------
+r57 | jesjones@mindspring.com | 2009-04-01 18:36:12 -0700 (Wed, 01 Apr 2009) | 3 lines
+
+Added pasteboard constants.
+
+
+------------------------------------------------------------------------
+r58 | jesjones@mindspring.com | 2009-04-02 22:53:41 -0700 (Thu, 02 Apr 2009) | 3 lines
+
+Whitespace.
+
+
+------------------------------------------------------------------------
+r59 | jesjones@mindspring.com | 2009-04-02 23:09:03 -0700 (Thu, 02 Apr 2009) | 3 lines
+
+Added NSShowAnimationEffect.
+
+
+------------------------------------------------------------------------
+r60 | jesjones@mindspring.com | 2009-04-16 16:48:35 -0700 (Thu, 16 Apr 2009) | 3 lines
+
+Whitespace.
+
+
+------------------------------------------------------------------------
+r61 | jesjones@mindspring.com | 2009-04-16 17:03:45 -0700 (Thu, 16 Apr 2009) | 4 lines
+
+Removed MCocoa.Unused and added MObjc.Helpers using
+declarations so we can pick up the mobjc version.
+
+
+------------------------------------------------------------------------
+r62 | jesjones@mindspring.com | 2009-04-16 17:08:39 -0700 (Thu, 16 Apr 2009) | 3 lines
+
+Uses Contract.Requires/Assert instead of Trace.Assert.
+
+
+------------------------------------------------------------------------
+r63 | jesjones@mindspring.com | 2009-04-16 17:19:30 -0700 (Thu, 16 Apr 2009) | 27 lines
+
+Index: source/foundation/NSGeometry.cs
+Index: source/foundation/NSRange.cs
+* Made Inset, ToIntegral, Contains, Intersects, and Union methods pure.
+
+Index: source/foundation/NSString.cs
+* Made getCharacters and getCharacters_range pure.
+
+Index: source/appkit/NSView.cs
+* Made subviews pure.
+
+Index: source/appkit/NSApplication.cs
+* Made windows pure.
+
+Index: source/appkit/NSWorkspace.cs
+Index: source/appkit/NSAttributedString.cs
+Index: source/appkit/AppHelper.cs
+Index: source/foundation/Functions.cs
+Index: source/foundation/Notifications.cs
+Index: source/foundation/NSAttributedString.cs
+Index: source/foundation/NSDecimal.cs
+Index: source/foundation/NSError.cs
+Index: source/foundation/NSNumber.cs
+Index: source/foundation/NSIndexSet.cs
+Index: source/foundation/NSArray.cs
+* Whitespace.
+
+
+------------------------------------------------------------------------
+r64 | jesjones@mindspring.com | 2009-04-16 18:13:36 -0700 (Thu, 16 Apr 2009) | 11 lines
+
+Index: generate/Generate.cs
+Index: generate/PureMethods.cs
+* Made a bunch of generated methods pure.
+* Tweaked generated whitespace.
+
+Index: examples/natty/MakeBuilder.cs
+Index: examples/natty/EnvController.cs
+Index: examples/natty/DocWindowController.cs
+* Added using MObjc.Helpers.
+
+
+------------------------------------------------------------------------
+r65 | jesjones@mindspring.com | 2009-04-16 18:22:08 -0700 (Thu, 16 Apr 2009) | 3 lines
+
+Whitespace.
+
+
+------------------------------------------------------------------------
+r66 | jesjones@mindspring.com | 2009-04-16 18:39:11 -0700 (Thu, 16 Apr 2009) | 9 lines
+
+Index: generate/Frameworks.xml
+* Made some NSDocumentController methods return NSDocument instead of NSObject.
+
+Index: source/foundation/NSArray.cs
+Index: source/foundation/NSIndexSet.cs
+Index: source/foundation/NSDictionary.cs
+Index: source/foundation/NSString.cs
+* Implements System.Collections.Generic.IEnumerable.
+
+------------------------------------------------------------------------
+r67 | jesjones@mindspring.com | 2009-04-16 19:15:09 -0700 (Thu, 16 Apr 2009) | 3 lines
+
+Made some text methods pure.
+
+
+------------------------------------------------------------------------
+r68 | jesjones@mindspring.com | 2009-04-25 19:09:29 -0700 (Sat, 25 Apr 2009) | 4 lines
+
+Index: source/appkit/NSAttributedString.cs
+* Added document attributes externs.
+
+
+------------------------------------------------------------------------
+r69 | jesjones@mindspring.com | 2009-04-28 08:03:57 -0700 (Tue, 28 Apr 2009) | 12 lines
+
+Index: Makefile
+Index: README
+* Again installs into /usr/local/lib.
+* Use install to create the /usr/local directories if they don't exist.
+* Set GENDARME to the default path it installs to.
+* Set d:CONTRACTS_FULL in debug.
+* Set d:CONTRACTS_PRECONDITIONS in debug.
+
+Index: source/appkit/AppHelper.cs
+* Don't use silly code to print exceptions.
+
+
+------------------------------------------------------------------------
+r70 | jesjones@mindspring.com | 2009-04-28 12:50:22 -0700 (Tue, 28 Apr 2009) | 19 lines
+
+Index: source/foundation/NSRange.cs
+Index: tests/RangeTest.cs
+* Rewrote Intersects so it works properly with empty ranges.
+
+Index: source/foundation/NSString.cs
+* Removed the string overloads for == and != because they cause ambiguities when comparing to null.
+
+Index: Makefile
+* Help target lists a few more targets.
+
+Index: README
+* Added a note about calling Carbon or CF functions.
+
+Index: examples/natty/EnvController.cs
+Index: examples/natty/DocWindowController.cs
+Index: examples/natty/DocController.cs
+* Don't need to use RegisterAttribute any more.
+
+
+------------------------------------------------------------------------
+r71 | jesjones@mindspring.com | 2009-04-28 15:42:57 -0700 (Tue, 28 Apr 2009) | 6 lines
+
+Index: source/appkit/AppHelper.cs
+* Ignore some unused args.
+
+Index: gendarme.ignore
+* Disable a few defects.
+
+------------------------------------------------------------------------
+r72 | jesjones@mindspring.com | 2009-04-28 17:55:21 -0700 (Tue, 28 Apr 2009) | 3 lines
+
+Added an NSString::Equals(string) overload.
+
+
+------------------------------------------------------------------------
