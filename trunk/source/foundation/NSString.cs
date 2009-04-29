@@ -121,6 +121,23 @@ namespace MCocoa
 			return !(lhs == rhs);
 		}
 		
+		public bool Equals(string rhs)
+		{
+			bool equal = false;
+			
+			if (rhs != null)
+			{
+				if (length() == rhs.Length)
+					equal = description() == rhs;  
+			}
+			else
+			{
+				equal = IsNil();
+			}
+			
+			return equal;
+		}
+		
 		// Compiler requires us to define these two.
 		public override bool Equals(object rhsObj)
 		{
