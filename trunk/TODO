@@ -2,18 +2,6 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Release checklist:
-	- use svn log -r 1:HEAD > CHANGE_LOG
-	- update CHANGES file
-	- update version number
-	- remove build_num file 
-	- update libraries
-	- install
-	- update README and wiki
-	- upload a new version to googlecode
-	- send an announcement
-	- make sure everything is checked in
-
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
    methods use unsigned typed. Perhaps we can fix this by generating signed
    overloads and decorating the original versions with CLSCompliant.
