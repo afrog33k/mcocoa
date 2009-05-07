@@ -56,9 +56,10 @@ internal sealed class Generate
 		}
 	}
 	
-	public void Code(string outDir, Blacklist[] blacklist)
+	public void Code(string outDir, Blacklist[] blacklist, Threading[] threading)
 	{	
 		m_blacklist = blacklist;
+		m_threading = threading;
 		m_fastCalls = 0;
 		m_slowCalls = 0;
 		
@@ -230,6 +231,7 @@ internal sealed class Generate
 			string newStr = m_interface.BaseName != "NSObject" ? "new " : string.Empty;
 			
 			DoWrite("	[Register]");
+			DoWriteThreading(m_interface.Name);
 			DoWrite("	public partial class {0} : {1}", m_interface.Name, m_interface.BaseName);
 			DoWrite("	{");
 			DoWrite("		public {0}(IntPtr instance) : base(instance)", m_interface.Name);
@@ -259,6 +261,35 @@ internal sealed class Generate
 			DoWrite("		{");
 			DoWrite("			get {return ms_class;}");
 			DoWrite("		}");
+		}
+	}
+	
+	private void DoWriteThreading(string name)
+	{
+		Threading thread = m_threading.FirstOrDefault(t => t.Type == name);
+		if (thread != null)
+		{
+			switch (thread.Model)
+			{
+				case "concurrent":
+					DoWrite("	[ThreadModel(ThreadModel.Concurrent)]");
+					break;
+					
+				case "serializable":
+					DoWrite("	[ThreadModel(ThreadModel.Serializable)]");
+					break;
+					
+				case "arbitrary":
+					DoWrite("	[ThreadModel(ThreadModel.ArbitraryThread)]");
+					break;
+					
+				case "main":
+					DoWrite("	[ThreadModel(ThreadModel.MainThread)]");
+					break;
+					
+				default:
+					throw new Exception("bad threading: " + thread.Model);
+			}
 		}
 	}
 	
@@ -1686,6 +1717,7 @@ internal sealed class Generate
 	private StringBuilder m_buffer;
 	private NativeInterface m_interface;
 	private Blacklist[] m_blacklist;
+	private Threading[] m_threading;
 	private Dictionary<NativeInterface, List<NativeMethod>> m_methods = new Dictionary<NativeInterface, List<NativeMethod>>();
 	#endregion
 }

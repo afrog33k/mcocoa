@@ -1,4 +1,4 @@
-// Copyright (C) 2008 Jesse Jones
+// Copyright (C) 2008-2009 Jesse Jones
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -44,7 +44,7 @@ internal static class Program
 				objects.Parse(ms_file);
 				
 				Generate generate = new Generate(objects);
-				generate.Code(ms_outDir, new Blacklist[0]);
+				generate.Code(ms_outDir, new Blacklist[0], new Threading[0]);
 			}
 			else
 			{
@@ -53,7 +53,7 @@ internal static class Program
 				xml.Load(reader);
 				
 				ObjectModel objects = new ObjectModel();
-				foreach (XmlNode child in xml.ChildNodes)	
+				foreach (XmlNode child in xml.ChildNodes)
 				{
 					if (child.Name == "Generate")
 					{
@@ -67,7 +67,7 @@ internal static class Program
 					}
 				}
 				
-				foreach (XmlNode child in xml.ChildNodes)	
+				foreach (XmlNode child in xml.ChildNodes)
 				{
 					if (child.Name == "Generate")
 					{
@@ -103,6 +103,7 @@ internal static class Program
 		string name = framework.Attributes["name"].Value;
 		string dir = framework.Attributes["path"].Value;
 		Blacklist[] blacklist = DoGetBlacklist(framework);
+		Threading[] threading = DoGetThreading(framework);
 		
 		string outPath = ms_outDir;
 		outPath = Path.Combine(outPath, name);
@@ -127,25 +128,49 @@ internal static class Program
 		}
 		
 		Generate generate = new Generate(objects);
-		generate.Code(outPath, blacklist);
+		generate.Code(outPath, blacklist, threading);
 	}
 	
 	private static Blacklist[] DoGetBlacklist(XmlNode framework)
 	{
-		List<Blacklist> black = new List<Blacklist>();
+		var black = new List<Blacklist>();
 		
-		if (framework.ChildNodes.Count > 0)
+		foreach (XmlNode parent in framework.ChildNodes)
 		{
-			foreach (XmlNode child in framework.ChildNodes[0])
+			if (parent.Name == "Blacklist")
 			{
-				if (child.Name == "Method")
+				foreach (XmlNode child in parent.ChildNodes)
 				{
-					black.Add(new Blacklist(child.Attributes["interface"].Value, child.Attributes["method"].Value, child.Attributes["reason"].Value));
+					if (child.Name == "Method")
+					{
+						black.Add(new Blacklist(child.Attributes["interface"].Value, child.Attributes["method"].Value, child.Attributes["reason"].Value));
+					}
 				}
 			}
 		}
 		
 		return black.ToArray();
+	}
+	
+	private static Threading[] DoGetThreading(XmlNode framework)
+	{
+		var threading = new List<Threading>();
+		
+		foreach (XmlNode parent in framework.ChildNodes)
+		{
+			if (parent.Name == "Threading")
+			{
+				foreach (XmlNode child in parent.ChildNodes)
+				{
+					if (child.Name == "Type")
+					{
+						threading.Add(new Threading(child.Attributes["name"].Value, child.Attributes["model"].Value));
+					}
+				}
+			}
+		}
+		
+		return threading.ToArray();
 	}
 	
 	private static void DoProcessArg(string arg)

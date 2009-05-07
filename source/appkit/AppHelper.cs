@@ -50,6 +50,7 @@ namespace MCocoa
 			return result;
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public void Add(Action action)
 		{
 			lock (m_lock)
@@ -59,10 +60,15 @@ namespace MCocoa
 			}
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public void QueueDelayed(Action action, TimeSpan delay)
 		{
-			int id = m_actionID++;
-			m_delayedActions.Add(id, action);
+			int id;
+			lock (m_lock)
+			{
+				id = m_actionID++;
+				m_delayedActions.Add(id, action);
+			}
 			
 			Unused.Value = Call("performSelector:withObject:afterDelay:",
 				new Selector("onDelayedAction:"),
@@ -73,8 +79,12 @@ namespace MCocoa
 		[DisableRule("D1032", "UnusedMethod")]
 		public void onDelayedAction(NSNumber id)
 		{
-			Action action = m_delayedActions[id.intValue()];
-			Unused.Value = m_delayedActions.Remove(id.intValue());
+			Action action = null;
+			lock (m_lock)
+			{
+				action = m_delayedActions[id.intValue()];
+				Unused.Value = m_delayedActions.Remove(id.intValue());
+			}
 			
 			try
 			{
@@ -224,9 +234,10 @@ namespace MCocoa
 		}
 #endif	// DEBUG
 		
+		[ThreadModel("executor")]
 		private void DoThread()
 		{
-			Selector selector = new Selector("execute:");		
+			Selector selector = new Selector("execute:");
 			NSObject pool = (NSObject) new Class("NSAutoreleasePool").Call("alloc").Call("init");
 			Unused.Value = pool;		// shut compiler up
 			
@@ -250,12 +261,12 @@ namespace MCocoa
 		#endregion
 		
 		#region Fields
-		private readonly object m_lock = new object();
-		private List<Action> m_actions = new List<Action>();
-		private bool m_pendingExecute;
 		private Thread m_thread;
-		private int m_actionID;
-		private Dictionary<int, Action> m_delayedActions = new Dictionary<int, Action>();
+		private readonly object m_lock = new object();
+			private List<Action> m_actions = new List<Action>();
+			private int m_actionID;
+			private Dictionary<int, Action> m_delayedActions = new Dictionary<int, Action>();
+			private bool m_pendingExecute;
 		
 		private static bool ms_created;
 		#endregion

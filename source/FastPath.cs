@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	[ThreadModel(ThreadModel.Concurrent)]
 	public static class FastPath
 	{
 		public static IntPtr CreateBuffer(NSObject instance)

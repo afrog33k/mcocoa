@@ -36,6 +36,7 @@ namespace MCocoa
 		}
 		
 		#region Panels
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSBeginAlertSheet(NSString title, NSString defaultButton, NSString alternateButton, NSString otherButton, NSWindow docWindow, NSObject modalDelegate, string didEndSelector, string didDismissSelector, IntPtr contextInfo, NSString message)
 		{
 			Selector endSelector = didEndSelector != null ? new Selector(didEndSelector) : null;
@@ -44,6 +45,7 @@ namespace MCocoa
 			NativeMethods.NSBeginAlertSheet(title, defaultButton, alternateButton, otherButton, docWindow, modalDelegate, endSelector, dismissSelector, contextInfo, message);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSBeginInformationalAlertSheet(NSString title, NSString defaultButton, NSString alternateButton, NSString otherButton, NSWindow docWindow, NSObject modalDelegate, string didEndSelector, string didDismissSelector, IntPtr contextInfo, NSString message)
 		{
 			Selector endSelector = didEndSelector != null ? new Selector(didEndSelector) : null;
@@ -52,6 +54,7 @@ namespace MCocoa
 			NativeMethods.NSBeginInformationalAlertSheet(title, defaultButton, alternateButton, otherButton, docWindow, modalDelegate, endSelector, dismissSelector, contextInfo, message);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSBeginCriticalAlertSheet(NSString title, NSString defaultButton, NSString alternateButton, NSString otherButton, NSWindow docWindow, NSObject modalDelegate, string didEndSelector, string didDismissSelector, IntPtr contextInfo, NSString message)
 		{
 			Selector endSelector = didEndSelector != null ? new Selector(didEndSelector) : null;
@@ -59,32 +62,38 @@ namespace MCocoa
 			
 			NativeMethods.NSBeginCriticalAlertSheet(title, defaultButton, alternateButton, otherButton, docWindow, modalDelegate, endSelector, dismissSelector, contextInfo, message);
 		}
-
+		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static int NSRunAlertPanel(NSString title, NSString message)
 		{
 			return (int) NativeMethods.NSRunAlertPanel(title, message, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static int NSRunAlertPanel(NSString title, NSString message, NSString defaultButton, NSString alternateButton, NSString otherButton)
 		{
 			return (int) NativeMethods.NSRunAlertPanel(title, message, defaultButton, alternateButton, otherButton);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static int NSRunInformationalAlertPanel(NSString title, NSString message)
 		{
 			return (int) NativeMethods.NSRunInformationalAlertPanel(title, message, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static int NSRunInformationalAlertPanel(NSString title, NSString message, NSString defaultButton, NSString alternateButton, NSString otherButton)
 		{
 			return (int) NativeMethods.NSRunInformationalAlertPanel(title, message, defaultButton, alternateButton, otherButton);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static int NSRunCriticalAlertPanel(NSString title, NSString message)
 		{
 			return (int) NativeMethods.NSRunCriticalAlertPanel(title, message, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static int NSRunCriticalAlertPanel(NSString title, NSString message, NSString defaultButton, NSString alternateButton, NSString otherButton)
 		{
 			return (int) NativeMethods.NSRunCriticalAlertPanel(title, message, defaultButton, alternateButton, otherButton);
@@ -92,36 +101,43 @@ namespace MCocoa
 		#endregion
 		
 		#region Graphics
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSFrameRect(NSRect rect)
 		{
 			NativeMethods.NSFrameRect(rect);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSFrameRectWithWidth(NSRect rect, float width)
 		{
 			NativeMethods.NSFrameRectWithWidth(rect, width);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSFrameRectWithWidthUsingOperation(NSRect rect, float width, int op)
 		{
 			NativeMethods.NSFrameRectWithWidthUsingOperation(rect, width, op);
 		}
-
+		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSRectFill(NSRect rect)
 		{
 			NativeMethods.NSRectFill(rect);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSRectFillList(NSRect[] rects)
 		{
 			NativeMethods.NSRectFillList(rects, rects.Length);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSRectFillListUsingOperation(NSRect[] rects, int op)
 		{
 			NativeMethods.NSRectFillListUsingOperation(rects, rects.Length, op);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors)
 		{
 			Contract.Requires(rects.Length == colors.Length, "rects and colors have different lengths");
@@ -129,6 +145,7 @@ namespace MCocoa
 			NativeMethods.NSRectFillListWithColors(rects, colors, rects.Length);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int op)
 		{
 			Contract.Requires(rects.Length == colors.Length, "rects and colors have different lengths");
@@ -136,16 +153,19 @@ namespace MCocoa
 			NativeMethods.NSRectFillListWithColorsUsingOperation(rects, colors, rects.Length, op);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSRectFillUsingOperation(NSRect rect, int op)
 		{
 			NativeMethods.NSRectFillUsingOperation(rect, op);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSShowAnimationEffect(int animationEffect, NSPoint centerLocation)
 		{
 			NativeMethods.NSShowAnimationEffect(animationEffect, centerLocation, NSSize.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
 		public static void NSShowAnimationEffect(int animationEffect, NSPoint centerLocation, NSSize size, NSObject animationDelegate, Selector didEndSelector, IntPtr contextInfo)
 		{
 			NativeMethods.NSShowAnimationEffect(animationEffect, centerLocation, size, animationDelegate, didEndSelector, contextInfo);
@@ -159,51 +179,67 @@ namespace MCocoa
 			public extern static void NSBeep();
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSFrameRect(NSRect rect);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSFrameRectWithWidth(NSRect rect, float width);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSFrameRectWithWidthUsingOperation(NSRect rect, float width, int op);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSRectFill(NSRect rect);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSRectFillList(NSRect[] rects, int count);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSRectFillListUsingOperation(NSRect[] rects, int count, int op);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSRectFillListWithColors(NSRect[] rects, NSColor[] colors, int count);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSRectFillListWithColorsUsingOperation(NSRect[] rects, NSColor[] colors, int count, int op);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSRectFillUsingOperation(NSRect rect, int op);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSBeginAlertSheet(IntPtr title, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton, IntPtr docWindow, IntPtr modalDelegate, IntPtr didEndSelector, IntPtr didDismissSelector, IntPtr contextInfo, IntPtr msgFormat);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSBeginInformationalAlertSheet(IntPtr title, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton, IntPtr docWindow, IntPtr modalDelegate, IntPtr didEndSelector, IntPtr didDismissSelector, IntPtr contextInfo, IntPtr msgFormat);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSBeginCriticalAlertSheet(IntPtr title, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton, IntPtr docWindow, IntPtr modalDelegate, IntPtr didEndSelector, IntPtr didDismissSelector, IntPtr contextInfo, IntPtr msgFormat);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static int NSRunAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static int NSRunInformationalAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static int NSRunCriticalAlertPanel(IntPtr title, IntPtr msgFormat, IntPtr defaultButton, IntPtr alternateButton, IntPtr otherButton);
 			
 			[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
+			[ThreadModel(ThreadModel.Concurrent)]
 			public extern static void NSShowAnimationEffect(int animationEffect, NSPoint centerLocation, NSSize size, IntPtr animationDelegate, IntPtr didEndSelector, IntPtr contextInfo);
 		}
 		#endregion

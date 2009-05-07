@@ -29,6 +29,7 @@ using System.Runtime.InteropServices;
 namespace MCocoa
 {
 	[Register("_NSPoint")]
+	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSPoint : IEquatable<NSPoint>
 	{
 		public float x;
@@ -154,6 +155,7 @@ namespace MCocoa
 	}
 	
 	[Register("_NSSize")]
+	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSSize : IEquatable<NSSize>
 	{
 		public float width;
@@ -266,6 +268,7 @@ namespace MCocoa
 	}
 	
 	[Register("_NSRect")]
+	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSRect : IEquatable<NSRect>
 	{
 		public NSPoint origin;
@@ -498,6 +501,7 @@ namespace MCocoa
 		public static readonly NSRect Empty = new NSRect(0.0f, 0.0f, 0.0f, 0.0f);
 		
 		[DllImport("/System/Library/Frameworks/Foundation.framework/Foundation")]
+		[ThreadModel(ThreadModel.Concurrent)]
 		private extern static NSRect NSIntegralRect(NSRect aRect);
 	}
 }

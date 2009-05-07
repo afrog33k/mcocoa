@@ -124,3 +124,12 @@ M: System.Boolean MCocoa.NSPoint::op_Equality(MCocoa.NSPoint,MCocoa.NSPoint)
 # We do want to throw in these places.
 R: Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule
 M: System.Void MCocoa.NSApplication::.cctor()
+
+# Apple says NSPortCoder is thread-safe but the base class NSCoder is not
+# which is kind of whacked so the rule complains about it.
+R: Gendarme.Rules.Concurrency.DecorateThreadsRule
+M: System.Void MCocoa.NSCoder::.ctor(System.IntPtr)
+
+# OK to call NSEnumerator::nextObject from a thread from NSDictionary.
+R: Gendarme.Rules.Concurrency.DecorateThreadsRule
+M: MObjc.NSObject MCocoa.NSEnumerator::nextObject()

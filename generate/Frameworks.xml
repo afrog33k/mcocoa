@@ -36,10 +36,82 @@
 			<Method interface = "NSString" method = "stringByAppendingFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "stringWithFormat:" reason = "because it is variadic"/>
 		</Blacklist>
+		
+		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
+		<Threading>
+		<Type name = "NSArray" model = "concurrent"/>
+			<Type name = "NSNotification" model = "concurrent"/>
+			<Type name = "NSAssertionHandler" model = "concurrent"/>
+			<Type name = "NSNotificationCenter" model = "concurrent"/>
+			<Type name = "NSAttributedString" model = "concurrent"/>
+			<Type name = "NSNumber" model = "concurrent"/>
+			<Type name = "NSCalendarDate" model = "concurrent"/>
+			<Type name = "NSObject" model = "concurrent"/>
+			<Type name = "NSCharacterSet" model = "concurrent"/>
+			<Type name = "NSPortCoder" model = "concurrent"/>
+			<Type name = "NSConditionLock" model = "concurrent"/>
+			<Type name = "NSPortMessage" model = "concurrent"/>
+			<Type name = "NSConnection" model = "concurrent"/>
+			<Type name = "NSPortNameServer" model = "concurrent"/>
+			<Type name = "NSData" model = "concurrent"/>
+			<Type name = "NSProtocolChecker" model = "concurrent"/>
+			<Type name = "NSDate" model = "concurrent"/>
+			<Type name = "NSProxy" model = "concurrent"/>
+			<Type name = "NSRecursiveLock" model = "concurrent"/>
+			<Type name = "NSDecimalNumber" model = "concurrent"/>
+			<Type name = "NSSet" model = "concurrent"/>
+			<Type name = "NSDecimalNumberHandler" model = "concurrent"/>
+			<Type name = "NSString" model = "concurrent"/>
+			<Type name = "NSDeserializer" model = "concurrent"/>
+			<Type name = "NSThread" model = "concurrent"/>
+			<Type name = "NSDictionary" model = "concurrent"/>
+			<Type name = "NSTimeZone" model = "concurrent"/>
+			<Type name = "NSDistantObject" model = "concurrent"/>
+			<Type name = "NSTimer" model = "concurrent"/>
+			<Type name = "NSDistributedLock" model = "concurrent"/>
+			<Type name = "NSUserDefaults" model = "concurrent"/>
+			<Type name = "NSDistributedNotificationCenter" model = "concurrent"/>
+			<Type name = "NSValue" model = "concurrent"/>
+			<Type name = "NSMethodSignature" model = "concurrent"/>
+						
+			<!-- These are explicitly mentioned as thread unsafe. -->
+			<Type name = "NSAppleScript" model = "main"/>
+			<Type name = "NSMutableAttributedString" model = "main"/>
+			<Type name = "NSArchiver" model = "main"/>
+			<Type name = "NSMutableCharacterSet" model = "main"/>
+			<Type name = "NSAutoreleasePool" model = "main"/>
+			<Type name = "NSMutableData" model = "main"/>
+			<Type name = "NSBundle" model = "main"/>
+			<Type name = "NSMutableDictionary" model = "main"/>
+			<Type name = "NSCoder" model = "main"/>
+			<Type name = "NSMutableSet" model = "main"/>
+			<Type name = "NSCountedSet" model = "main"/>
+			<Type name = "NSMutableString" model = "main"/>
+			<Type name = "NSDateFormatter" model = "main"/>
+			<Type name = "NSNotificationQueue" model = "main"/>
+			<Type name = "NSEnumerator" model = "main"/>
+			<Type name = "NSNumberFormatter" model = "main"/>
+			<Type name = "NSFileHandle" model = "main"/>
+			<Type name = "NSPipe" model = "main"/>
+			<Type name = "NSFileManager" model = "main"/>
+			<Type name = "NSPort" model = "main"/>
+			<Type name = "NSFormatter" model = "main"/>
+			<Type name = "NSProcessInfo" model = "main"/>
+			<Type name = "NSRunLoop" model = "main"/>
+			<Type name = "NSHost" model = "main"/>
+			<Type name = "NSScanner" model = "main"/>
+			<Type name = "NSInvocation" model = "main"/>
+			<Type name = "NSSerializer" model = "main"/>
+			<Type name = "NSTask" model = "main"/>
+			<Type name = "NSUnarchiver" model = "main"/>
+			<Type name = "NSMutableArray" model = "main"/>
+			<Type name = "NSUndoManager" model = "main"/>
+		</Threading>
 	</Framework>
 	
 	<Framework name = "appkit" path = "/System/Library/Frameworks/AppKit.framework/Versions/Current/Headers">
 		<Blacklist>
+			<Method interface = "NSApplication" method = "sharedApplication" reason = "because we want to label it as multi-threaded"/>
 			<Method interface = "NSApplication" method = "run" reason = "because there is a hand-written version"/>
 			<Method interface = "NSApplication" method = "windows" reason = "because there is a hand-written version"/>
 			<Method interface = "NSBezierPath" method = "appendBezierPathWithPoints:count:" reason = "because there is a hand-written version"/>
@@ -51,6 +123,21 @@
 			<Method interface = "NSMatrix" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
 			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because it has a function pointer"/>			
 		</Blacklist>
+		
+		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
+		<Threading>
+			<Type name = "NSAffineTransform" model = "serializable"/>
+			<Type name = "NSBezierPath" model = "serializable"/>
+			<Type name = "NSColor" model = "serializable"/>
+			<Type name = "NSGradient" model = "serializable"/>
+			<Type name = "NSGraphicsContext" model = "serializable"/>
+			<Type name = "NSImage" model = "serializable"/>
+			<Type name = "NSView" model = "concurrent"/>		<!-- except create, destroy, resize, move, and "other" operations -->
+			<Type name = "NSWindow" model = "serializable"/>
+			
+			<!-- These are not listed as thread safe but they are base classes of thread safe classes... -->
+			<Type name = "NSResponder" model = "concurrent"/>
+		</Threading>
 	</Framework>
 	
 	<!-- A lot of Cocoa methods are typed to return an id which is really annoying. To make these methods more
