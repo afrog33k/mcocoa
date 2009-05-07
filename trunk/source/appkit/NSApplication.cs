@@ -95,6 +95,17 @@ namespace MCocoa
 			return Create(nibName, null);
 		}
 		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static NSApplication sharedApplication()
+		{
+			IntPtr exception_ = IntPtr.Zero;
+			IntPtr result_ = DirectCalls.Callp(ms_class, new Selector("sharedApplication"), ref exception_);
+			if (exception_ != IntPtr.Zero)
+				CocoaException.Raise(exception_);
+			
+			return result_.To<NSApplication>();
+		}
+		
 		public void run()
 		{
 			Unused.Value = ms_run.Invoke();
@@ -113,7 +124,8 @@ namespace MCocoa
 		}
 		
 		// Schedule the delegate to be executed on the main thread.
-		public void BeginInvoke(Action action)		// thread safe
+		[ThreadModel(ThreadModel.Concurrent)]
+		public void BeginInvoke(Action action)
 		{
 			Contract.Requires(action != null, "action is null");
 			
@@ -122,7 +134,8 @@ namespace MCocoa
 		
 		// Schedule the delegate to be executed on the main thread
 		// after delay seconds.
-		public void BeginInvoke(Action action, TimeSpan delay)		// thread safe
+		[ThreadModel(ThreadModel.Concurrent)]
+		public void BeginInvoke(Action action, TimeSpan delay)
 		{
 			Contract.Requires(action != null, "action is null");
 			Contract.Requires(delay >= TimeSpan.Zero, "delay is negative");
@@ -130,20 +143,20 @@ namespace MCocoa
 			ms_helper.QueueDelayed(action, delay);
 		}
 		
-		public bool InvokeRequired		// thread safe
+		[ThreadModel(ThreadModel.Concurrent)]
+		public bool InvokeRequired	
 		{
 			get {return Thread.CurrentThread != ms_mainThread;}
 		}
 		
 		#region Private Methods
-#if DEBUG
+		[Conditional("DEBUG")]
 		private static void DoInitDebugMenu(Action<NSMenu> extendDebugMenu)
 		{
 			NSMenu menu = ms_helper.InitDebugMenu();
 			if (extendDebugMenu != null)
 				extendDebugMenu(menu);
 		}
-#endif
 		#endregion
 		
 		#region P/Invokes
@@ -159,7 +172,7 @@ namespace MCocoa
 		
 		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 		private static extern int TransformProcessType(ref ProcessSerialNumber psn, uint type);
-	
+		
 		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 		private static extern short SetFrontProcess(ref ProcessSerialNumber psn);
 		#endregion

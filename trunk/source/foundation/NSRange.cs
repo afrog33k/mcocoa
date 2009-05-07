@@ -34,6 +34,7 @@ namespace MCocoa
 	
 	[DisableRule("R1016", "Const2")]
 	[Register("_NSRange")]
+	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSRange : IEquatable<NSRange>
 	{
 		public int location;
