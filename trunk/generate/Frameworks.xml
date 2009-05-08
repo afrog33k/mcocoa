@@ -17,6 +17,8 @@
 			<Method interface = "NSDictionary" method = "initWithObjectsAndKeys:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSException" method = "raise:format:" reason = "because it is variadic"/>
+
+			<Method interface = "NSFileManager" method = "defaultManager" reason = "because we assert that the current thread is the main thread"/>
 			
 			<Method interface = "NSMutableArray" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
 			
@@ -73,27 +75,37 @@
 			<Type name = "NSDistributedNotificationCenter" model = "concurrent"/>
 			<Type name = "NSValue" model = "concurrent"/>
 			<Type name = "NSMethodSignature" model = "concurrent"/>
-						
+			
+			<!-- Apple lists this as thread unsafe but they also require you to create and use
+			one in threads so it seems like it just can't be used concurrently. -->
+			<Type name = "NSAutoreleasePool" model = "arbitrary"/>
+			
+			<!-- This is thread safe in Leopard if you explicitly create an instance (and we now
+			have an assert to ensure that it's used this way). See 
+			<http://www.omnigroup.com/mailman/archive/macosx-dev/2008-June/061392.html>. -->
+			<Type name = "NSFileManager" model = "arbitrary"/>
+			
+			<!-- These are presumably safe to use from one thread at a time. -->
+			<Type name = "NSMutableData" model = "serializable"/>
+			<Type name = "NSMutableDictionary" model = "serializable"/>
+			<Type name = "NSMutableSet" model = "serializable"/>
+			<Type name = "NSMutableString" model = "serializable"/>
+			<Type name = "NSFileHandle" model = "serializable"/>
+			<Type name = "NSMutableArray" model = "serializable"/>
+			
 			<!-- These are explicitly mentioned as thread unsafe. -->
 			<Type name = "NSAppleScript" model = "main"/>
 			<Type name = "NSMutableAttributedString" model = "main"/>
 			<Type name = "NSArchiver" model = "main"/>
 			<Type name = "NSMutableCharacterSet" model = "main"/>
-			<Type name = "NSAutoreleasePool" model = "main"/>
-			<Type name = "NSMutableData" model = "main"/>
 			<Type name = "NSBundle" model = "main"/>
-			<Type name = "NSMutableDictionary" model = "main"/>
 			<Type name = "NSCoder" model = "main"/>
-			<Type name = "NSMutableSet" model = "main"/>
 			<Type name = "NSCountedSet" model = "main"/>
-			<Type name = "NSMutableString" model = "main"/>
 			<Type name = "NSDateFormatter" model = "main"/>
 			<Type name = "NSNotificationQueue" model = "main"/>
 			<Type name = "NSEnumerator" model = "main"/>
 			<Type name = "NSNumberFormatter" model = "main"/>
-			<Type name = "NSFileHandle" model = "main"/>
 			<Type name = "NSPipe" model = "main"/>
-			<Type name = "NSFileManager" model = "main"/>
 			<Type name = "NSPort" model = "main"/>
 			<Type name = "NSFormatter" model = "main"/>
 			<Type name = "NSProcessInfo" model = "main"/>
@@ -104,7 +116,6 @@
 			<Type name = "NSSerializer" model = "main"/>
 			<Type name = "NSTask" model = "main"/>
 			<Type name = "NSUnarchiver" model = "main"/>
-			<Type name = "NSMutableArray" model = "main"/>
 			<Type name = "NSUndoManager" model = "main"/>
 		</Threading>
 	</Framework>

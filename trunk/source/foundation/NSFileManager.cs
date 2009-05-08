@@ -20,6 +20,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 
 namespace MCocoa
@@ -60,5 +61,21 @@ namespace MCocoa
 		public static readonly NSString NSFileOwnerAccountID = NSString.Create("NSFileOwnerAccountID").Retain();
 		public static readonly NSString NSFileGroupOwnerAccountID = NSString.Create("NSFileGroupOwnerAccountID").Retain();
 		public static readonly NSString NSFileBusy = NSString.Create("NSFileBusy").Retain();
+	}
+
+//	[ThreadModel(ThreadModel.ArbitraryThread)] (generated class defines this)
+	public partial class NSFileManager : NSObject
+	{
+		public static NSFileManager defaultManager()
+		{
+			Contract.Requires(System.Threading.Thread.CurrentThread.ManagedThreadId == 1, "use NSFileManager.Alloc().init().To<NSFileManager>() to get a thread safe instance");
+			
+			IntPtr exception_ = IntPtr.Zero;
+			IntPtr result_ = DirectCalls.Callp(ms_class, new Selector("defaultManager"), ref exception_);
+			if (exception_ != IntPtr.Zero)
+				CocoaException.Raise(exception_);
+			
+			return result_.To<NSFileManager>();
+		}
 	}
 }
