@@ -279,8 +279,8 @@ internal sealed class Generate
 					DoWrite("	[ThreadModel(ThreadModel.Serializable)]");
 					break;
 					
-				case "arbitrary":
-					DoWrite("	[ThreadModel(ThreadModel.ArbitraryThread)]");
+				case "single":
+					DoWrite("	[ThreadModel(ThreadModel.SingleThread)]");
 					break;
 					
 				case "main":
@@ -306,8 +306,8 @@ internal sealed class Generate
 					break;
 					
 				case "serializable":
-				case "arbitrary":
-					DoWrite("		[ThreadModel(ThreadModel.ArbitraryThread)]");
+				case "single":
+					DoWrite("		[ThreadModel(ThreadModel.SingleThread)]");
 					break;
 					
 				case "main":
