@@ -42,7 +42,7 @@ namespace MCocoa
 			return result;
 		}
 		
-		[ThreadModel(ThreadModel.MainThread)]
+		[ThreadModel("main")]
 		public void setSubviews(NSView[] newSubviews)
 		{
 			NSMutableArray array = NSMutableArray.Create();
