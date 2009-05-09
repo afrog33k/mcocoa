@@ -78,12 +78,12 @@
 			
 			<!-- Apple lists this as thread unsafe but they also require you to create and use
 			one in threads so it seems like it just can't be used concurrently. -->
-			<Type name = "NSAutoreleasePool" model = "sequential"/>
+			<Type name = "NSAutoreleasePool" model = "single"/>
 			
 			<!-- This is thread safe in Leopard if you explicitly create an instance (and we now
 			have an assert to ensure that it's used this way). See 
 			<http://www.omnigroup.com/mailman/archive/macosx-dev/2008-June/061392.html>. -->
-			<Type name = "NSFileManager" model = "sequential"/>
+			<Type name = "NSFileManager" model = "single"/>
 			
 			<!-- These are presumably safe to use from one thread at a time. -->
 			<Type name = "NSMutableData" model = "serializable"/>

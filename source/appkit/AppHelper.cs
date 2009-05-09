@@ -234,7 +234,7 @@ namespace MCocoa
 		}
 #endif	// DEBUG
 		
-		[ThreadModel("executor")]
+		[ThreadModel(ThreadModel.SingleThread)]
 		private void DoThread()
 		{
 			Selector selector = new Selector("execute:");

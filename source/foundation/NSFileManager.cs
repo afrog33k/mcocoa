@@ -63,10 +63,10 @@ namespace MCocoa
 		public static readonly NSString NSFileBusy = NSString.Create("NSFileBusy").Retain();
 	}
 
-//	[ThreadModel(ThreadModel.ArbitraryThread)] (generated class defines this)
+//	[ThreadModel(ThreadModel.SingleThread)] (generated class defines this)
 	public partial class NSFileManager : NSObject
 	{
-		[ThreadModel("main")]
+		[ThreadModel(ThreadModel.MainThread)]
 		public static NSFileManager defaultManager()
 		{
 			Contract.Requires(System.Threading.Thread.CurrentThread.ManagedThreadId == 1, "use NSFileManager.Alloc().init().To<NSFileManager>() to get a thread safe instance");

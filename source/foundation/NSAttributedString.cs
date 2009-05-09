@@ -28,7 +28,7 @@ namespace MCocoa
 {
 	public partial class NSAttributedString : NSObject
 	{
-		[ThreadModel("main")]
+		[ThreadModel(ThreadModel.MainThread)]
 		public static NSAttributedString Create(string text)
 		{
 			NSAttributedString result = ms_class.Alloc().Call("initWithString:", NSString.Create(text)).To<NSAttributedString>();
@@ -36,13 +36,13 @@ namespace MCocoa
 			return result;
 		}
 		
-		[ThreadModel("main")]
+		[ThreadModel(ThreadModel.MainThread)]
 		public static NSAttributedString Create(string text, NSString attr, NSObject value)
 		{
 			return Create(text, CreateDict(attr, value));
 		}
 		
-		[ThreadModel("main")]
+		[ThreadModel(ThreadModel.MainThread)]
 		public static NSAttributedString Create(char ch, NSDictionary attrs)
 		{
 			NSAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(ch), attrs).To<NSAttributedString>();
@@ -50,7 +50,7 @@ namespace MCocoa
 			return result;
 		}
 		
-		[ThreadModel("main")]
+		[ThreadModel(ThreadModel.MainThread)]
 		public static NSAttributedString Create(string text, NSDictionary attrs) 
 		{
 			NSAttributedString result = ms_class.Alloc().Call("initWithString:attributes:", NSString.Create(text), attrs).To<NSAttributedString>();
@@ -58,7 +58,7 @@ namespace MCocoa
 			return result;
 		}
 		
-		[ThreadModel("main")]
+		[ThreadModel(ThreadModel.MainThread)]
 		protected static NSDictionary CreateDict(NSString attr, NSObject value)
 		{
 			NSMutableDictionary dict = NSMutableDictionary.Create();
