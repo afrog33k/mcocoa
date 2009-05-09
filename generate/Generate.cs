@@ -279,12 +279,12 @@ internal sealed class Generate
 					DoWrite("	[ThreadModel(ThreadModel.Serializable)]");
 					break;
 					
-				case "single":
-					DoWrite("	[ThreadModel(ThreadModel.SingleThread)]");
+				case "sequential":
+					DoWrite("	[ThreadModel(ThreadModel.Sequential)]");
 					break;
 					
 				case "main":
-					DoWrite("	[ThreadModel(ThreadModel.MainThread)]");
+					DoWrite("	[ThreadModel(\"main\")]");
 					break;
 					
 				default:
@@ -306,12 +306,12 @@ internal sealed class Generate
 					break;
 					
 				case "serializable":
-				case "single":
-					DoWrite("		[ThreadModel(ThreadModel.SingleThread)]");
+				case "sequential":
+					DoWrite("		[ThreadModel(ThreadModel.Sequential)]");
 					break;
 					
 				case "main":
-					DoWrite("		[ThreadModel(ThreadModel.MainThread)]");
+					DoWrite("		[ThreadModel(\"main\")]");
 					break;
 					
 				default:

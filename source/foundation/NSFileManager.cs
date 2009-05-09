@@ -66,7 +66,7 @@ namespace MCocoa
 //	[ThreadModel(ThreadModel.ArbitraryThread)] (generated class defines this)
 	public partial class NSFileManager : NSObject
 	{
-		[ThreadModel(ThreadModel.MainThread)]
+		[ThreadModel("main")]
 		public static NSFileManager defaultManager()
 		{
 			Contract.Requires(System.Threading.Thread.CurrentThread.ManagedThreadId == 1, "use NSFileManager.Alloc().init().To<NSFileManager>() to get a thread safe instance");
