@@ -44,13 +44,20 @@ namespace MCocoa
 		public static readonly NSString NSLocalizedRecoveryOptionsErrorKey = NSString.Create("NSLocalizedRecoveryOptions").Retain();
 		public static readonly NSString NSRecoveryAttempterErrorKey = NSString.Create("NSRecoveryAttempter").Retain();
 	}
-
+	
 	public partial class NSError : NSObject
 	{
 		public void Raise()
 		{
-			string message = string.Format("{0} ({1})", localizedDescription().description(), localizedFailureReason().description());
-			throw new InvalidOperationException(message);
+			if (domain() == Externs.Cocoa3Domain && code() == Enums.NSUserCancelledError)
+			{
+				throw new OperationCanceledException();
+			}
+			else
+			{
+				string message = string.Format("{0} ({1})", localizedDescription().description(), localizedFailureReason().description());
+				throw new InvalidOperationException(message);
+			}
 		}
 	}
 }

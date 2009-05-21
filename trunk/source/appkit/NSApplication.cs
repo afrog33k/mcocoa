@@ -170,6 +170,8 @@ namespace MCocoa
 			public uint lowLongOfPSN;
 		}
 		
+		// Note that we don't need to use the appkit library to get at these functions but
+		// we'd like to force appkit to load early anyway...
 		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 		private static extern int TransformProcessType(ref ProcessSerialNumber psn, uint type);
 		
