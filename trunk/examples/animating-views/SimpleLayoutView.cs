@@ -69,7 +69,7 @@ internal sealed class SimpleLayoutView : NSView
 	{
 		return 33;
 	}
-
+	
 	// Changing frame (which is what happens when the window is resized) should cause relayout.
 	public new void setFrameSize(NSSize size)
 	{
@@ -78,7 +78,7 @@ internal sealed class SimpleLayoutView : NSView
 	}
 	#endregion
 	
-	#region Private Methods	---------------------------------------------------
+	#region Private Methods
 	// Create a new view to be added/animated. Any kind of view can be added here, we 
 	// go for simple colored box using the Leopard "custom" box type.
 	private NSBox DoMakeBox()
@@ -90,12 +90,12 @@ internal sealed class SimpleLayoutView : NSView
 		box.setBoxType(Enums.NSBoxCustom);
 		box.setFillColor(this["boxColorField"].Call("color").To<NSColor>());
 		box.setTitlePosition(Enums.NSNoTitle);
-
+		
 		return box;
 	}
 	
 	private void DoAnimate(NSView subview, NSRect frame)
-	{		
+	{
 		subview.animator().Call("setFrame:", frame);
 	}
 	
@@ -119,7 +119,7 @@ internal sealed class SimpleLayoutView : NSView
 					curPoint.y += frame.size.height + Separation;                // Next view location; we're stacking higher
 				}
 				break;
-
+			
 			case Layout.Row: 
 				curPoint = new NSPoint(0.0f, bounds().size.height / 2.0f);	      	 // Starting point: center left edge of view			
 				for (int i = 0; i < children.Length; ++i)
@@ -140,7 +140,7 @@ internal sealed class SimpleLayoutView : NSView
 					NSRect frame = new NSRect(curPoint.x, curPoint.y, BoxWidth, BoxHeight);
 					frame = DoGetIntegralRect(frame);
 					DoAnimate(children[i], frame);
-
+					
 					curPoint.x += BoxWidth + Separation;                 // Stack them horizontally
 					if ((++index) % viewsPerSide == 0) 
 					{                       							 // And if we have enough on this row, move up to the next
@@ -151,7 +151,7 @@ internal sealed class SimpleLayoutView : NSView
 				break;
 		}
 	}
-
+	
 	// This method returns a rect that is integral in base coordinates.
 	private NSRect DoGetIntegralRect(NSRect rect)
 	{	
@@ -161,11 +161,11 @@ internal sealed class SimpleLayoutView : NSView
 	}
 	#endregion
 	
-	#region Fields ------------------------------------------------------------
+	#region Fields
 	private const float Separation = 10.0f;
 	private const float BoxWidth = 80.0f;
 	private const float BoxHeight = 80.0f;
-			
+	
 	private Layout m_layout;
 	#endregion
 }
