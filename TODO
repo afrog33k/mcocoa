@@ -2,6 +2,15 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
+AttributeTargets
+Layout
+State
+Enum
+String
+DateTime
+
+openDocumentWithContentsOfURL_display_error
+
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
    methods use unsigned typed. Perhaps we can fix this by generating signed
    overloads and decorating the original versions with CLSCompliant.

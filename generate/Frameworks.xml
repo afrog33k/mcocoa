@@ -13,11 +13,16 @@
 			<Method interface = "NSCoder" method = "encodeValuesOfObjCTypes:" reason = "because it is variadic"/>
 			<Method interface = "NSCoder" method = "decodeValuesOfObjCTypes:" reason = "because it is variadic"/>
 			
+			<Method interface = "NSData" method = "bytes" reason = "because there is a hand-written version"/>
+			<Method interface = "NSData" method = "getBytes:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSData" method = "getBytes:length:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSData" method = "getBytes:range:" reason = "because there is a hand-written version"/>
+
 			<Method interface = "NSDictionary" method = "dictionaryWithObjectsAndKeys:" reason = "because it is variadic"/>
 			<Method interface = "NSDictionary" method = "initWithObjectsAndKeys:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSException" method = "raise:format:" reason = "because it is variadic"/>
-
+			
 			<Method interface = "NSFileManager" method = "defaultManager" reason = "because we assert that the current thread is the main thread"/>
 			
 			<Method interface = "NSMutableArray" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
@@ -25,7 +30,7 @@
 			<Method interface = "NSMutableString" method = "appendFormat:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSPredicate" method = "predicateWithFormat:" reason = "because it is variadic"/>
-
+			
 			<Method interface = "NSSet" method = "setWithObjects:" reason = "because it is variadic"/>
 			<Method interface = "NSSet" method = "initWithObjects:" reason = "because it is variadic"/>
 			
@@ -82,7 +87,7 @@
 			
 			<!-- This is thread safe in Leopard if you explicitly create an instance (and we now
 			have an assert to ensure that it's used this way). See 
-			<http://www.omnigroup.com/mailman/archive/macosx-dev/2008-June/061392.html>. -->
+			http://www.omnigroup.com/mailman/archive/macosx-dev/2008-June/061392.html. -->
 			<Type name = "NSFileManager" model = "single"/>
 			
 			<!-- These are presumably safe to use from one thread at a time. -->
@@ -132,7 +137,7 @@
 			<Method interface = "NSAlert" method = "alertWithMessageText:defaultButton:alternateButton:otherButton:informativeTextWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSGradient" method = "initWithColorsAndLocations:" reason = "because it is variadic"/>
 			<Method interface = "NSMatrix" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
-			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because it has a function pointer"/>			
+			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because it has a function pointer"/>
 		</Blacklist>
 		
 		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
