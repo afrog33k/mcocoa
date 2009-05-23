@@ -53,7 +53,7 @@ namespace MCocoa
 			
 			int len = (int) Math.Min(this.length(), length);
 			buffer = new byte[len];
-			Marshal.Copy(ptr, buffer, 0, (int) length);
+			Marshal.Copy(ptr, buffer, 0, len);
 		}
 		
 		[Pure]

@@ -27,6 +27,7 @@ namespace MCocoa
 {
 	public partial class NSWindowController : NSResponder
 	{
+		// Note that this won't set the nib's owner.
 		public NSWindowController(string className, string nibName) : 
 			base(DoCreate(className, nibName))
 		{

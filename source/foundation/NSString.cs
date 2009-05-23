@@ -59,6 +59,16 @@ namespace MCocoa
 			return result;
 		}
 		
+		public static NSString operator+(NSString lhs, NSString rhs)
+		{
+			return lhs.stringByAppendingString(rhs);
+		}
+		
+		public static NSString operator+(NSString lhs, string rhs)
+		{
+			return lhs.stringByAppendingString(NSString.Create(rhs));
+		}
+		
 		[Pure]
 		public void getCharacters(out string str)
 		{
