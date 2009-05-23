@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 // Methods that should be labeled with PureAttribute. (These should be methods
 // which have no visible side effects and therefore can be used with Contract
-// methods).
+// methods). TODO: should be part of the xml file.
 internal static class PureMethods
 {
 	public static bool IsPure(string name)

@@ -29,7 +29,7 @@ using OldCollections = System.Collections;
 namespace MCocoa
 {
 	public partial class NSString : NSObject, IEnumerable<char>
-	{		
+	{
 		public static NSString Create(char ch)
 		{
 			string s = new string(ch, 1);
@@ -160,5 +160,183 @@ namespace MCocoa
 		}
 		
 		public static readonly NSString Empty = NSString.Create(string.Empty).Retain();
+	}
+	
+	public partial class NSMutableString : NSString
+	{
+		// NSString.h says, "NSMutableString responds properly to all NSString creation methods."
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithCharacters_length(string characters, UInt32 length)
+		{
+			return base.initWithCharacters_length(characters, length).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithUTF8String(string nullTerminatedCString)
+		{
+			return base.initWithUTF8String(nullTerminatedCString).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithString(NSString aString)
+		{
+			return base.initWithString(aString).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithData_encoding(NSData data, UInt32 encoding)
+		{
+			return base.initWithData_encoding(data, encoding).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithBytes_length_encoding(IntPtr bytes, UInt32 len, UInt32 encoding)
+		{
+			return base.initWithBytes_length_encoding(bytes, len, encoding).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithCString_encoding(string nullTerminatedCString, UInt32 encoding)
+		{
+			return base.initWithCString_encoding(nullTerminatedCString, encoding).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithContentsOfURL_encoding_error(NSURL url, UInt32 enc, out NSError error)
+		{
+			return base.initWithContentsOfURL_encoding_error(url, enc, out error).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithContentsOfFile_encoding_error(NSString path, UInt32 enc, out NSError error)
+		{
+			return base.initWithContentsOfFile_encoding_error(path, enc, out error).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithContentsOfURL_usedEncoding_error(NSURL url, out UInt32 enc, out NSError error)
+		{
+			return base.initWithContentsOfURL_usedEncoding_error(url, out enc, out error).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableString initWithContentsOfFile_usedEncoding_error(NSString path, out UInt32 enc, out NSError error)
+		{
+			return base.initWithContentsOfFile_usedEncoding_error(path, out enc, out error).To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithString(NSString string_)
+		{
+			IntPtr exception_ = IntPtr.Zero;
+			IntPtr buffer_string_ = FastPath.CreateBuffer(string_);
+			IntPtr result_ = DirectCalls.Callpp(ms_class, new Selector("stringWithString:"), buffer_string_, ref exception_);
+			FastPath.FreeBuffer(string_, buffer_string_);
+			if (exception_ != IntPtr.Zero)
+				CocoaException.Raise(exception_);
+			
+			return result_.To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithCharacters_length(string characters, UInt32 length)
+		{
+			IntPtr exception_ = IntPtr.Zero;
+			IntPtr buffer_characters = FastPath.CreateU32Buffer(characters);
+			IntPtr result_ = DirectCalls.Callppi(ms_class, new Selector("stringWithCharacters:length:"), buffer_characters, unchecked((Int32) length), ref exception_);
+			FastPath.FreeBuffer(characters, buffer_characters);
+			if (exception_ != IntPtr.Zero)
+				CocoaException.Raise(exception_);
+			
+			return result_.To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithUTF8String(string nullTerminatedCString)
+		{
+			IntPtr exception_ = IntPtr.Zero;
+			IntPtr buffer_nullTerminatedCString = FastPath.CreateU8Buffer(nullTerminatedCString);
+			IntPtr result_ = DirectCalls.Callpp(ms_class, new Selector("stringWithUTF8String:"), buffer_nullTerminatedCString, ref exception_);
+			FastPath.FreeBuffer(nullTerminatedCString, buffer_nullTerminatedCString);
+			if (exception_ != IntPtr.Zero)
+				CocoaException.Raise(exception_);
+			
+			return result_.To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithCString_encoding(string cString, UInt32 enc)
+		{
+			IntPtr exception_ = IntPtr.Zero;
+			IntPtr buffer_cString = FastPath.CreateU8Buffer(cString);
+			IntPtr result_ = DirectCalls.Callppi(ms_class, new Selector("stringWithCString:encoding:"), buffer_cString, unchecked((Int32) enc), ref exception_);
+			FastPath.FreeBuffer(cString, buffer_cString);
+			if (exception_ != IntPtr.Zero)
+				CocoaException.Raise(exception_);
+			
+			return result_.To<NSMutableString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithContentsOfURL_encoding_error(NSURL url, UInt32 enc, out NSError error)
+		{
+			IntPtr errorPtr = Marshal.AllocHGlobal(4);
+			Marshal.WriteInt32(errorPtr, 0);
+			
+			NSMutableString result_ = (NSMutableString) ms_class.Call("stringWithContentsOfURL:encoding:error:", url, enc, errorPtr);
+			IntPtr errorValue = Marshal.ReadIntPtr(errorPtr);
+			error = errorValue != IntPtr.Zero ? new NSError(errorValue) : null;
+			Marshal.FreeHGlobal(errorPtr);
+			
+			return result_;
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithContentsOfFile_encoding_error(NSString path, UInt32 enc, out NSError error)
+		{
+			IntPtr errorPtr = Marshal.AllocHGlobal(4);
+			Marshal.WriteInt32(errorPtr, 0);
+			
+			NSMutableString result_ = (NSMutableString) ms_class.Call("stringWithContentsOfFile:encoding:error:", path, enc, errorPtr);
+			IntPtr errorValue = Marshal.ReadIntPtr(errorPtr);
+			error = errorValue != IntPtr.Zero ? new NSError(errorValue) : null;
+			Marshal.FreeHGlobal(errorPtr);
+			
+			return result_;
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithContentsOfURL_usedEncoding_error(NSURL url, out UInt32 enc, out NSError error)
+		{
+			IntPtr encPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(UInt32)));
+			IntPtr errorPtr = Marshal.AllocHGlobal(4);
+			Marshal.WriteInt32(errorPtr, 0);
+			
+			NSMutableString result_ = (NSMutableString) ms_class.Call("stringWithContentsOfURL:usedEncoding:error:", url, encPtr, errorPtr);
+			enc = (UInt32) Marshal.PtrToStructure(encPtr, typeof(UInt32));
+			Marshal.FreeHGlobal(encPtr);
+			IntPtr errorValue = Marshal.ReadIntPtr(errorPtr);
+			error = errorValue != IntPtr.Zero ? new NSError(errorValue) : null;
+			Marshal.FreeHGlobal(errorPtr);
+			
+			return result_;
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public static new NSMutableString stringWithContentsOfFile_usedEncoding_error(NSString path, out UInt32 enc, out NSError error)
+		{
+			IntPtr encPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(UInt32)));
+			IntPtr errorPtr = Marshal.AllocHGlobal(4);
+			Marshal.WriteInt32(errorPtr, 0);
+			
+			NSMutableString result_ = (NSMutableString) ms_class.Call("stringWithContentsOfFile:usedEncoding:error:", path, encPtr, errorPtr);
+			enc = (UInt32) Marshal.PtrToStructure(encPtr, typeof(UInt32));
+			Marshal.FreeHGlobal(encPtr);
+			IntPtr errorValue = Marshal.ReadIntPtr(errorPtr);
+			error = errorValue != IntPtr.Zero ? new NSError(errorValue) : null;
+			Marshal.FreeHGlobal(errorPtr);
+			
+			return result_;
+		}
 	}
 }

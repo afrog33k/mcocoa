@@ -99,5 +99,23 @@ namespace MCocoa
 			result.autorelease();
 			return result;
 		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableAttributedString initWithString(NSString str)
+		{
+			return base.initWithString(str).To<NSMutableAttributedString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableAttributedString initWithString_attributes(NSString str, NSDictionary attrs)
+		{
+			return base.initWithString_attributes(str, attrs).To<NSMutableAttributedString>();
+		}
+		
+		[ThreadModel(ThreadModel.Concurrent)]
+		public new NSMutableAttributedString initWithAttributedString(NSAttributedString attrStr)
+		{
+			return base.initWithAttributedString(attrStr).To<NSMutableAttributedString>();
+		}
 	}
 }
