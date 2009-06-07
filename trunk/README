@@ -39,41 +39,7 @@ with underscores and the last colon is dropped (so "archiveRootObject:toFile:" b
 "archiveRootObject_toFile"). If the name conflicts with a C# keyword it is appended
 with an underscore.
 
-All of the generated classes also contain a few additional methods which look like this:
-
-public NSArchiver(IntPtr instance);
-Constructs a new instance using a native pointer. Note that this will do nothing to
-the object's reference count.
-
-public static new NSArchiver Alloc();
-Allocates a new native object, but does not initialize it. As the name implies the caller
-owns the object and must release it.
-
-public static new NSArchiver Create();
-Allocates the object, calls init(), and places the object into the autorelease pool. This
-is a quick and easy way to create a new default constructed object.
-
-public new NSArchiver Retain();
-This is like retain() except that it has a covariant return type which is allows you to
-write code like: "private NSString m_name = NSString.Create("joe bob").Retain();".
-
-public static new Class Class;
-Returns the Class object associated with the NSObject subclass. To get the dynamic
-type of an instance use class_().
-
-Some types also include extensions beyond what Cocoa exposes. For example,
-NSApplication provides BeginInvoke and InvokeRequired methods which are much 
-nicer to use than Cocoa's performSelectorOnMainThread methods. And NSString
-supports subscripting with the [] operator, foreach, and operator==.
-
-Sometimes it is useful to drop down to Carbon or Core Foundation for things not
-exposed by Cocoa. mcocoa won't help with this, but it's easy to do with a p/invoke
-call. For example:
-
-	[DllImport("/System/Library/Frameworks/CoreServices.framework/CoreServices")]
-	private extern static IntPtr CFRunLoopGetMain();
-	
-	[DllImport("/System/Library/Frameworks/Carbon.framework/Carbon")]
-	private extern static uint GetDblTime();
+See <http://code.google.com/p/mcocoa/w/list> for more usage notes and API
+References.
 
 jesjones@mindspring.com
