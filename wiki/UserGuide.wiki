@@ -1,4 +1,5 @@
 #summary Library usage.
+#labels Featured
 
 = Introduction =
 
@@ -8,7 +9,7 @@ Writing an mcocoa application is much like writing a Cocoa application in Object
 
 A Cocoa application normally consists of one or more executables (which in our case are assemblies), one or more nib files, and an Info.plist file. These are all bundled together into a package with a .app extension.
 
-In our case the executables are typically built with gmcs. The nib files are created normally (except that Interface Builder won't find IBActions in the code so they need to be manually added to the appropriate targets in Interface Builder). And the Info.plist/bundle are typically generated using a tool called cocoa-pack which is distributed with mobjc.
+In our case the executables are typically built with gmcs. The nib files are created normally (except that Interface Builder won't find IBActions in the code so they need to be manually added to the appropriate targets in Interface Builder). The Info.plist file can be copied from one of mcocoa's examples (you'll need to change the CFBundleIdentifier value). And the bundle is typically generated using a tool called cocoa-pack which is distributed with mobjc.
 
 = Building =
 
