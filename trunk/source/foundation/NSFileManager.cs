@@ -25,6 +25,7 @@ using System;
 
 namespace MCocoa
 {
+	/// <exclude/>
 	public static partial class Externs
 	{
 		// File-System Attribute Keys

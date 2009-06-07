@@ -36,8 +36,6 @@ namespace MCocoa
 		
 		public static void FreeBuffer(NSObject instance, IntPtr buffer)
 		{
-			Unused.Value = instance;		// instance is just used to pick the correct overload
-			Unused.Value = buffer;
 		}
 		
 		public static IntPtr CreateU8Buffer(string instance)
@@ -50,9 +48,9 @@ namespace MCocoa
 			return Marshal.StringToHGlobalUni(instance);
 		}
 		
+		// instance is just used to pick the correct overload
 		public static void FreeBuffer(string instance, IntPtr buffer)
 		{
-			Unused.Value = instance;
 			Marshal.FreeHGlobal(buffer);
 		}
 		
@@ -66,7 +64,6 @@ namespace MCocoa
 		
 		public static void FreeBuffer(ValueType instance, IntPtr buffer)
 		{
-			Unused.Value = instance;
 			Marshal.FreeHGlobal(buffer);
 		}
 	}

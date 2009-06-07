@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 // http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Miscellaneous/Foundation_Functions/Reference/reference.html#//apple_ref/doc/uid/TP40003774-DontLinkChapterID_1-DontLinkElementID_60
 namespace MCocoa
 {
+	/// <exclude/>
 	[Serializable]
 	public enum NSSearchPathDirectory : uint
 	{
@@ -48,6 +49,7 @@ namespace MCocoa
 		NSAllLibrariesDirectory = 101,				// all directories where resources can occur
 	}
 	
+	/// <exclude/>
 	[Flags]
 	[Serializable]
 	public enum NSSearchPathDomainMask : uint

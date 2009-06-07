@@ -2,10 +2,9 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
+	/// <exclude/>
+
 * Work on docs:
-	- generate needs to add exclude tags
-	- add a make docs target
-	- do a checkin
 	- start adding xml documentation
 	- upload the docs.
 	- rewrite the wiki docs
@@ -48,9 +47,3 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- upload a new version to googlecode
 	- send an announcement
 	- make sure everything is checked in
-
-Marshal.StringToHGlobalAuto(str);
-GCHandle.Alloc(array, GCHandleType.Pinned);
-Marshal.StructureToPtr(struct, buffer, false);
-
-Marshal.PtrToStringAuto((IntPtr) p)

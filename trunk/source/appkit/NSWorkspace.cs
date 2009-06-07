@@ -25,6 +25,7 @@ using System;
 namespace MCocoa
 {
 	// http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/NSWorkspace_Class/Reference/Reference.html#//apple_ref/doc/uid/20000391-BCIEEFBI
+	/// <exclude/>
 	public static partial class Externs
 	{
 		// Return values for type in getInfoForFile

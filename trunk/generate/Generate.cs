@@ -113,6 +113,7 @@ internal sealed class Generate
 				
 			if (value.Name != null)
 			{
+				DoWrite("	/// <exclude/>");
 				DoWrite("	[Serializable]");
 				DoWrite("	public enum {0}", value.Name);
 				DoWrite("	{");
@@ -126,6 +127,7 @@ internal sealed class Generate
 			}
 			else
 			{
+				DoWrite("	/// <exclude/>");
 				DoWrite("	public partial class Enums");
 				DoWrite("	{");
 				
