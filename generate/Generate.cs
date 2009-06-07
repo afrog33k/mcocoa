@@ -207,12 +207,14 @@ internal sealed class Generate
 		{
 			if (m_interface.Name == "CIColor" || m_interface.Name == "CIImage")
 			{
+				DoWrite("	/// <exclude/>");
 				DoWrite("	// {0} category", m_interface.Category);
 				DoWrite("	public partial class {0} : {1}", m_interface.Name, "NSObject");
 				DoWrite("	{");
 			}
 			else if (m_interface.Name == "NSObject")
 			{
+				DoWrite("	/// <exclude/>");
 				DoWrite("	// {0} category", m_interface.Category);
 				DoWrite("	public static class {0}ForNSObject", m_interface.Category);
 				DoWrite("	{");
@@ -221,6 +223,7 @@ internal sealed class Generate
 			{
 				NativeInterface ri = m_objects.FindInterface(m_interface.Name);
 				
+				DoWrite("	/// <exclude-if-empty/>");
 				DoWrite("	// {0} category", m_interface.Category);
 				DoWrite("	public partial class {0} : {1}", m_interface.Name, ri.BaseName);
 				DoWrite("	{");
@@ -230,19 +233,23 @@ internal sealed class Generate
 		{
 			string newStr = m_interface.BaseName != "NSObject" ? "new " : string.Empty;
 			
+			DoWrite("	/// <exclude-if-empty/>");
 			DoWrite("	[Register]");
 			DoWriteThreading(m_interface.Name);
 			DoWrite("	public partial class {0} : {1}", m_interface.Name, m_interface.BaseName);
 			DoWrite("	{");
+			DoWrite("		/// <exclude/>");
 			DoWrite("		public {0}(IntPtr instance) : base(instance)", m_interface.Name);
 			DoWrite("		{");
 			DoWrite("		}");
 			DoWrite("		");
+			DoWrite("		/// <exclude/>");
 			DoWrite("		public static {0}{1} Alloc()", newStr, m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			return ({0}) ms_class.Alloc();", m_interface.Name);
 			DoWrite("		}");
 			DoWrite("		");
+			DoWrite("		/// <exclude/>");
 			DoWrite("		public static {0}{1} Create()", newStr, m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			{0} result = ({0}) ms_class.Alloc().init();", m_interface.Name);
@@ -251,12 +258,14 @@ internal sealed class Generate
 			DoWrite("			return result;");
 			DoWrite("		}");
 			DoWrite("		");
+			DoWrite("		/// <exclude/>");
 			DoWrite("		public new {0} Retain()", m_interface.Name);
 			DoWrite("		{");
 			DoWrite("			Unused.Value = retain();");		// per Apple, "retain must return self"
 			DoWrite("			return this;");
 			DoWrite("		}");
 			DoWrite("		");
+			DoWrite("		/// <exclude/>");
 			DoWrite("		public static new Class Class");
 			DoWrite("		{");
 			DoWrite("			get {return ms_class;}");
@@ -353,11 +362,11 @@ internal sealed class Generate
 					
 					if (method.Name == "layoutControlGlyphForLineFragment:")	// these are declared twice in NSSimpleHorizontalTypesetter.h
 						names.Add(method.Name);
-					else if (method.Name == "layoutTab")	
+					else if (method.Name == "layoutTab")
 						names.Add(method.Name);
 					else if (method.Name == "QTMovie")							// these are also declared twice but under two different defines
 						names.Add(method.Name);
-					else if (method.Name == "initWithMovie:")	
+					else if (method.Name == "initWithMovie:")
 						names.Add(method.Name);
 				}
 			}
@@ -471,6 +480,7 @@ internal sealed class Generate
 					if (writeBlank)
 						DoWrite("\t\t");
 					
+					DoWrite("	\t/// <exclude/>");
 					if (m_interface.Category != null)
 						DoWriteCategoryThreading(m_interface.Name);
 					

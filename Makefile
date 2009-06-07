@@ -57,12 +57,12 @@ cocoa_files := $(strip $(shell find source -name "*.cs" -print))
 bin/cocoa_files: $(cocoa_files)
 	@echo "$(cocoa_files)" > bin/cocoa_files
 		
-bin/generate.exe: generate/*.cs generate/Frameworks.xml bin/csc_flags 
+bin/generate.exe: generate/*.cs generate/Frameworks.xml bin/csc_flags
 	$(CSC) -out:bin/generate.exe $(CSC_FLAGS) -reference:bin/mobjc.dll -target:exe generate/*.cs
 		
 bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
 	@./gen_version.sh $(version) source/AssemblyVersion.cs
-	$(CSC) -out:bin/mcocoa.dll $(CSC_FLAGS) -keyfile:keys -target:library -reference:bin/mobjc.dll @bin/cocoa_files
+	$(CSC) -out:bin/mcocoa.dll $(CSC_FLAGS) -keyfile:keys -doc:bin/docs.xml -target:library -reference:bin/mobjc.dll @bin/cocoa_files
 
 bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs bin/mcocoa.dll
 	$(CSC) -out:bin/tests.dll $(CSC_FLAGS) -pkg:mono-nunit -target:library tests/*.cs generate/*.cs -reference:bin/mobjc.dll -reference:bin/mcocoa.dll
@@ -71,6 +71,9 @@ bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs bin/mcocoa.dll
 # Misc targets
 keys:
 	sn -k keys
+
+docs: lib
+	mmmdoc --out=docs --see-also='http://code.google.com/p/mobjc/w/list mobjc' --see-also='http://code.google.com/p/mcocoa/w/list mcocoa' bin/mcocoa.dll,bin/docs.xml
 
 gendarme_flags := --severity all --confidence all --ignore gendarme.ignore --quiet
 gendarme: bin/mobjc.dll
@@ -84,6 +87,7 @@ clean:
 	-rm bin/animating-views.exe bin/animating-views.exe.mdb
 	-rm bin/natty.exe bin/natty.exe.mdb
 	-rm bin/mcocoa.dll bin/mcocoa.dll.mdb
+	-rm bin/docs.xml
 
 help:
 	@echo "mcocoa version $(version)"
