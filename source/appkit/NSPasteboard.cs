@@ -26,30 +26,77 @@ namespace MCocoa
 {
 	public partial class NSPasteboard : NSObject
 	{
+		/// <exclude/>
 		public static readonly NSString NSStringPboardType = NSString.Create("NSStringPboardType").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSFilenamesPboardType = NSString.Create("NSFilenamesPboardType").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSPostScriptPboardType = NSString.Create("NeXT Encapsulated PostScript v1.2 pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSTIFFPboardType = NSString.Create("NeXT TIFF v4.0 pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSRTFPboardType = NSString.Create("NeXT Rich Text Format v1.0 pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSTabularTextPboardType = NSString.Create("NeXT tabular text pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSFontPboardType = NSString.Create("NeXT font pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSRulerPboardType = NSString.Create("NeXT ruler pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSFileContentsPboardType = NSString.Create("NXFileContentsPboardType").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSColorPboardType = NSString.Create("NSColor pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSRTFDPboardType = NSString.Create("NeXT RTFD pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSHTMLPboardType = NSString.Create("Apple HTML pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSPICTPboardType = NSString.Create("Apple PICT pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSURLPboardType = NSString.Create("Apple URL pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSPDFPboardType = NSString.Create("Apple PDF pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSVCardPboardType = NSString.Create("Apple VCard pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSFilesPromisePboardType = NSString.Create("Apple files promise pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSInkTextPboardType = NSString.Create("Apple InkText pasteboard type").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSMultipleTextSelectionPboardType = NSString.Create("Apple multiple text selection pasteboard type").Retain();
 		
+		
+		/// <exclude/>
 		public static readonly NSString NSGeneralPboard = NSString.Create("Apple CFPasteboard general").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSFontPboard = NSString.Create("Apple CFPasteboard font").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSRulerPboard = NSString.Create("Apple CFPasteboard ruler").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSFindPboard = NSString.Create("Apple CFPasteboard find").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSDragPboard = NSString.Create("Apple CFPasteboard drag").Retain();
 	}
 }

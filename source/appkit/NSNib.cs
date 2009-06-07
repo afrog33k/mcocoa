@@ -26,7 +26,10 @@ namespace MCocoa
 {
 	public partial class NSNib : NSObject
 	{
+		/// <exclude/>
 		public static readonly NSString NSNibOwner = NSString.Create("NSOwner").Retain();
+		
+		/// <exclude/>
 		public static readonly NSString NSNibTopLevelObjects = NSString.Create("NSTopLevelObjects").Retain();
 	}
 }

@@ -61,6 +61,7 @@ namespace MCocoa
 		NSAllDomainsMask = 0x0ffff,	// all domains: all of the above and future items
 	}
 	
+	/// <exclude/>
 	public static partial class Functions
 	{
 		#region Path Utilities

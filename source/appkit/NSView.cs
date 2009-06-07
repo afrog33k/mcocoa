@@ -30,6 +30,7 @@ namespace MCocoa
 {
 	public partial class NSView : NSResponder
 	{
+		/// <exclude/>
 		[Pure]
 		public NSView[] subviews()
 		{
@@ -42,6 +43,7 @@ namespace MCocoa
 			return result;
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.MainThread)]
 		public void setSubviews(NSView[] newSubviews)
 		{

@@ -24,30 +24,35 @@ using System;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/DOCUMENTATION/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSMenuItem : NSObject
 	{
 		public static NSMenuItem Create(string title)
 		{
 			return Create(title, null, string.Empty, null);
 		}
-
+		
 		public static NSMenuItem Create(string title, string selector)
 		{
 			return Create(title, selector, string.Empty, null);
 		}
-
+		
 		public static NSMenuItem Create(string title, string selector, NSObject target)
 		{
 			return Create(title, selector, string.Empty, target);
 		}
-
+		
+		/// <param name = "title">The default menu item text.</param>
+		/// <param name = "selector">The name of the method to call when the menu item is selected.</param>
+		/// <param name = "charCode">The menu item's key equivalent.</param>
+		/// <param name = "target">The instance to call when the menu item is selected. If null the first responder is used.</param>
 		public static NSMenuItem Create(string title, string selector, string charCode, NSObject target)
 		{
 			NSMenuItem result = (NSMenuItem) ms_class.Call("alloc").
-				Call("initWithTitle:action:keyEquivalent:", NSString.Create(title), 
+				Call("initWithTitle:action:keyEquivalent:", NSString.Create(title),
 					selector != null ? new Selector(selector) : null, NSString.Create(charCode));
 			result.autorelease();
-
+			
 			if (target != null)
 				result.setTarget(target);
 				

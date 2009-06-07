@@ -28,6 +28,7 @@ using OldCollections = System.Collections;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSString_Class/Reference/NSString.html">docs</a>.</summary>
 	public partial class NSString : NSObject, IEnumerable<char>
 	{
 		public static NSString Create(char ch)
@@ -69,6 +70,7 @@ namespace MCocoa
 			return lhs.stringByAppendingString(NSString.Create(rhs));
 		}
 		
+		/// <exclude/>
 		[Pure]
 		public void getCharacters(out string str)
 		{
@@ -79,6 +81,7 @@ namespace MCocoa
 			Marshal.FreeHGlobal(buffer);
 		}
 		
+		/// <exclude/>
 		[Pure]
 		public void getCharacters_range(NSRange range, out string str)
 		{
@@ -104,6 +107,7 @@ namespace MCocoa
 			return GetEnumerator();
 		}
 		
+		/// <summary>Allows strings to be enumerated using foreach.</summary>
 		public IEnumerator<char> GetEnumerator()
 		{
 			uint len = length();
@@ -138,7 +142,7 @@ namespace MCocoa
 			if (rhs != null)
 			{
 				if (length() == rhs.Length)
-					equal = description() == rhs;  
+					equal = description() == rhs;
 			}
 			else
 			{
@@ -162,8 +166,10 @@ namespace MCocoa
 		public static readonly NSString Empty = NSString.Create(string.Empty).Retain();
 	}
 	
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/nsmutablestring_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSMutableString : NSString
 	{
+		/// <exclude/>
 		// NSString.h says, "NSMutableString responds properly to all NSString creation methods."
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithCharacters_length(string characters, UInt32 length)
@@ -171,60 +177,70 @@ namespace MCocoa
 			return base.initWithCharacters_length(characters, length).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithUTF8String(string nullTerminatedCString)
 		{
 			return base.initWithUTF8String(nullTerminatedCString).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithString(NSString aString)
 		{
 			return base.initWithString(aString).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithData_encoding(NSData data, UInt32 encoding)
 		{
 			return base.initWithData_encoding(data, encoding).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithBytes_length_encoding(IntPtr bytes, UInt32 len, UInt32 encoding)
 		{
 			return base.initWithBytes_length_encoding(bytes, len, encoding).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithCString_encoding(string nullTerminatedCString, UInt32 encoding)
 		{
 			return base.initWithCString_encoding(nullTerminatedCString, encoding).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithContentsOfURL_encoding_error(NSURL url, UInt32 enc, out NSError error)
 		{
 			return base.initWithContentsOfURL_encoding_error(url, enc, out error).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithContentsOfFile_encoding_error(NSString path, UInt32 enc, out NSError error)
 		{
 			return base.initWithContentsOfFile_encoding_error(path, enc, out error).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithContentsOfURL_usedEncoding_error(NSURL url, out UInt32 enc, out NSError error)
 		{
 			return base.initWithContentsOfURL_usedEncoding_error(url, out enc, out error).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public new NSMutableString initWithContentsOfFile_usedEncoding_error(NSString path, out UInt32 enc, out NSError error)
 		{
 			return base.initWithContentsOfFile_usedEncoding_error(path, out enc, out error).To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithString(NSString string_)
 		{
@@ -238,6 +254,7 @@ namespace MCocoa
 			return result_.To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithCharacters_length(string characters, UInt32 length)
 		{
@@ -251,6 +268,7 @@ namespace MCocoa
 			return result_.To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithUTF8String(string nullTerminatedCString)
 		{
@@ -264,6 +282,7 @@ namespace MCocoa
 			return result_.To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithCString_encoding(string cString, UInt32 enc)
 		{
@@ -277,6 +296,7 @@ namespace MCocoa
 			return result_.To<NSMutableString>();
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithContentsOfURL_encoding_error(NSURL url, UInt32 enc, out NSError error)
 		{
@@ -291,6 +311,7 @@ namespace MCocoa
 			return result_;
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithContentsOfFile_encoding_error(NSString path, UInt32 enc, out NSError error)
 		{
@@ -305,6 +326,7 @@ namespace MCocoa
 			return result_;
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithContentsOfURL_usedEncoding_error(NSURL url, out UInt32 enc, out NSError error)
 		{
@@ -322,6 +344,7 @@ namespace MCocoa
 			return result_;
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static new NSMutableString stringWithContentsOfFile_usedEncoding_error(NSString path, out UInt32 enc, out NSError error)
 		{

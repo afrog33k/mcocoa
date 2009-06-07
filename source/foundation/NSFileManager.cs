@@ -67,6 +67,7 @@ namespace MCocoa
 //	[ThreadModel(ThreadModel.SingleThread)] (generated class defines this)
 	public partial class NSFileManager : NSObject
 	{
+		/// <exclude/>
 		[ThreadModel(ThreadModel.MainThread)]
 		public static NSFileManager defaultManager()
 		{

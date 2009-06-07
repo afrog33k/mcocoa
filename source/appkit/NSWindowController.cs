@@ -28,7 +28,8 @@ namespace MCocoa
 	public partial class NSWindowController : NSResponder
 	{
 		// Note that this won't set the nib's owner.
-		public NSWindowController(string className, string nibName) : 
+		/// <exclude/>
+		public NSWindowController(string className, string nibName) :
 			base(DoCreate(className, nibName))
 		{
 		}
@@ -36,17 +37,17 @@ namespace MCocoa
 		private static IntPtr DoCreate(string className, string nibName)
 		{
 			Class klass = new Class(className);
-	
+			
 			IntPtr exception = IntPtr.Zero;
 			IntPtr instance = DirectCalls.Callp(klass, new Selector("alloc"), ref exception);
 			if (exception != IntPtr.Zero)
 				CocoaException.Raise(exception);
-
+			
 			exception = IntPtr.Zero;
 			instance = DirectCalls.Callpp(instance, new Selector("initWithWindowNibName:"), NSString.Create(nibName), ref exception);
 			if (exception != IntPtr.Zero)
 				CocoaException.Raise(exception);
-	
+			
 			return instance;
 		}
 	}

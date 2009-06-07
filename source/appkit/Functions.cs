@@ -28,6 +28,7 @@ using System.Runtime.InteropServices;
 // http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Miscellaneous/AppKit_Functions/Reference/reference.html#//apple_ref/doc/uid/TP40004154-I1-DontLinkElementID_61
 namespace MCocoa
 {
+	/// <exclude/>
 	public static partial class Functions
 	{
 		public static void NSBeep()

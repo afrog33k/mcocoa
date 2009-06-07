@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	/// <exclude/>
 	[Register("NSDecimal")]
 	public struct NSDecimal : IEquatable<NSDecimal>
 	{

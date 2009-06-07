@@ -28,6 +28,7 @@ using System.Threading;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/nsapplication_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSApplication : NSResponder
 	{
 		static NSApplication()
@@ -52,7 +53,10 @@ namespace MCocoa
 			ms_startupPool = NSAutoreleasePool.Create();
 		}
 		
-		// Use this method if your application uses a custom NSApplication.
+		/// <summary>Helper used to create an NSApplication subclass.</summary>
+		/// <param name = "appClass">The name of the subclass, e.g. "MyApplication".</param>
+		/// <param name = "nibName">The name of a nib file, e.g. "MainMenu.nib".</param>
+		/// <param name = "extendDebugMenu">Used to add custom items to the debug menu. May be null.</param>
 		public static NSApplication Create(string appClass, string nibName, Action<NSMenu> extendDebugMenu)
 		{
 			NSApplication app = new Class(appClass).Call("sharedApplication").To<NSApplication>();
@@ -85,16 +89,22 @@ namespace MCocoa
 			return app;
 		}
 		
+		/// <summary>Helper used to create an NSApplication.</summary>
+		/// <param name = "nibName">The name of a nib file, e.g. "MainMenu.nib".</param>
+		/// <param name = "extendDebugMenu">Used to add custom items to the debug menu. May be null.</param>
 		public static NSApplication Create(string nibName, Action<NSMenu> extendDebugMenu)
 		{
 			return Create("NSApplication", nibName, extendDebugMenu);
 		}
 		
+		/// <summary>Helper used to create an NSApplication.</summary>
+		/// <param name = "nibName">The name of a nib file, e.g. "MainMenu.nib".</param>
 		public static NSApplication Create(string nibName)
 		{
 			return Create(nibName, null);
 		}
 		
+		/// <exclude/>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public static NSApplication sharedApplication()
 		{
@@ -106,11 +116,13 @@ namespace MCocoa
 			return result_.To<NSApplication>();
 		}
 		
+		/// <exclude/>
 		public void run()
 		{
 			Unused.Value = ms_run.Invoke();
 		}
 		
+		/// <exclude/>
 		[Pure]
 		public NSWindow[] windows()
 		{
@@ -123,7 +135,8 @@ namespace MCocoa
 			return result;
 		}
 		
-		// Schedule the delegate to be executed on the main thread.
+		/// <summary>Queues up the action so that it can be executed later on the main thread.</summary>
+		/// <remarks>If the action throws an exception it will be logged to stderr and ignored.</remarks>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public void BeginInvoke(Action action)
 		{
@@ -132,8 +145,10 @@ namespace MCocoa
 			ms_helper.Add(action);
 		}
 		
-		// Schedule the delegate to be executed on the main thread
-		// after delay seconds.
+		/// <summary>Queues up the action so that it can be executed later on the main thread.</summary>
+		/// <param name = "action">The delegate to call.</param>
+		/// <param name = "delay">The amount of time to wait before calling the action.</param>
+		/// <remarks>If the action throws an exception it will be logged to stderr and ignored.</remarks>
 		[ThreadModel(ThreadModel.Concurrent)]
 		public void BeginInvoke(Action action, TimeSpan delay)
 		{
@@ -143,8 +158,12 @@ namespace MCocoa
 			ms_helper.QueueDelayed(action, delay);
 		}
 		
+		/// <summary>Returns true if the current thread is not the main thread.</summary>
+		/// <remarks>Most of appkit and a lot of foundation is not thread safe (see
+		/// <a href = "http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html">Apple's docs</a>
+		/// for details) so you can use this method to figure out if you need to use BeginInvoke.</remarks>
 		[ThreadModel(ThreadModel.Concurrent)]
-		public bool InvokeRequired	
+		public bool InvokeRequired
 		{
 			get {return Thread.CurrentThread != ms_mainThread;}
 		}

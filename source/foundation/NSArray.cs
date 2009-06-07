@@ -27,8 +27,10 @@ using OldCollections = System.Collections;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/DOCUMENTATION/Cocoa/Reference/Foundation/Classes/NSArray_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSArray : NSObject, IEnumerable<NSObject>
 	{
+		/// <summary>Converts the strings to NSStrings and creates a new array.</summary>
 		public static NSArray Create(params string[] args)
 		{
 			NSString[] strs = new NSString[args.Length];
@@ -58,6 +60,7 @@ namespace MCocoa
 			return GetEnumerator();
 		}
 		
+		/// <summary>Allows NSArrays to be enumerated with foreach.</summary>
 		public IEnumerator<NSObject> GetEnumerator()
 		{
 			for (uint i = 0; i < count(); ++i)
@@ -65,8 +68,10 @@ namespace MCocoa
 		}
 	}
 	
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSMutableArray_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSMutableArray : NSArray
 	{
+		/// <summary>Converts the strings to NSStrings and creates a new array.</summary>
 		public static new NSMutableArray Create(params string[] args)
 		{
 			NSString[] strs = new NSString[args.Length];
@@ -76,7 +81,7 @@ namespace MCocoa
 			return Create(strs);
 		}
 		
-		public static new NSMutableArray Create(params NSObject[] args) 
+		public static new NSMutableArray Create(params NSObject[] args)
 		{
 			IntPtr[] ptrs = new IntPtr[args.Length];
 			for (int i = 0; i < args.Length; ++i)

@@ -32,6 +32,7 @@ namespace MCocoa
 		public const int NSNotFound = 0x7fffffff;
 	}
 	
+	/// <summary>Wrapper around the Cocoa's NSRange struct.</summary>
 	[Register("_NSRange")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSRange : IEquatable<NSRange>
@@ -51,12 +52,14 @@ namespace MCocoa
 			length = range.length;
 		}
 		
+		/// <summary>Returns true if the index is within the half-open range.</summary>
 		[Pure]
 		public bool Intersects(int index)
 		{
 			return Intersects(new NSRange(index, 1));
 		}
 		
+		/// <summary>Returns true if intersection of the two ranges is non-empty.</summary>
 		[Pure]
 		public bool Intersects(NSRange rhs)
 		{
@@ -87,6 +90,9 @@ namespace MCocoa
 			return ToString(format, null);
 		}
 		
+		/// <remarks>Format may be null or "G" which returns something like 
+		/// <c>(1.0, 2.0)</c> or "R" which returns a string that can be used with
+		/// <see cref = "Parse"/> to get the original value.</remarks>
 		public string ToString(string format, IFormatProvider provider)
 		{
 			if (provider != null)
@@ -115,6 +121,8 @@ namespace MCocoa
 			}
 		}
 		
+		/// <summary>Converts a round-trippable string back to the original value.</summary>
+		/// <remarks>To get a round-trippable string use something like <c>range.ToString(&quot;R&quot;, null)</c>.</remarks>
 		public static NSRange Parse(string text)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");

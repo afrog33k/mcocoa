@@ -2,15 +2,16 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-	/// <exclude/>
+		/// <exclude/>
+		/// <summary>Helper used to create an NSApplication.</summary>
 
 * Work on docs:
-	- start adding xml documentation
 	- upload the docs.
 	- rewrite the wiki docs
 * Generate needs to add /// <exclude/> and /// <exclude-if-empty/>
 * Rewrite examples to use NSBundle.loadNibNamed_owner.
-* Might want to get rid of the custom NSWindowController ctor.
+* Might want to get rid of the custom NSWindowController ctor. If not, then
+   document it?
 * Work on docs.
 * Review example app comments.
 
