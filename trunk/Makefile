@@ -72,31 +72,6 @@ bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs bin/mcocoa.dll
 keys:
 	sn -k keys
 
-smokey_flags ?= --not-localized -set:naming:jurassic -set:dictionary:Dictionary.txt
-smokey_flags += -exclude-check:C1000	# StringSpelling
-smokey_flags += -exclude-check:P1005	# StringConcat
-smokey_flags += -exclude-check:D1000	# LargeNamespace (should we add namespaces?)
-smokey_flags += -exclude-check:D1007	# UseBaseTypes
-smokey_flags += -exclude-check:D1020	# NativeMethods
-smokey_flags += -exclude-check:D1026	# DeepInheritance
-smokey_flags += -exclude-check:D1041	# CircularReference
-smokey_flags += -exclude-check:D1047	# TooManyArgs
-smokey_flags += -exclude-check:M1000	# UseJurassicNaming
-smokey_flags += -exclude-check:MS1018	# VisibleFields
-smokey_flags += -exclude-check:MS1021	# PluralEnumFlags
-smokey_flags += -exclude-check:MS1024	# SuffixName2
-smokey_flags += -exclude-check:MS1027	# PreferredTerm
-smokey_flags += -exclude-check:MS1029	# ClassPrefix (we use NS all over)
-smokey_flags += -exclude-check:P1003	# AvoidBoxing
-smokey_flags += -exclude-check:P1004	# AvoidUnboxing
-smokey_flags += -exclude-check:PO1001	# DllImportPath
-smokey_flags += -exclude-check:PO1002	# DllImportExtension
-smokey_flags += -exclude-check:R1016	# Const2
-smokey_flags += -exclude-check:R1034	# ValidateArgs1
-smokey_flags += -exclude-check:R1039	# ThreadSafeAttr
-smoke: bin/mcocoa.dll
-	@-smoke $(smokey_flags) bin/mcocoa.dll
-
 gendarme_flags := --severity all --confidence all --ignore gendarme.ignore --quiet
 gendarme: bin/mobjc.dll
 	@-"$(GENDARME)" $(gendarme_flags) bin/mcocoa.dll
