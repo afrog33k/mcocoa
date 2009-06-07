@@ -2,12 +2,10 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-DoWriteInterfaceHeader
-
-* Remove DisableRuleAttribute and the smoke make target.
 * Work on docs:
 	- generate needs to add exclude tags
 	- add a make docs target
+	- do a checkin
 	- start adding xml documentation
 	- upload the docs.
 	- rewrite the wiki docs
