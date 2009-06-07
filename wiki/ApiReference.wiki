@@ -4,3 +4,5 @@
 [https://home.comcast.net/~jesse98/public/mobjc_docs/namespaces.html mobjc]
 
 [https://home.comcast.net/~jesse98/public/mcocoa_docs/namespaces.html mcocoa]
+
+Note the above does not include documentation for the standard Cocoa types and methods. For that consult the [http://developer.apple.com/reference/Cocoa/index.html Apple] documentation.
