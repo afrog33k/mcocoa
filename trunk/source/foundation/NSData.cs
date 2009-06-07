@@ -28,6 +28,7 @@ namespace MCocoa
 {
 	public partial class NSData : NSObject
 	{
+		/// <exclude/>
 		[Pure]
 		public byte[] bytes()
 		{
@@ -40,12 +41,14 @@ namespace MCocoa
 			return buffer;
 		}
 		
+		/// <exclude/>
 		[Pure]
 		public void getBytes(out byte[] buffer)
 		{
 			buffer = bytes();
 		}
 		
+		/// <exclude/>
 		[Pure]
 		public void getBytes_length(out byte[] buffer, UInt32 length)
 		{
@@ -56,6 +59,7 @@ namespace MCocoa
 			Marshal.Copy(ptr, buffer, 0, len);
 		}
 		
+		/// <exclude/>
 		[Pure]
 		public void getBytes_range(out byte[] buffer, NSRange range)
 		{

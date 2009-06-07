@@ -28,6 +28,7 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	/// <summary>Wrapper around the Cocoa's NSPoint struct.</summary>
 	[Register("_NSPoint")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSPoint : IEquatable<NSPoint>
@@ -51,6 +52,7 @@ namespace MCocoa
 			return new NSPoint(lhs.x - rhs.x, lhs.y - rhs.y);
 		}
 		
+		/// <summary>Square-root of the sum of the squared component deltas.</summary>
 		public static float Distance(NSPoint lhs, NSPoint rhs)
 		{
 			float dx = lhs.x - rhs.x;
@@ -69,6 +71,9 @@ namespace MCocoa
 			return ToString(format, null);
 		}
 		
+		/// <remarks>Format may be null or "G" which returns something like 
+		/// <c>(1.0, 2.0)</c> or "R" which returns a string that can be used with
+		/// <see cref = "Parse"/> to get the original value.</remarks>
 		public string ToString(string format, IFormatProvider provider)
 		{
 			if (provider != null)
@@ -81,7 +86,7 @@ namespace MCocoa
 			switch (format)
 			{
 				case "":
-				case null:	
+				case null:
 				case "g":
 				case "G":
 					return string.Format("({0}, {1})", x, y);
@@ -97,6 +102,8 @@ namespace MCocoa
 			}
 		}
 		
+		/// <summary>Converts a round-trippable string back to the original value.</summary>
+		/// <remarks>To get a round-trippable string use something like <c>pt.ToString(&quot;R&quot;, null)</c>.</remarks>
 		public static NSPoint Parse(string text)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");
@@ -124,7 +131,7 @@ namespace MCocoa
 			return this == rhs;
 		}
 		
-		public bool Equals(NSPoint rhs)	
+		public bool Equals(NSPoint rhs)
 		{
 			return this == rhs;
 		}
@@ -154,6 +161,7 @@ namespace MCocoa
 		public static readonly NSPoint Zero = new NSPoint(0.0f, 0.0f);
 	}
 	
+	/// <summary>Wrapper around the Cocoa's NSSize struct.</summary>
 	[Register("_NSSize")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSSize : IEquatable<NSSize>
@@ -167,6 +175,7 @@ namespace MCocoa
 			this.height = height;
 		}
 		
+		/// <summary>Returns width times height.</summary>
 		public float Area
 		{
 			get {return width*height;}
@@ -182,6 +191,9 @@ namespace MCocoa
 			return ToString(format, null);
 		}
 		
+		/// <remarks>Format may be null or "G" which returns something like 
+		/// <c>(1.0, 2.0)</c> or "R" which returns a string that can be used with
+		/// <see cref = "Parse"/> to get the original value.</remarks>
 		public string ToString(string format, IFormatProvider provider)
 		{
 			if (provider != null)
@@ -210,6 +222,8 @@ namespace MCocoa
 			}
 		}
 		
+		/// <summary>Converts a round-trippable string back to the original value.</summary>
+		/// <remarks>To get a round-trippable string use something like <c>size.ToString(&quot;R&quot;, null)</c>.</remarks>
 		public static NSSize Parse(string text)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");
@@ -267,6 +281,7 @@ namespace MCocoa
 		public static readonly NSSize Zero = new NSSize(0.0f, 0.0f);
 	}
 	
+	/// <summary>Wrapper around the Cocoa's NSRect struct.</summary>
 	[Register("_NSRect")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSRect : IEquatable<NSRect>
@@ -286,21 +301,25 @@ namespace MCocoa
 			size = new NSSize(width, height);
 		}
 		
+		/// <summary>Returns origin.x.</summary>
 		public float Left
 		{
 			get {return origin.x;}
 		}
 		
+		/// <summary>Returns origin.y.</summary>
 		public float Bottom
 		{
 			get {return origin.y;}
 		}
 		
+		/// <summary>Returns origin.x + size.width.</summary>
 		public float Right
 		{
 			get {return origin.x + size.width;}
 		}
 		
+		/// <summary>Returns origin.y + size.height.</summary>
 		public float Top
 		{
 			get {return origin.y + size.height;}
@@ -329,6 +348,7 @@ namespace MCocoa
 			return Bottom <= rhs.Top && Top > rhs.Bottom && Left <= rhs.Right && Right > rhs.Left;
 		}
 		
+		/// <summary>Returns the intersection of the two rectangles or Empty.</summary>
 		[Pure]
 		public NSRect Intersect(NSRect rhs)
 		{
@@ -346,6 +366,7 @@ namespace MCocoa
 			return result;
 		}
 		
+		/// <summary>Returns the smallest rectangle enclosing the two rectangles.</summary>
 		[Pure]
 		public NSRect Union(NSRect rhs)
 		{
@@ -372,6 +393,7 @@ namespace MCocoa
 			return result;
 		}
 		
+		/// <summary>Indent (or outdent) each side of the reactangle by the specified amount.</summary>
 		[Pure]
 		public NSRect Inset(float dx, float dy)
 		{
@@ -402,6 +424,9 @@ namespace MCocoa
 			return new NSRect(x, y, width, height);
 		}
 		
+		/// <summary>Returns a new rectangle whose values have no fractional parts.</summary>
+		/// <remarks>This works just like NSIntegralRect: if width or height is not positive then
+		/// Empty is returned, otherwise the rectangle is expanded outward until the values are integral.</remarks>
 		[Pure]
 		public NSRect ToIntegral()
 		{
@@ -418,6 +443,9 @@ namespace MCocoa
 			return ToString(format, null);
 		}
 		
+		/// <remarks>Format may be null or "G" which returns something like 
+		/// <c>(1.0, 2.0)</c> or "R" which returns a string that can be used with
+		/// <see cref = "Parse"/> to get the original value.</remarks>
 		public string ToString(string format, IFormatProvider provider)
 		{
 			if (provider != null)
@@ -445,6 +473,8 @@ namespace MCocoa
 			}
 		}
 		
+		/// <summary>Converts a round-trippable string back to the original value.</summary>
+		/// <remarks>To get a round-trippable string use something like <c>frame.ToString(&quot;R&quot;, null)</c>.</remarks>
 		public static NSRect Parse(string text)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(text), "text is null or empty");
@@ -471,7 +501,7 @@ namespace MCocoa
 			return this == rhs;
 		}
 			
-		public bool Equals(NSRect rhs)	
+		public bool Equals(NSRect rhs)
 		{
 			return this == rhs;
 		}

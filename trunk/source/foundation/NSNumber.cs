@@ -24,6 +24,7 @@ using System;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSNumber_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSNumber : NSValue
 	{
 		public static NSNumber Create(bool value)
@@ -46,7 +47,7 @@ namespace MCocoa
 			return ms_class.Call("numberWithDouble:", value).To<NSNumber>();
 		}
 		
-		public static NSNumber Create(int value) 
+		public static NSNumber Create(int value)
 		{
 			return ms_class.Call("numberWithInt:", value).To<NSNumber>();
 		}

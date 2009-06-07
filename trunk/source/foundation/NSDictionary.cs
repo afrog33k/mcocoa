@@ -26,6 +26,7 @@ using OldCollections = System.Collections;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSDictionary_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSDictionary : NSObject, IEnumerable<KeyValuePair<NSObject, NSObject>>
 	{
 		OldCollections.IEnumerator OldCollections.IEnumerable.GetEnumerator()
@@ -33,6 +34,7 @@ namespace MCocoa
 			return GetEnumerator();
 		}
 		
+		/// <summary>Allows dictionaries to be enumerated using foreach.</summary>
 		public IEnumerator<KeyValuePair<NSObject, NSObject>> GetEnumerator()
 		{
 			NSEnumerator keys = keyEnumerator();

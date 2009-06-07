@@ -28,6 +28,7 @@ namespace MCocoa
 {
 	public partial class NSBezierPath : NSObject
 	{
+		/// <exclude/>
 		public void appendBezierPathWithPointsCount(NSPoint[] points)
 		{
 			float[] values = new float[2*points.Length];	

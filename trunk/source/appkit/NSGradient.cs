@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/NSGradient_class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSGradient : NSObject
 	{
 		public static NSGradient Create(NSColor start, NSColor end)

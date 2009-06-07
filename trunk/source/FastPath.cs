@@ -26,6 +26,10 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	/// <summary>Used by the generated code to avoid dynamic calls where possible.</summary>
+	/// <remarks>It's a lot faster to use this code along with mobjc's DirectCalls class instead
+	/// of NSObject.Call. However this is not something that most users will need to use
+	/// unless they are generating wrappers for new Objective-C frameworks.</remarks>
 	[ThreadModel(ThreadModel.Concurrent)]
 	public static class FastPath
 	{

@@ -24,13 +24,15 @@ using System;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/nsmenu_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSMenu : NSObject
 	{
+		/// <summary>Creates a new empty menu.</summary>
 		public static NSMenu Create(string title)
 		{
-			NSMenu result = (NSMenu) ms_class.Call("alloc").Call("initWithTitle:", 
+			NSMenu result = (NSMenu) ms_class.Call("alloc").Call("initWithTitle:",
 				NSString.Create(title));
-				
+			
 			result.autorelease();
 			
 			return result;

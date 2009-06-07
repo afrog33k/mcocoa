@@ -46,8 +46,13 @@ namespace MCocoa
 		public static readonly NSString NSRecoveryAttempterErrorKey = NSString.Create("NSRecoveryAttempter").Retain();
 	}
 	
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/nserror_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSError : NSObject
 	{
+		/// <summary>Uses the NSError to create and throw a .NET exception.</summary>
+		/// <remarks>If the NSError is in the Cocoa3Domain and the code is NSUserCancelledError then
+		/// a OperationCanceledException will be thrown. Otherwise an InvalidOperationException will
+		/// be thrown which includes the localizedDescription and the localizedFailureReason.</remarks>
 		public void Raise()
 		{
 			if (domain() == Externs.Cocoa3Domain && code() == Enums.NSUserCancelledError)

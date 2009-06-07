@@ -27,6 +27,7 @@ using OldCollections = System.Collections;
 
 namespace MCocoa
 {
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/DOCUMENTATION/Cocoa/Reference/Foundation/Classes/NSIndexSet_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSIndexSet : NSObject, IEnumerable<uint>
 	{
 		OldCollections.IEnumerator OldCollections.IEnumerable.GetEnumerator()
@@ -34,6 +35,7 @@ namespace MCocoa
 			return GetEnumerator();
 		}
 		
+		/// <summary>Allows NSIndexSet to be enumerated using foreach.</summary>
 		public IEnumerator<uint> GetEnumerator()
 		{
 			uint index = firstIndex();
