@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	/// <exclude/>
 	[Register("_NSTypesetterGlyphInfo")]
 	public struct NSTypesetterGlyphInfo
 	{

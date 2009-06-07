@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	/// <exclude/>
 	[Register("NSAffineTransformStruct")]
 	public struct NSAffineTransformStruct
 	{

@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
+	/// <exclude/>
 	[Register("NSFastEnumerationState")]
 	public struct NSFastEnumerationState
 	{

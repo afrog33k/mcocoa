@@ -25,6 +25,7 @@ using System;
 namespace MCocoa
 {
 	// http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/NSAttributedString_AppKitAdditions/Reference/Reference.html#//apple_ref/doc/uid/20000167-SW6
+	/// <exclude/>
 	public static partial class Externs
 	{
 		public static readonly NSString NSFontAttributeName = NSString.Create("NSFont").Retain();					 		// NSFont, default Helvetica 12

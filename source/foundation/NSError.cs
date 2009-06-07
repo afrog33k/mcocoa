@@ -24,6 +24,7 @@ using System;
 
 namespace MCocoa
 {
+	/// <exclude/>
 	public static partial class Externs
 	{
 		// standard error domains

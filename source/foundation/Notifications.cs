@@ -24,6 +24,7 @@ using System;
 
 namespace MCocoa
 {
+	/// <exclude/>
 	public static partial class Externs
 	{
 		public static readonly NSString NSPopUpButtonWillPopUpNotification = NSString.Create("NSPopUpButtonWillPopUpNotification").Retain();
