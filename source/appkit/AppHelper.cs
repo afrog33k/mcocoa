@@ -40,7 +40,7 @@ namespace MCocoa
 		
 		public static AppHelper Create()
 		{
-			AppHelper result = new AppHelper(NSObject.AllocNative("AppHelper"));
+			AppHelper result = new AppHelper(NSObject.AllocAndInitInstance("AppHelper"));
 			
 			result.m_thread = new Thread(result.DoThread);
 			result.m_thread.Name = "AppHelper";
@@ -76,7 +76,6 @@ namespace MCocoa
 				delay.TotalSeconds);
 		}
 		
-		[DisableRule("D1032", "UnusedMethod")]
 		public void onDelayedAction(NSNumber id)
 		{
 			Action action = null;
@@ -115,7 +114,6 @@ namespace MCocoa
 			return debugMenu;
 		}
 		
-		[DisableRule("P1017", "ExplicitGC")]
 		public void collectGarbage(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -130,7 +128,6 @@ namespace MCocoa
 			}
 		}
 		
-		[DisableRule("D1032", "UnusedMethod")]
 		public void dumpObjects(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -148,7 +145,6 @@ namespace MCocoa
 			Console.WriteLine(" ");
 		}
 		
-		[DisableRule("D1032", "UnusedMethod")]
 		public void dumpWindows(NSObject sender)
 		{
 			Unused.Value = sender;
@@ -161,7 +157,6 @@ namespace MCocoa
 		}
 #endif	// DEBUG
 
-		[DisableRule("D1032", "UnusedMethod")]
 		public void execute(NSObject arg)
 		{
 			Unused.Value = arg;

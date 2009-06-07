@@ -2,14 +2,20 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-AttributeTargets
-Layout
-State
-Enum
-String
-DateTime
+DoWriteInterfaceHeader
 
-openDocumentWithContentsOfURL_display_error
+* Remove DisableRuleAttribute and the smoke make target.
+* Work on docs:
+	- generate needs to add exclude tags
+	- add a make docs target
+	- start adding xml documentation
+	- upload the docs.
+	- rewrite the wiki docs
+* Generate needs to add /// <exclude/> and /// <exclude-if-empty/>
+* Rewrite examples to use NSBundle.loadNibNamed_owner.
+* Might want to get rid of the custom NSWindowController ctor.
+* Work on docs.
+* Review example app comments.
 
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
    methods use unsigned typed. Perhaps we can fix this by generating signed
@@ -39,6 +45,7 @@ openDocumentWithContentsOfURL_display_error
 	- remove build_num file 
 	- update libraries
 	- install
+	- upload new html docs
 	- update README and wiki
 	- upload a new version to googlecode
 	- send an announcement

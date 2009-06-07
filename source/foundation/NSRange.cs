@@ -32,7 +32,6 @@ namespace MCocoa
 		public const int NSNotFound = 0x7fffffff;
 	}
 	
-	[DisableRule("R1016", "Const2")]
 	[Register("_NSRange")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSRange : IEquatable<NSRange>
