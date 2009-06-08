@@ -31,10 +31,11 @@ using System.Linq;
 [ExportClass("DocWindowController", "NSWindowController", Outlets = "flagsSheet prefSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
 internal sealed class DocWindowController : NSWindowController
 {
-	public DocWindowController(Document doc) : base(NSObject.AllocInstance("DocWindowController"))
+	public DocWindowController(Document doc) : base(NSObject.AllocAndInitInstance("DocWindowController"))
 	{
 		m_doc = doc;
 		
+		// Note that this assumes that DocWindowController is the nib's file owner.
 		Unused.Value = NSBundle.loadNibNamed_owner(NSString.Create("Document"), this);
 		
 		m_errorWindow = this["errorWindow"].To<NSWindow>();

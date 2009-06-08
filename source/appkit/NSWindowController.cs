@@ -29,6 +29,7 @@ namespace MCocoa
 	{
 		// Note that this won't set the nib's owner.
 		/// <exclude/>
+		[Obsolete("Use loadNibNamed_owner instead (see the natty DocWindowController for an example of how to do this).", false)]		// TODO: remove this ctor in the next version
 		public NSWindowController(string className, string nibName) :
 			base(DoCreate(className, nibName))
 		{

@@ -4,9 +4,7 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-
-* Might want to get rid of the custom NSWindowController ctor. If not, then
-   document it? Or mark it obsolete and add a comment.
+* Should probably use AllocAndInitInstance.
 
 * Might want to replace the Natty example with something more nifty.
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
