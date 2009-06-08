@@ -32,11 +32,14 @@ namespace MCocoa
 		[Pure]
 		public byte[] bytes()
 		{
-			IntPtr ptr = DoGetBytes();
-			
 			int len = (int) length();
 			byte[] buffer = new byte[len];
-			Marshal.Copy(ptr, buffer, 0, len);
+			
+			if (len > 0)
+			{
+				IntPtr ptr = DoGetBytes();
+				Marshal.Copy(ptr, buffer, 0, len);
+			}
 			
 			return buffer;
 		}
@@ -52,11 +55,14 @@ namespace MCocoa
 		[Pure]
 		public void getBytes_length(out byte[] buffer, UInt32 length)
 		{
-			IntPtr ptr = DoGetBytes();
-			
 			int len = (int) Math.Min(this.length(), length);
 			buffer = new byte[len];
-			Marshal.Copy(ptr, buffer, 0, len);
+			
+			if (len > 0)
+			{
+				IntPtr ptr = DoGetBytes();
+				Marshal.Copy(ptr, buffer, 0, len);
+			}
 		}
 		
 		/// <exclude/>
@@ -70,10 +76,13 @@ namespace MCocoa
 			if (range.location + range.length > length())
 				throw new ArgumentException("range upper bound is too large");
 			
-			IntPtr ptr = DoGetBytes();
-			
 			buffer = new byte[range.length];
-			Marshal.Copy(ptr, buffer, range.location, range.length);
+			
+			if (range.length > 0)
+			{
+				IntPtr ptr = DoGetBytes();
+				Marshal.Copy(ptr, buffer, range.location, range.length);
+			}
 		}
 		
 		#region Private Methods
