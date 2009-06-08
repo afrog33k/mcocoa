@@ -48,17 +48,16 @@ internal static class ErrorParser
 		if (match.Success)
 		{
 			error = new Error(
-				match.Groups[4].ToString(), 
-				match.Groups[1].ToString(), 
+				match.Groups[4].ToString(),
+				match.Groups[1].ToString(),
 				match.Groups[2].ToString(),
 				match.Groups[3].ToString() == "error");
 		}
 		
 		return error;
 	}
-
+	
 	//                                             1             2                   3                           4
 	//                                             TheFile.cs   (5     , 19  ) :     error              CS0234 : The type...
 	private static Regex ms_gmcsRE = new Regex(@"([\w\.\-\\\/]+)\((\d+) , \d+\) : \s+ (error|warning) \s+ \w+    : (.+)$", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 }
- 

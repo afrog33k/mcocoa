@@ -35,13 +35,13 @@ internal sealed class AppDelegate : NSObject
 		dict.setObject_forKey(NSString.Create("all"), NSString.Create("defaultTarget"));
 		dict.setObject_forKey(NSString.Create("install uninstall"), NSString.Create("ignoredTargets"));
 		dict.setObject_forKey(NSString.Create("bbedit {0}:{1}"), NSString.Create("editor"));
-
+		
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
 		defaults.registerDefaults(dict);
 	}
 	
 	public void applicationDidFinishLaunching(NSObject notification)
-	{		
+	{
 		NSDocumentController controller = NSDocumentController.sharedDocumentController();
 		controller.openDocument(this);
 	}

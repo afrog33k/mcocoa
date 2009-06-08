@@ -22,41 +22,40 @@
 using MCocoa;
 using MObjc;
 using System;
-using System.Collections.Generic;
 
 [ExportClass("PrefsController", "NSObject", Outlets = "panel owner editor ignored")]
 internal sealed class PrefsController : NSObject
 {
-	private PrefsController(IntPtr instance) : base(instance) 	
+	private PrefsController(IntPtr instance) : base(instance)
 	{
-		m_owner = new IBOutlet<NSObject>(this, "owner");
-		m_panel = new IBOutlet<NSWindow>(this, "panel");
-		m_editor = new IBOutlet<NSTextField>(this, "editor");
-		m_ignored = new IBOutlet<NSTextField>(this, "ignored");
+		m_owner = this["owner"].To<NSObject>();
+		m_panel = this["panel"].To<NSWindow>();
+		m_editor = this["editor"].To<NSTextField>();
+		m_ignored = this["ignored"].To<NSTextField>();
 	}
- 
+	
 	public void awakeFromNib()
 	{
-		m_panel.Value.setDelegate(this);
-
+		m_panel.setDelegate(this);
+		
 		NSObject defaults = NSUserDefaultsController.sharedUserDefaultsController();
 		NSDictionary options = NSDictionary.dictionaryWithObject_forKey(NSNumber.Create(true), NSString.Create("NSContinuouslyUpdatesValue"));
-
-		NSString path = NSString.Create("values.editor");
-		m_editor.Value.bind_toObject_withKeyPath_options(NSString.Create("value"), defaults, path, options);
-
-		NSDocument doc = m_owner.Value.Call("document").To<NSDocument>();
-		path = NSString.Create("values." + doc.fileURL().absoluteString() + "-ignored");
-		m_ignored.Value.bind_toObject_withKeyPath_options(NSString.Create("value"), defaults, path, options);
-    }
-    
-    public void windowWillClose(NSNotification notify)
-    {    	
-    	m_owner.Value.Call("rebuildTargets");
-    }
 		
-	private IBOutlet<NSObject> m_owner;
-	private IBOutlet<NSWindow> m_panel;
-	private IBOutlet<NSTextField> m_editor;
-	private IBOutlet<NSTextField> m_ignored;
+		NSString path = NSString.Create("values.editor");
+		m_editor.bind_toObject_withKeyPath_options(NSString.Create("value"), defaults, path, options);
+		
+		NSDocument doc = m_owner.Call("document").To<NSDocument>();
+		path = NSString.Create("values." + doc.fileURL().absoluteString() + "-ignored");
+		m_ignored.bind_toObject_withKeyPath_options(NSString.Create("value"), defaults, path, options);
+	}
+	
+	public void windowWillClose(NSNotification notify)
+	{
+		m_owner.Call("rebuildTargets");
+	}
+	
+	private NSObject m_owner;
+	private NSWindow m_panel;
+	private NSTextField m_editor;
+	private NSTextField m_ignored;
 }

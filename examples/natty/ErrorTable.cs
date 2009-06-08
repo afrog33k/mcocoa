@@ -29,7 +29,7 @@ internal sealed class ErrorTable : NSTableView
 	public ErrorTable(IntPtr instance) : base(instance)
 	{
 	}
-						
+	
 	#region Overrides
 	public new void mouseDown(NSEvent evt)
 	{
@@ -38,7 +38,7 @@ internal sealed class ErrorTable : NSTableView
 		else
 			SuperCall("mouseDown:", evt);
 	}
-
+	
 	public new void keyDown(NSEvent evt)
 	{
 		string chars = evt.characters().ToString();
@@ -64,7 +64,7 @@ internal sealed class ErrorTable : NSTableView
 			SuperCall("keyDown:", evt);
 		}
 	}
-	#endregion	
+	#endregion
 	
 	private void DoOpen()
 	{
@@ -78,4 +78,3 @@ internal sealed class ErrorTable : NSTableView
 		}
 	}
 }
-

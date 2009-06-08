@@ -14,7 +14,7 @@ for more information on this file. -->
 <dict>
 	<key>CFBundleIdentifier</key>
 	<string>cocoa3-sharp.examples.${APPNAME}</string>
-
+	
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -36,45 +36,45 @@ for more information on this file. -->
 			<string>Document</string>
 		</dict>
 	</array>
-
-    <key>CFBundleDevelopmentRegion</key>
-    <string>English</string>
-
+	
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	
 	<key>CFBundleIconFile</key>
 	<string>AppIcon.icns</string>
-
+	
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
-
+	
 	<key>LSMinimumSystemVersion</key>
 	<string>10.5.0</string>
-
+	
 	<!-- Keys that should not be changed. -->
 	<key>CFBundleExecutable</key>
 	<string>launcher</string>
-
+	
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-
+	
 	<key>CFBundleName</key>
 	<string>${APPNAME}</string>
-
+	
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-
+	
 	<!-- This is what is shown to the user via the Finder's get info command. -->
 	<key>CFBundleShortVersionString</key>	<!-- major.minor.maintenance -->
 	<string>${VERSION}</string>
-
+	
 	<key>CFBundleSignature</key>
 	<string>????</string>
-
+	
 	<key>CFBundleVersion</key>
 	<string>${BUILDNUM}</string> 
-
+	
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
-
+	
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>

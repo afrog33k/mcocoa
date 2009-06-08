@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 
 public enum State {Opened, Building, Built, Canceled};
 
@@ -47,22 +48,22 @@ internal sealed class Document : NSDocument
 		get {return m_target;}
 		set {m_target = value; SavePrefs();}
 	}
-			
+	
 	public string[] Targets
 	{
 		get {return m_builder.Targets;}
 	}
-						
+	
 	public List<EnvVar> Variables
 	{
 		get {return m_vars;}
 	}
-						
+	
 	public Dictionary<string, int> Flags
 	{
 		get {return m_flags;}
 	}
-						
+	
 	public State State
 	{
 		get {return m_state;}
@@ -81,24 +82,24 @@ internal sealed class Document : NSDocument
 	public string Editor()
 	{
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
-
-		string editor = defaults.stringForKey(NSString.Create("editor")).To<NSString>().ToString();
+		
+		string editor = defaults.stringForKey(NSString.Create("editor")).description();
 		if (editor == null)
 			editor = "bbedit {0}:{1}";
-			
+		
 		return editor;
 	}
-						
+	
 	public string IgnoredTargets()
 	{
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
-
-		string key = fileURL().absoluteString() + "-ignored";
-		string ignored = defaults.stringForKey(NSString.Create(key)).To<NSString>().ToString();
-			
+		
+		NSString key = fileURL().absoluteString() + "-ignored";
+		string ignored = defaults.stringForKey(key).description();
+		
 		return ignored ?? string.Empty;
 	}
-						
+	
 	public EventHandler StateChanged;
 	public delegate void DataHandler(Document doc, string data);
 	public event DataHandler CommandData;
@@ -109,8 +110,8 @@ internal sealed class Document : NSDocument
 	{
 		m_state = State.Building;
 		if (StateChanged != null)
-			StateChanged(this, EventArgs.Empty); 
-			
+			StateChanged(this, EventArgs.Empty);
+		
 		m_exitCode = 0;
 		NSApplication app = NSApplication.sharedApplication();
 		
@@ -124,13 +125,13 @@ internal sealed class Document : NSDocument
 		
 		if (CommandData != null)
 			CommandData(this, m_builder.Command);
-
+		
 		m_process.Start();
 		
 		m_process.BeginOutputReadLine();
 		m_process.BeginErrorReadLine();
 	}
-
+	
 	public void Cancel()
 	{
 		m_state = State.Canceled;
@@ -144,7 +145,7 @@ internal sealed class Document : NSDocument
 	public void SavePrefs()
 	{
 		// environment variables
-		string key = fileURL().absoluteString() + "-variables";
+		NSString key = fileURL().absoluteString() + "-variables";
 		
 		NSMutableDictionary dict = NSMutableDictionary.Create();
 		foreach (var entry in m_vars)
@@ -154,30 +155,30 @@ internal sealed class Document : NSDocument
 		}
 		
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
-		defaults.setObject_forKey(dict, NSString.Create(key));
+		defaults.setObject_forKey(dict, key);
 		
 		// default target
 		key = fileURL().absoluteString() + "-defaultTarget";
-		defaults.setObject_forKey(NSString.Create(m_target), NSString.Create(key));
+		defaults.setObject_forKey(NSString.Create(m_target), key);
 	}
 	
 	public void LoadPrefs()
 	{
 		// environment variables
-		string key = fileURL().absoluteString() + "-variables";
+		NSString key = fileURL().absoluteString() + "-variables";
 		string value;
-				
+		
 		NSUserDefaults defaults = NSUserDefaults.standardUserDefaults();
-		NSObject pref = defaults.objectForKey(NSString.Create(key));
+		NSObject pref = defaults.objectForKey(key);
 		if (!NSObject.IsNullOrNil(pref))
 		{
 			NSMutableDictionary dict = pref.To<NSMutableDictionary>();
-
+			
 			foreach (var entry in dict)
 			{
 				string name = entry.Key.ToString();
 				value = entry.Value.ToString();
-		
+				
 				int i = m_vars.FindIndex(e => e.Name == name);
 				if (i >= 0)
 				{
@@ -198,7 +199,7 @@ internal sealed class Document : NSDocument
 		
 		// default target
 		key = fileURL().absoluteString() + "-defaultTarget";
-		value = defaults.stringForKey(NSString.Create(key)).To<NSString>().ToString();
+		value = defaults.stringForKey(key).To<NSString>().ToString();
 		if (value != null && Array.IndexOf(m_builder.Targets, value) >= 0)
 			m_target = value;
 		else
@@ -212,8 +213,7 @@ internal sealed class Document : NSDocument
 		
 		try
 		{
-			IntPtr buffer = data.bytes();
-			string contents = Marshal.PtrToStringAuto(buffer);
+			string contents = Encoding.UTF8.GetString(data.bytes());
 			
 			m_builder = new MakeBuilder(contents);
 			
@@ -229,19 +229,19 @@ internal sealed class Document : NSDocument
 			
 			NSObject error = NSError.errorWithDomain_code_userInfo(Externs.Cocoa3Domain, 1, userInfo);
 			Marshal.WriteIntPtr(outError, (IntPtr) error);
-
+			
 			read = false;
 		}
 		
 		return read;
 	}
-
+	
 	public new void makeWindowControllers()
 	{
-		DocWindowController controller = DocWindowController.Create("Document");
+		var controller = new DocWindowController(this);
 		addWindowController(controller);
 	}
-	#endregion	
+	#endregion
 
 	#region Private Methods
 	private void DoGotStdoutData(object sender, DataReceivedEventArgs e)	// threaded
@@ -252,7 +252,7 @@ internal sealed class Document : NSDocument
 			app.BeginInvoke(() => StdoutData(this, e.Data + Environment.NewLine));
 		}
 	}
-
+	
 	private void DoGotStderrData(object sender, DataReceivedEventArgs e)	// threaded
 	{
 		if (StderrData != null)
@@ -261,7 +261,7 @@ internal sealed class Document : NSDocument
 			app.BeginInvoke(() => StderrData(this, e.Data + Environment.NewLine));
 		}
 	}
-
+	
 	private void DoProcessExited()	// threaded
 	{
 		if (NSApplication.sharedApplication().InvokeRequired)
@@ -269,7 +269,7 @@ internal sealed class Document : NSDocument
 			NSApplication.sharedApplication().BeginInvoke(this.DoProcessExited);
 			return;
 		}
-			
+		
 		m_exitCode = m_process.ExitCode;
 		
 		m_process.Dispose();
@@ -281,7 +281,7 @@ internal sealed class Document : NSDocument
 		if (StateChanged != null)
 			StateChanged(this, EventArgs.Empty);
 	}
-	#endregion	
+	#endregion
 	
 	#region Fields
 	private MakeBuilder m_builder;

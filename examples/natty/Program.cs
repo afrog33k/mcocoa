@@ -21,26 +21,17 @@
 
 using MCocoa;
 using MObjc;
-using System;
-using System.Diagnostics;
 
 internal static class Program
 {
 	internal static void Main(string[] args)
 	{
-		try
-		{
-			// We don't dynamically load any assemblies with mobjc types so we
-			// can initialize mobjc as soon as we start up.
-			Registrar.CanInit = true;
-			
-			// Load the nib and run the main event loop.
-			NSApplication app = NSApplication.Create("MainMenu.nib");
-			app.run();
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine(e);
-		}
+		// We don't dynamically load any assemblies with mobjc types so we
+		// can initialize mobjc as soon as we start up.
+		Registrar.CanInit = true;
+		
+		// Load the nib and run the main event loop.
+		NSApplication app = NSApplication.Create("MainMenu.nib");
+		app.run();
 	}
 }

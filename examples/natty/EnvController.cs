@@ -31,8 +31,8 @@ internal sealed class EnvController : NSObject
 {
 	private EnvController(IntPtr instance) : base(instance)
 	{
-		m_sheet = new IBOutlet<NSWindow>(this, "sheet");
-		m_table = new IBOutlet<NSTableView>(this, "table");
+		m_sheet = this["sheet"].To<NSWindow>();
+		m_table = this["table"].To<NSTableView>();
 	}
 	
 	public void Open(Document doc, NSWindow window)
@@ -40,17 +40,17 @@ internal sealed class EnvController : NSObject
 		m_doc = doc;
 		m_vars = new List<EnvVar>(m_doc.Variables);
 		
-		m_sheet.Value.setDelegate(this);
-		m_table.Value.setDataSource(this);
+		m_sheet.setDelegate(this);
+		m_table.setDataSource(this);
 		NSApplication.sharedApplication().beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(
-			m_sheet.Value, window, this, null, IntPtr.Zero);
+			m_sheet, window, this, null, IntPtr.Zero);
 	}
 	
 	#region Action Handlers
 	public void envOK(NSObject sender)
 	{
-		NSApplication.sharedApplication().endSheet(m_sheet.Value);
-		m_sheet.Value.orderOut(this);
+		NSApplication.sharedApplication().endSheet(m_sheet);
+		m_sheet.orderOut(this);
 		
 		m_doc.Variables.Clear();
 		m_doc.Variables.AddRange(m_vars);
@@ -59,16 +59,16 @@ internal sealed class EnvController : NSObject
 
 	public void envCancel(NSObject sender)
 	{
-		NSApplication.sharedApplication().endSheet(m_sheet.Value);
-		m_sheet.Value.orderOut(this);
+		NSApplication.sharedApplication().endSheet(m_sheet);
+		m_sheet.orderOut(this);
 	}
 	
 	public void restoreDefaults(NSObject sender)
 	{
 		foreach (EnvVar v in m_vars)
 			v.Value = v.DefaultValue;
-			
-		m_table.Value.reloadData();
+		
+		m_table.reloadData();
 	}
 	#endregion
 	
@@ -92,7 +92,7 @@ internal sealed class EnvController : NSObject
 	}
 	
 	public void tableView_setObjectValue_forTableColumn_row(NSTableView table, NSObject v, NSTableColumn column, int row)
-	{		
+	{
 		if ("1" == column.identifier().ToString())
 			m_vars[row].Name = v.ToString();
 		
@@ -105,8 +105,8 @@ internal sealed class EnvController : NSObject
 	#endregion
 	
 	#region Fields
-	private IBOutlet<NSWindow> m_sheet;
-	private IBOutlet<NSTableView> m_table;
+	private NSWindow m_sheet;
+	private NSTableView m_table;
 	private Document m_doc;
 	private List<EnvVar> m_vars = new List<EnvVar>();
 	#endregion
