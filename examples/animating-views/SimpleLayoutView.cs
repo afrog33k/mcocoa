@@ -30,14 +30,16 @@ internal sealed class SimpleLayoutView : NSView
 {
 	private SimpleLayoutView(IntPtr instance) : base(instance)
 	{
+		m_colorWell = this["boxColorField"].To<NSColorWell>();
+		
 		// By default NSColorPanel does not show an alpha (opacity) slider so enable it.
 		NSColorPanel.sharedColorPanel().setShowsAlpha(true);
 	}
 		
 	#region Action Methods
-	// Action methods to add/remove boxes, giving us something to animate. Note that we 
-	// cause a relayout here; a better design is to relayout in the view automatically on 
-	// addition/removal of subviews.
+	// Action methods to add/remove boxes, giving us something to animate. Note 
+	// that we cause a relayout here; a better design is to relayout in the view 
+	// automatically on addition/removal of subviews.
 	public void addABox(NSObject sender)
 	{
 		NSView box = DoMakeBox();
@@ -51,15 +53,14 @@ internal sealed class SimpleLayoutView : NSView
 		NSView[] children = subviews();
 		if (children.Length > 0)
 		{
-			children[children.Length - 1].removeFromSuperview();	
+			children[children.Length - 1].removeFromSuperview();
 			DoLayout();
 		}
 	}
 	
-	// Action method to change layout style.
-	public void changeLayout(NSObject sender)
+	public void changeLayout(NSMatrix sender)
 	{
-		m_layout = (Layout) (int) sender.Call("selectedTag");
+		m_layout = (Layout) sender.selectedTag();
 		DoLayout();
 	}
 	#endregion
@@ -70,7 +71,8 @@ internal sealed class SimpleLayoutView : NSView
 		return 33;
 	}
 	
-	// Changing frame (which is what happens when the window is resized) should cause relayout.
+	// Changing frame (which is what happens when the window is resized) should 
+	// cause relayout.
 	public new void setFrameSize(NSSize size)
 	{
 		SuperCall("setFrameSize:", size);
@@ -85,10 +87,10 @@ internal sealed class SimpleLayoutView : NSView
 	{
 		NSRect frame = new NSRect(0.0f, 0.0f, BoxWidth, BoxHeight);
 		
-		NSBox box = new NSBox(NSBox.Alloc().initWithFrame(frame));
+		NSBox box = NSBox.Alloc().initWithFrame(frame).To<NSBox>();
 		box.setBorderType(Enums.NSLineBorder);
 		box.setBoxType(Enums.NSBoxCustom);
-		box.setFillColor(this["boxColorField"].Call("color").To<NSColor>());
+		box.setFillColor(m_colorWell.color());
 		box.setTitlePosition(Enums.NSNoTitle);
 		
 		return box;
@@ -102,49 +104,49 @@ internal sealed class SimpleLayoutView : NSView
 	// This method simply computes the new layout, and calls setFrame: on all subview 
 	// with their locations. Since the calls are made to the subviews' animators, the 
 	// subview animate to their new locations.
-	private void DoLayout() 
+	private void DoLayout()
 	{
 		NSView[] children = subviews();
 		
 		NSPoint curPoint;
-		switch (m_layout) 
+		switch (m_layout)
 		{
-			case Layout.Column: 
-				curPoint = new NSPoint(bounds().size.width / 2.0f, 0.0f);            	// Starting point: center bottom of view				
+			case Layout.Column:
+				curPoint = new NSPoint(bounds().size.width / 2.0f, 0.0f);		// Starting point: center bottom of view				
 				for (int i = 0; i < children.Length; ++i)
 				{
-					NSRect frame = new NSRect(curPoint.x - BoxWidth / 2.0f, curPoint.y, BoxWidth, BoxHeight);   // Centered horizontally, stacked higher
+					NSRect frame = new NSRect(curPoint.x - BoxWidth / 2.0f, curPoint.y, BoxWidth, BoxHeight);	// Centered horizontally, stacked higher
 					frame = DoGetIntegralRect(frame);
 					DoAnimate(children[i], frame);
-					curPoint.y += frame.size.height + Separation;                // Next view location; we're stacking higher
+					curPoint.y += frame.size.height + Separation;					// Next view location; we're stacking higher
 				}
 				break;
 			
-			case Layout.Row: 
-				curPoint = new NSPoint(0.0f, bounds().size.height / 2.0f);	      	 // Starting point: center left edge of view			
+			case Layout.Row:
+				curPoint = new NSPoint(0.0f, bounds().size.height / 2.0f);	// Starting point: center left edge of view			
 				for (int i = 0; i < children.Length; ++i)
 				{
-					NSRect frame = new NSRect(curPoint.x, curPoint.y - BoxHeight / 2.0f, BoxWidth, BoxHeight);    // Centered vertically, stacked left to right
+					NSRect frame = new NSRect(curPoint.x, curPoint.y - BoxHeight / 2.0f, BoxWidth, BoxHeight);	// Centered vertically, stacked left to right
 					frame = DoGetIntegralRect(frame);
 					DoAnimate(children[i], frame);
-					curPoint.x += frame.size.width + Separation;                // Next view location
+					curPoint.x += frame.size.width + Separation;					// Next view location
 				}
 				break;
 			
-			case Layout.Grid: 
-				int viewsPerSide = (int) Math.Ceiling(Math.Sqrt(children.Length));       // Put the views in a roughly square grid
+			case Layout.Grid:
+				int viewsPerSide = (int) Math.Ceiling(Math.Sqrt(children.Length));	// Put the views in a roughly square grid
 				int index = 0;
-				curPoint = NSPoint.Zero;                                 // Starting at the bottom left corner
+				curPoint = NSPoint.Zero;								// Starting at the bottom left corner
 				for (int i = 0; i < children.Length; ++i)
 				{
 					NSRect frame = new NSRect(curPoint.x, curPoint.y, BoxWidth, BoxHeight);
 					frame = DoGetIntegralRect(frame);
 					DoAnimate(children[i], frame);
 					
-					curPoint.x += BoxWidth + Separation;                 // Stack them horizontally
-					if ((++index) % viewsPerSide == 0) 
-					{                       							 // And if we have enough on this row, move up to the next
-						curPoint.x = 0;                
+					curPoint.x += BoxWidth + Separation;	// Stack them horizontally
+					if ((++index) % viewsPerSide == 0)
+					{																// And if we have enough on this row, move up to the next
+						curPoint.x = 0;
 						curPoint.y += BoxHeight + Separation;
 					}
 				}
@@ -154,9 +156,9 @@ internal sealed class SimpleLayoutView : NSView
 	
 	// This method returns a rect that is integral in base coordinates.
 	private NSRect DoGetIntegralRect(NSRect rect)
-	{	
-		rect = Call("convertRectToBase:", rect).To<NSRect>().ToIntegral();
-		rect = Call("convertRectFromBase:", rect).To<NSRect>();
+	{
+		rect = convertRectToBase(rect).ToIntegral();
+		rect = convertRectFromBase(rect);
 		return rect;
 	}
 	#endregion
@@ -167,5 +169,6 @@ internal sealed class SimpleLayoutView : NSView
 	private const float BoxHeight = 80.0f;
 	
 	private Layout m_layout;
+	private NSColorWell m_colorWell;
 	#endregion
 }
