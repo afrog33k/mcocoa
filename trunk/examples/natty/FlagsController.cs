@@ -27,17 +27,17 @@ using System.Collections.Generic;
 [ExportClass("FlagsController", "NSObject", Outlets = "sheet")]
 internal sealed class FlagsController : NSObject
 {
-	private FlagsController(IntPtr instance) : base(instance) 
+	private FlagsController(IntPtr instance) : base(instance)
 	{
-		m_sheet = new IBOutlet<NSWindow>(this, "sheet");
+		m_sheet = this["sheet"].To<NSWindow>();
 	}
-						
+	
 	public void Open(Document doc, NSWindow window)
 	{
 		m_doc = doc;
 		m_flags = new Dictionary<string, int>(m_doc.Flags);
 		
-		NSView[] views = m_sheet.Value.contentView().subviews();
+		NSView[] views = m_sheet.contentView().subviews();
 		for (int i = 0; i < views.Length; ++i)
 		{
 			if (views[i].respondsToSelector("title"))
@@ -47,35 +47,35 @@ internal sealed class FlagsController : NSObject
 					views[i].Call("setState:", m_flags[title]);
 			}
 		}
-
-		m_sheet.Value.setDelegate(this);
-		NSApplication.sharedApplication().beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(m_sheet.Value, window, this, null, IntPtr.Zero);
-    }
-
+		
+		m_sheet.setDelegate(this);
+		NSApplication.sharedApplication().beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(m_sheet, window, this, null, IntPtr.Zero);
+	}
+	
 	#region Action Handlers
 	public void toggle(NSButton sender)
 	{
 		m_flags[sender.title().ToString()] = sender.state();
-    }
-
+	}
+	
 	public void flagsOK(NSObject sender)
 	{
 		foreach (KeyValuePair<string, int> entry in m_flags)
 			m_doc.Flags[entry.Key] = entry.Value;
 		m_flags.Clear();
-			
-		NSApplication.sharedApplication().endSheet(m_sheet.Value);
-		m_sheet.Value.orderOut(this);
-    }
-
+		
+		NSApplication.sharedApplication().endSheet(m_sheet);
+		m_sheet.orderOut(this);
+	}
+	
 	public void flagsCancel(NSObject sender)
 	{
-		NSApplication.sharedApplication().endSheet(m_sheet.Value);
-		m_sheet.Value.orderOut(this);
-   	}
+		NSApplication.sharedApplication().endSheet(m_sheet);
+		m_sheet.orderOut(this);
+	}
 	#endregion
-		
-	private IBOutlet<NSWindow> m_sheet;
+	
+	private NSWindow m_sheet;
 	private Document m_doc;
 	private Dictionary<string, int> m_flags = new Dictionary<string, int>();
 }

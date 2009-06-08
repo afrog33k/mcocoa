@@ -46,7 +46,7 @@ internal sealed class DocController : NSDocumentController
 		string name = fileName.ToString();
 		if (Directory.Exists(name))
 			return true;
-			
+		
 		name = Path.GetFileName(name);
 		return name == "Makefile";
 	}

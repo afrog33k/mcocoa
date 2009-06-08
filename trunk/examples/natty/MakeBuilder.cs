@@ -42,7 +42,7 @@ internal class MakeBuilder
 			
 			m_nameChars = NSMutableCharacterSet.Create();
 			m_nameChars.formUnionWithCharacterSet(NSCharacterSet.alphanumericCharacterSet());		
-			m_nameChars.addCharactersInString(NSString.Create("_-"));		
+			m_nameChars.addCharactersInString(NSString.Create("_-"));
 			
 			m_eolChars = NSMutableCharacterSet.Create();
 			m_eolChars.addCharactersInString(NSString.Create("\r\n#"));		// lines are ended by comments or new line characters
@@ -55,16 +55,7 @@ internal class MakeBuilder
 		catch (Exception e)
 		{
 			Console.Error.WriteLine("MakeBuilder raised an exception:");
-			Exception ee = e;
-			while (ee != null)
-			{
-				if (e.InnerException != null)
-					Console.Error.WriteLine("--------- {0} Exception{1}", ee == e ? "Outer" : "Inner", Environment.NewLine);
-				Console.Error.WriteLine("{0}", ee.Message + Environment.NewLine);
-				Console.Error.WriteLine("{0}", ee.StackTrace + Environment.NewLine);
-				
-				ee = ee.InnerException;
-			}
+			Console.Error.WriteLine("{0}", e);
 			throw;
 		}
 	}
@@ -157,7 +148,7 @@ internal class MakeBuilder
 	private EnvVar DoParseVariable(string name)
 	{
 		EnvVar variable = null;
-				
+		
 		NSString token;
 		if (m_scanner.scanString_intoString(NSString.Create("?="), out token))
 		{
@@ -168,7 +159,7 @@ internal class MakeBuilder
 			}
 		}
 		
-		return variable;	
+		return variable;
 	}
 	
 	// Target := ('ifdef' | 'ifndef')  Name

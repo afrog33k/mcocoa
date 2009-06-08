@@ -31,29 +31,40 @@ using System.Linq;
 [ExportClass("DocWindowController", "NSWindowController", Outlets = "flagsSheet prefSheet envSheet targets build cancel status output outputWindow errorWindow errors")]
 internal sealed class DocWindowController : NSWindowController
 {
-	public DocWindowController(IntPtr instance) : base(instance)
+	public DocWindowController(Document doc) : base(NSObject.AllocInstance("DocWindowController"))
 	{
-	}
-	
-	public static DocWindowController Create(string nibName)
-	{
-		DocWindowController result = new Class("DocWindowController").Call("alloc").Call("initWithWindowNibName:", NSString.Create(nibName)).To<DocWindowController>();
+		m_doc = doc;
 		
-		result.m_env = new IBOutlet<EnvController>(result, "envSheet");
-		result.m_flags = new IBOutlet<FlagsController>(result, "flagsSheet");
-		result.m_prefs = new IBOutlet<NSWindow>(result, "prefSheet");
+		Unused.Value = NSBundle.loadNibNamed_owner(NSString.Create("Document"), this);
 		
-		result.m_errorWindow = new IBOutlet<NSWindow>(result, "errorWindow");
-		result.m_transcriptWindow = new IBOutlet<NSWindow>(result, "outputWindow");	
-		result.m_errorTable = new IBOutlet<ErrorTable>(result, "errors");
-		result.m_statusLabel = new IBOutlet<NSTextField>(result, "status");
-		result.m_buildBtn = new IBOutlet<NSButton>(result, "build");
-		result.m_cancelBtn = new IBOutlet<NSButton>(result, "cancel");
-		result.m_outputView = new IBOutlet<NSTextView>(result, "output");
-	
-		result.autorelease();
+		m_errorWindow = this["errorWindow"].To<NSWindow>();
+		m_transcriptWindow = this["outputWindow"].To<NSWindow>();
+		m_errorTable = this["errors"].To<ErrorTable>();
+		m_statusLabel = this["status"].To<NSTextField>();
+		m_buildBtn = this["build"].To<NSButton>();
+		m_cancelBtn = this["cancel"].To<NSButton>();
+		m_outputView = this["output"].To<NSTextView>();
 		
-		return result;
+		m_outputView.textStorage().mutableString().setString(NSString.Empty);
+		m_errorTable.setDataSource(this);
+		
+		setShouldCascadeWindows(false);
+		m_transcriptWindow.windowController().setShouldCascadeWindows(false);
+		m_errorWindow.windowController().setShouldCascadeWindows(false);
+		
+		window().setFrameAutosaveName(NSString.Create(m_doc.Path + "-build window"));
+		m_transcriptWindow.setFrameAutosaveName(NSString.Create(m_doc.Path + "-transcript window"));
+		m_errorWindow.setFrameAutosaveName(NSString.Create(m_doc.Path + "-error window"));
+		
+		m_transcriptWindow.windowController().setNextResponder(this);
+		m_errorWindow.windowController().setNextResponder(this);
+		
+		m_doc.StateChanged += this.DoDocChanged;
+		m_doc.CommandData += this.DoGotCommand;
+		m_doc.StdoutData += this.DoGotStdout;
+		m_doc.StderrData += this.DoGotStderr;
+		
+		rebuildTargets();
 	}
 	
 	#region Action Handlers
@@ -61,7 +72,7 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		m_doc.Target = sender.titleOfSelectedItem().ToString();
 	}
-
+	
 	public void build(NSObject sender)
 	{
 		m_doc.Build();
@@ -74,33 +85,40 @@ internal sealed class DocWindowController : NSWindowController
 	
 	public void clearTranscript(NSObject sender)
 	{
-		m_outputView.Value.textStorage().mutableString().setString(NSString.Empty);
+		m_outputView.textStorage().mutableString().setString(NSString.Empty);
 	}
 	
 	public void environment(NSObject sender)
 	{
-		if (NSObject.IsNullOrNil(m_env.Value))
+		if (NSObject.IsNullOrNil(m_env))
+		{
 			NSBundle.loadNibNamed_owner(NSString.Create("Environment"), this);
-		Contract.Assert(!NSObject.IsNullOrNil(m_env.Value), "nib didn't set envSheet");
-	
-		m_env.Value.Open(m_doc, window());
+			m_env = this["envSheet"].To<EnvController>();
+		}
+		Contract.Assert(!NSObject.IsNullOrNil(m_env), "nib didn't set envSheet");
+		
+		m_env.Open(m_doc, window());
 	}
 	
 	public void flags(NSObject sender)
 	{
-		if (NSObject.IsNullOrNil(m_flags.Value))
+		if (NSObject.IsNullOrNil(m_flags))
+		{
 			NSBundle.loadNibNamed_owner(NSString.Create("Flags"), this);
-		Contract.Assert(!NSObject.IsNullOrNil(m_flags.Value), "nib didn't set flagsSheet");
-	
-		m_flags.Value.Open(m_doc, window());
+			m_flags = this["flagsSheet"].To<FlagsController>();
+		}
+		Contract.Assert(!NSObject.IsNullOrNil(m_flags), "nib didn't set flagsSheet");
+		
+		m_flags.Open(m_doc, window());
 	}
 	
 	public void showPrefs(NSObject sender)
 	{
 		NSBundle.loadNibNamed_owner(NSString.Create("Preferences"), this);
-		Contract.Assert(!NSObject.IsNullOrNil(m_prefs.Value), "nib didn't set prefSheet");
+		m_prefs = this["prefSheet"].To<NSWindow>();
+		Contract.Assert(!NSObject.IsNullOrNil(m_prefs), "nib didn't set prefSheet");
 		
-		m_prefs.Value.makeKeyAndOrderFront(this);
+		m_prefs.makeKeyAndOrderFront(this);
 	}
 	
 	public void rebuildTargets()
@@ -112,7 +130,7 @@ internal sealed class DocWindowController : NSWindowController
 		popup.removeAllItems();	
 		popup.addItemsWithTitles(NSArray.Create(targets.ToArray()));
 		
-		m_buildBtn.Value.setEnabled(targets.Any());
+		m_buildBtn.setEnabled(targets.Any());
 		
 		if (m_doc.Target != null && targets.Contains(m_doc.Target))
 			popup.selectItemWithTitle(NSString.Create(m_doc.Target));
@@ -124,7 +142,7 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		return m_errors.Count;
 	}
-
+	
 	public NSObject tableView_objectValueForTableColumn_row(NSTableView table, NSTableColumn column, int row)
 	{
 		Error error = m_errors[row];
@@ -140,10 +158,10 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		bool opened = false;
 		
-		NSRange range = m_outputView.Value.selectedRange();
+		NSRange range = m_outputView.selectedRange();
 		if (range.location != Enums.NSNotFound)
 		{
-			string text = m_outputView.Value.textStorage().ToString();
+			string text = m_outputView.textStorage().ToString();
 			range = DoExtendSelection(text, range);
 			string file = text.Substring(range.location, range.length);
 			
@@ -210,7 +228,7 @@ internal sealed class DocWindowController : NSWindowController
 		string path = Path.GetDirectoryName(m_doc.Path);
 		if (DoOpenFile(path, file, line))
 			return true;
-			
+		
 		foreach (string root in Directory.GetDirectories(path, "*", SearchOption.AllDirectories))
 		{
 			if (!root.Contains("/.") && !root.Contains(".nib") && !root.Contains("/bin/") && !root.EndsWith("/bin"))
@@ -276,45 +294,7 @@ internal sealed class DocWindowController : NSWindowController
 	{
 		return NSString.Create(DoGetTitle());
 	}
-	
-	public new void windowDidLoad()
-	{
-		try
-		{
-			m_doc = Call("document").To<Document>();	
-				
-			m_outputView.Value.textStorage().mutableString().setString(NSString.Empty);
-			m_errorTable.Value.setDataSource(this);
-			
-			setShouldCascadeWindows(false);
-			m_transcriptWindow.Value.windowController().setShouldCascadeWindows(false);
-			m_errorWindow.Value.windowController().setShouldCascadeWindows(false);
-			
-			window().setFrameAutosaveName(NSString.Create(m_doc.Path + "-build window"));
-			m_transcriptWindow.Value.setFrameAutosaveName(NSString.Create(m_doc.Path + "-transcript window"));
-			m_errorWindow.Value.setFrameAutosaveName(NSString.Create(m_doc.Path + "-error window"));
-			
-			m_transcriptWindow.Value.windowController().setNextResponder(this);
-			m_errorWindow.Value.windowController().setNextResponder(this);
-			
-			m_doc.StateChanged += this.DoDocChanged;
-			m_doc.CommandData += this.DoGotCommand;
-			m_doc.StdoutData += this.DoGotStdout;
-			m_doc.StderrData += this.DoGotStderr;
-			
-			rebuildTargets();
-		}
-		catch (Exception e)
-		{
-			// By default cocoa just logs a lame message to the console...
-			NSAlert alert = NSAlert.Create();
-			alert.setMessageText(NSString.Create("Couldn't open the document."));
-			alert.setInformativeText(NSString.Create(e.Message));
-			alert.runModal();
-			throw;
-		}
-	}
-	#endregion	
+	#endregion
 	
 	private void DoDocChanged(object sender, EventArgs e)
 	{
@@ -322,35 +302,35 @@ internal sealed class DocWindowController : NSWindowController
 		{
 			case State.Building:
 				m_startTime = DateTime.Now;
-				m_statusLabel.Value.setStringValue(NSString.Create("building..."));
-				m_statusLabel.Value.setTextColor(NSColor.controlTextColor());
-				m_buildBtn.Value.setEnabled(false);
-				m_cancelBtn.Value.setEnabled(true);
+				m_statusLabel.setStringValue(NSString.Create("building..."));
+				m_statusLabel.setTextColor(NSColor.controlTextColor());
+				m_buildBtn.setEnabled(false);
+				m_cancelBtn.setEnabled(true);
 				DoShowOutput();
 				m_errors.Clear();
-				m_errorTable.Value.noteNumberOfRowsChanged();
-				m_errorWindow.Value.orderOut(this);
+				m_errorTable.noteNumberOfRowsChanged();
+				m_errorWindow.orderOut(this);
 				break;
 			
 			case State.Built:
 				DoSetBuiltStatus();
-				m_buildBtn.Value.setEnabled(true);
-				m_cancelBtn.Value.setEnabled(false);
+				m_buildBtn.setEnabled(true);
+				m_cancelBtn.setEnabled(false);
 				DoShowOutput();
-				m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(Environment.NewLine, ms_stdoutAttrs));
+				m_outputView.textStorage().appendAttributedString(NSAttributedString.Create(Environment.NewLine, ms_stdoutAttrs));
 				if (m_doc.ExitCode != 0 && m_errors.Count > 0)
-					m_errorWindow.Value.makeKeyAndOrderFront(this);
+					m_errorWindow.makeKeyAndOrderFront(this);
 				break;
 			
 			case State.Canceled:
-				m_statusLabel.Value.setStringValue(NSString.Create("canceled"));
-				m_statusLabel.Value.setTextColor(NSColor.orangeColor());
-				m_buildBtn.Value.setEnabled(true);
-				m_cancelBtn.Value.setEnabled(false);
-				m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(Environment.NewLine, ms_stdoutAttrs));
-				m_errorWindow.Value.orderOut(this);
+				m_statusLabel.setStringValue(NSString.Create("canceled"));
+				m_statusLabel.setTextColor(NSColor.orangeColor());
+				m_buildBtn.setEnabled(true);
+				m_cancelBtn.setEnabled(false);
+				m_outputView.textStorage().appendAttributedString(NSAttributedString.Create(Environment.NewLine, ms_stdoutAttrs));
+				m_errorWindow.orderOut(this);
 				m_errors.Clear();
-				m_errorTable.Value.noteNumberOfRowsChanged();
+				m_errorTable.noteNumberOfRowsChanged();
 				break;
 				
 			default:
@@ -370,43 +350,43 @@ internal sealed class DocWindowController : NSWindowController
 				else
 					++numWarnings;
 			if (numErrors == 1 && numWarnings == 0)
-				m_statusLabel.Value.setStringValue(NSString.Create("one error"));
+				m_statusLabel.setStringValue(NSString.Create("one error"));
 			else if (numErrors == 0 && numWarnings == 1)
-				m_statusLabel.Value.setStringValue(NSString.Create("one warning"));
+				m_statusLabel.setStringValue(NSString.Create("one warning"));
 			else if (numErrors > 0 && numWarnings == 0)
-				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} errors", numErrors)));
+				m_statusLabel.setStringValue(NSString.Create(string.Format("{0} errors", numErrors)));
 			else if (numErrors == 0 && numWarnings > 0)
-				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} warnings", numWarnings)));
+				m_statusLabel.setStringValue(NSString.Create(string.Format("{0} warnings", numWarnings)));
 			else
-				m_statusLabel.Value.setStringValue(NSString.Create(string.Format("{0} errors, {1} warnings", numErrors, numWarnings)));
+				m_statusLabel.setStringValue(NSString.Create(string.Format("{0} errors, {1} warnings", numErrors, numWarnings)));
 			
 			if (numErrors > 0)
-				m_statusLabel.Value.setTextColor(NSColor.redColor());
+				m_statusLabel.setTextColor(NSColor.redColor());
 			else
-				m_statusLabel.Value.setTextColor(NSColor.orangeColor());
+				m_statusLabel.setTextColor(NSColor.orangeColor());
 		}
 		else if (m_doc.ExitCode == 0)
 		{
 			TimeSpan elapsed = DateTime.Now - m_startTime;
-			m_statusLabel.Value.setStringValue(NSString.Create(string.Format("built in {0:0.0} secs", elapsed.TotalSeconds)));
-			m_statusLabel.Value.setTextColor(NSColor.controlTextColor());
+			m_statusLabel.setStringValue(NSString.Create(string.Format("built in {0:0.0} secs", elapsed.TotalSeconds)));
+			m_statusLabel.setTextColor(NSColor.controlTextColor());
 		}
 		else
 		{
-			m_statusLabel.Value.setStringValue(NSString.Create("failed with with exit code " + m_doc.ExitCode));
-			m_statusLabel.Value.setTextColor(NSColor.redColor());
+			m_statusLabel.setStringValue(NSString.Create("failed with with exit code " + m_doc.ExitCode));
+			m_statusLabel.setTextColor(NSColor.redColor());
 		}
 	}
 	
 	private void DoGotCommand(object sender, string data)
 	{
-		m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_commandAttrs));
+		m_outputView.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_commandAttrs));
 		DoScrollOutputToEnd();
 	}
 	
 	private void DoGotStdout(object sender, string data)
 	{
-		m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_stdoutAttrs));
+		m_outputView.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_stdoutAttrs));
 		DoScrollOutputToEnd();
 	}
 	
@@ -416,31 +396,31 @@ internal sealed class DocWindowController : NSWindowController
 		if (error != null)
 		{
 			m_errors.Add(error);
-			m_errorTable.Value.noteNumberOfRowsChanged();
+			m_errorTable.noteNumberOfRowsChanged();
 			
-			if (!m_errorWindow.Value.isVisible())
+			if (!m_errorWindow.isVisible())
 			{
-				m_errorWindow.Value.setTitle(NSString.Create(string.Format("{0} {1} Errors", DoGetTitle(), m_doc.Target)));
-				m_errorWindow.Value.makeKeyAndOrderFront(this);
-				m_errorTable.Value.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(0), false);
+				m_errorWindow.setTitle(NSString.Create(string.Format("{0} {1} Errors", DoGetTitle(), m_doc.Target)));
+				m_errorWindow.makeKeyAndOrderFront(this);
+				m_errorTable.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(0), false);
 			}
 		}
 		
-		m_outputView.Value.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_stderrAttrs));
+		m_outputView.textStorage().appendAttributedString(NSAttributedString.Create(data, ms_stderrAttrs));
 		DoScrollOutputToEnd();
 	}
 	
 	private void DoScrollOutputToEnd()
 	{
-		int len = (int) m_outputView.Value.string_().length();
+		int len = (int) m_outputView.string_().length();
 		NSRange range = new NSRange(len, 0);
-		m_outputView.Value.scrollRangeToVisible(range);
+		m_outputView.scrollRangeToVisible(range);
 	}
 	
 	private void DoShowOutput()
 	{
-		m_transcriptWindow.Value.makeKeyAndOrderFront(this);
-		m_transcriptWindow.Value.setTitle(NSString.Create(DoGetTitle() + " Transcript"));
+		m_transcriptWindow.makeKeyAndOrderFront(this);
+		m_transcriptWindow.setTitle(NSString.Create(DoGetTitle() + " Transcript"));
 	}
 	
 	private string DoGetTitle()
@@ -481,16 +461,16 @@ internal sealed class DocWindowController : NSWindowController
 	
 	#region Fields
 	private Document m_doc;
-	private IBOutlet<EnvController> m_env;
-	private IBOutlet<FlagsController> m_flags;
-	private IBOutlet<NSWindow> m_prefs;
-	private IBOutlet<NSTextField> m_statusLabel;
-	private IBOutlet<NSButton> m_buildBtn;
-	private IBOutlet<NSButton> m_cancelBtn;
-	private IBOutlet<NSTextView> m_outputView;
-	private IBOutlet<ErrorTable> m_errorTable;
-	private IBOutlet<NSWindow> m_transcriptWindow;
-	private IBOutlet<NSWindow> m_errorWindow;
+	private EnvController m_env;
+	private FlagsController m_flags;
+	private NSWindow m_prefs;
+	private NSTextField m_statusLabel;
+	private NSButton m_buildBtn;
+	private NSButton m_cancelBtn;
+	private NSTextView m_outputView;
+	private ErrorTable m_errorTable;
+	private NSWindow m_transcriptWindow;
+	private NSWindow m_errorWindow;
 	private List<Error> m_errors = new List<Error>();
 	private DateTime m_startTime;
 	
