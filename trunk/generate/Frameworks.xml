@@ -270,6 +270,7 @@
 		<TypeResult name = "initWithFloat:"/>
 		<TypeResult name = "initWithFormat:arguments:"/>
 		<TypeResult name = "initWithFormat:locale:arguments:"/>
+		<TypeResult name = "initWithFrame:"/>
 		<TypeResult name = "initWithFrame:pullsDown:"/>
 		<TypeResult name = "initWithFrame:textContainer:"/>
 		<TypeResult name = "initWithIconRef:"/>

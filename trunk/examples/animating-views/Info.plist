@@ -15,46 +15,46 @@ for more information on this file. -->
 	<!-- Keys you will want to change. -->
 	<key>CFBundleIdentifier</key>
 	<string>cocoa3-sharp.examples.${APPNAME}</string>
-
+	
 	<!-- Keys you may want to change. -->
-    <key>CFBundleDevelopmentRegion</key>
-    <string>English</string>
-
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	
 	<key>CFBundleIconFile</key>
 	<string></string>
-
+	
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
-
-	<key>LSMinimumSystemVersion</key>	<!-- note that cocoa2-sharp requires 10.5 -->
+	
+	<key>LSMinimumSystemVersion</key>	<!-- note that mcocoa requires 10.5 -->
 	<string>10.5.0</string>
-
+	
 	<!-- Keys that should not be changed. -->
 	<key>CFBundleExecutable</key>
 	<string>launcher</string>
-
+	
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-
+	
 	<key>CFBundleName</key>
 	<string>${APPNAME}</string>
-
+	
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-
+	
 	<!-- This is what is shown to the user via the Finder's get info command. -->
 	<key>CFBundleShortVersionString</key>	<!-- major.minor.maintenance -->
 	<string>${VERSION}</string>
-
+	
 	<key>CFBundleSignature</key>
 	<string>????</string>
-
+	
 	<key>CFBundleVersion</key>
 	<string>${BUILDNUM}</string> 
-
+	
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
-
+	
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>
