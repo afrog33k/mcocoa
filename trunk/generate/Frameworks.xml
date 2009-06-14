@@ -228,7 +228,8 @@
 		<TypeResult name = "initWithArray:"/>
 		<TypeResult name = "initWithArray:copyItems:"/>
 		<TypeResult name = "initWithAttributedString:"/>
-		<TypeResult name = "initWithChar:"/>
+		<TypeResult name = "initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:"/>
+		<TypeResult name = "initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:"/>
 		<TypeResult name = "initWithBytes:objCType:"/>
 		<TypeResult name = "initWithBytes:length:"/>
 		<TypeResult name = "initWithBytes:length:encoding:"/>
@@ -238,6 +239,9 @@
 		<TypeResult name = "initWithBool:"/>
 		<TypeResult name = "initWithCalendarIdentifier:"/>
 		<TypeResult name = "initWithCapacity:"/>
+		<TypeResult name = "initWithChar:"/>
+		<TypeResult name = "initWithCGImage:"/>
+		<TypeResult name = "initWithCIImage:"/>
 		<TypeResult name = "initWithCoder:"/>
 		<TypeResult name = "initWithCharacters:length:"/>
 		<TypeResult name = "initWithCharactersNoCopy:length:freeWhenDone:"/>
@@ -268,6 +272,7 @@
 		<TypeResult name = "initWithFileDescriptor:closeOnDealloc:"/>
 		<TypeResult name = "initWithFireDate:interval:target:selector:userInfo:repeats:"/>
 		<TypeResult name = "initWithFloat:"/>
+		<TypeResult name = "initWithFocusedViewRect:"/>
 		<TypeResult name = "initWithFormat:arguments:"/>
 		<TypeResult name = "initWithFormat:locale:arguments:"/>
 		<TypeResult name = "initWithFrame:"/>

@@ -31,7 +31,7 @@ namespace MCocoa
 	/// <summary>Wrapper around the Cocoa's NSPoint struct.</summary>
 	[Register("_NSPoint")]
 	[ThreadModel(ThreadModel.Serializable)]
-	public struct NSPoint : IEquatable<NSPoint>
+	public struct NSPoint : IEquatable<NSPoint>, IFormattable
 	{
 		public float x;
 		public float y;
@@ -164,7 +164,7 @@ namespace MCocoa
 	/// <summary>Wrapper around the Cocoa's NSSize struct.</summary>
 	[Register("_NSSize")]
 	[ThreadModel(ThreadModel.Serializable)]
-	public struct NSSize : IEquatable<NSSize>
+	public struct NSSize : IEquatable<NSSize>, IFormattable
 	{
 		public float width;
 		public float height;
@@ -284,7 +284,7 @@ namespace MCocoa
 	/// <summary>Wrapper around the Cocoa's NSRect struct.</summary>
 	[Register("_NSRect")]
 	[ThreadModel(ThreadModel.Serializable)]
-	public struct NSRect : IEquatable<NSRect>
+	public struct NSRect : IEquatable<NSRect>, IFormattable
 	{
 		public NSPoint origin;
 		public NSSize size;

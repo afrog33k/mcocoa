@@ -28,6 +28,18 @@ namespace MCocoa
 {
 	public partial class NSData : NSObject
 	{
+		public static NSData Create(byte[] data)
+		{
+			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			
+			NSData result = NSData.Alloc();
+			result = result.initWithBytes_length(handle.AddrOfPinnedObject(), (uint) data.Length);
+			result.autorelease();
+			
+			handle.Free();
+			return result;
+		}
+		
 		/// <exclude/>
 		[Pure]
 		public byte[] bytes()
