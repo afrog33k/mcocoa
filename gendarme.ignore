@@ -65,6 +65,15 @@ T: MCocoa.NSFastEnumerationState
 R: Gendarme.Rules.Design.EnumsShouldUseInt32Rule
 A: mcocoa
 
+R: Gendarme.Rules.Design.EnsureSymmetryForOverloadedOperatorsRule
+T: MCocoa.NSString
+
+R: Gendarme.Rules.Performance.OverrideValueTypeDefaultsRule
+T: MCocoa.NSApplication/ProcessSerialNumber
+T: MCocoa.NSTypesetterGlyphInfo
+T: MCocoa.NSAffineTransformStruct
+T: MCocoa.NSFastEnumerationState
+
 # These rules are lame.
 R: Gendarme.Rules.Design.Generic.DoNotExposeNestedGenericSignaturesRule
 A: mcocoa
@@ -72,7 +81,7 @@ A: mcocoa
 R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
 A: mcocoa
 
-R: Gendarme.Rules.Design.AvoidUnusedParametersRule
+R: Gendarme.Rules.Performance.AvoidUnusedParametersRule
 A: mcocoa
 
 R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
@@ -133,3 +142,8 @@ M: System.Void MCocoa.NSCoder::.ctor(System.IntPtr)
 # OK to call NSEnumerator::nextObject from a thread from NSDictionary.
 R: Gendarme.Rules.Concurrency.DecorateThreadsRule
 M: MObjc.NSObject MCocoa.NSEnumerator::nextObject()
+
+# These will never be implemented.
+R: Gendarme.Rules.BadPractice.DoNotForgetNotImplementedMethodsRule
+T: MCocoa.GeneratedCode
+

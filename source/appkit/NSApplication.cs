@@ -169,13 +169,14 @@ namespace MCocoa
 		}
 		
 		#region Private Methods
-		[Conditional("DEBUG")]
+#if DEBUG
 		private static void DoInitDebugMenu(Action<NSMenu> extendDebugMenu)
 		{
 			NSMenu menu = ms_helper.InitDebugMenu();
 			if (extendDebugMenu != null)
 				extendDebugMenu(menu);
 		}
+#endif
 		#endregion
 		
 		#region P/Invokes

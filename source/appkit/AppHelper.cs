@@ -34,8 +34,10 @@ namespace MCocoa
 	{
 		public AppHelper(IntPtr instance) : base(instance)
 		{
+#if DEBUG		
 			Contract.Assert(!ms_created, "AppHelper should be created only once");
 			ms_created = true;
+#endif
 		}
 		
 		public static AppHelper Create()
@@ -262,8 +264,10 @@ namespace MCocoa
 			private int m_actionID;
 			private Dictionary<int, Action> m_delayedActions = new Dictionary<int, Action>();
 			private bool m_pendingExecute;
-		
+			
+#if DEBUG		
 		private static bool ms_created;
+#endif
 		#endregion
 	}
 }
