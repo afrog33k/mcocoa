@@ -35,7 +35,7 @@ namespace MCocoa
 	/// <summary>Wrapper around the Cocoa's NSRange struct.</summary>
 	[Register("_NSRange")]
 	[ThreadModel(ThreadModel.Serializable)]
-	public struct NSRange : IEquatable<NSRange>
+	public struct NSRange : IEquatable<NSRange>, IFormattable
 	{
 		public int location;
 		public int length;

@@ -189,8 +189,6 @@ namespace MCocoa
 			public uint lowLongOfPSN;
 		}
 		
-		// Note that we don't need to use the appkit library to get at these functions but
-		// we'd like to force appkit to load early anyway...
 		[DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
 		private static extern int TransformProcessType(ref ProcessSerialNumber psn, uint type);
 		
@@ -199,7 +197,7 @@ namespace MCocoa
 		#endregion
 		
 		#region Fields
-		private static Native ms_run;								// we're not an exported class so mobjc may create new instances of our class even for the same id thus our data should be static
+		private static Native ms_run;						// we're not an exported class so mobjc may create new instances of our class even for the same id thus our data should be static
 		private static AppHelper ms_helper;
 		private static Thread ms_mainThread;
 		

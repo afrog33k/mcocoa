@@ -4,8 +4,11 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Should probably use AllocAndInitInstance.
-
+* Generate externs:
+	- identify them all (name and file)
+	- create a little native app to evaluate them
+	- use the output of the native file to generate an Externs.cs file
+	- add comments to identify the original file
 * Might want to replace the Natty example with something more nifty.
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
    methods use unsigned typed. Perhaps we can fix this by generating signed
