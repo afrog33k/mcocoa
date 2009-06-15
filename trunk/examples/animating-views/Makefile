@@ -1,5 +1,4 @@
-# For new projects you will want to change bin-path, exe-name, and app-name.
-# You may want to change gmcs-resources, bundle-resources, and source-files.
+# For new projects you will want to change exe-name and app-name.
 
 # ------------------
 # Public variables
@@ -7,15 +6,16 @@ CSC ?= gmcs
 PACK ?= cocoa-pack
 
 ifdef RELEASE
-	CSC_FLAGS ?= -checked+ -warn:4 -optimize+
+	CSC_FLAGS ?= -checked+ -warn:4 -optimize+ -d:TRACE
+	MONO_FLAGS += --desktop
 else
 	CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -define:DEBUG
-	MONO_FLAGS ?= --debug
+	MONO_FLAGS ?= --desktop --debug
 endif
 
 # ------------------
 # Internal variables
-bin-path := ../../bin
+bin-path := bin
 exe-name := animating-views
 app-name := AnimatingViews
 
@@ -25,8 +25,16 @@ macos-path := $(contents-path)/MacOS
 resources-path := $(contents-path)/Resources
 exe-path := $(bin-path)/$(exe-name).exe
 
-dummy2 ?= $(shell if [[ "$(CSC_FLAGS)" != `cat $(bin-path)/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > $(bin-path)/csc_flags; fi)
+dummy := $(shell mkdir bin 2> /dev/null)
+dummy := $(shell if [[ "$(CSC_FLAGS)" != `cat $(bin-path)/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > $(bin-path)/csc_flags; fi)
+
+base_version := 0.1.xxx.0										# major.minor.build.revision
+version := $(shell mget_version.sh $(base_version) build_num)	# this will increment the build number stored in build_num
+version := $(strip $(version))
+
 build-num := $(shell echo "$(version)" | cut -d . -f 3)
+dummy := $(shell mgen_version.sh $(version) AssemblyVersion.cs /dev/null)
+dummy := $(shell if [[ "$(GCC_FLAGS)" != `cat bin/gcc_flags 2> /dev/null` ]]; then echo "$(GCC_FLAGS)" > bin/gcc_flags; fi)
 
 # ------------------
 # Primary targets
@@ -52,11 +60,40 @@ $(exe-path): $(bin-path)/csc_flags $(gmcs-files) $(source-files)
 	$(CSC) -out:$(exe-path) $(CSC_FLAGS) -r:$(gmcs-resources) -target:exe $(source-files)
 
 # bundle
-localized-resources := MainMenu.nib
-localized-files := $(localized-resources)
+nib-files := $(wildcard *.nib)
+nib-resources := $(shell echo $(nib-files) | sed "s/ /,/g")
 
-$(app-path): $(exe-path) Info.plist $(bin-path)/mobjc-glue.dylib $(localized-files)
+$(app-path): $(exe-path) Info.plist $(bin-path)/mobjc-glue.dylib $(nib-files)
 	@echo "building $(app-path)"
-	@$(PACK) --app=$(app-path) --exe=$(exe-path) --mono-flags='$(MONO_FLAGS)' --plist=Info.plist           \
-	--resources=$(gmcs-resources),$(bin-path)/mobjc-glue.dylib --resources=English.lproj:$(localized-resources) \
+	@$(PACK) --app=$(app-path) --exe=$(exe-path) \
+	--mono-flags='$(MONO_FLAGS)' \
+	--plist=Info.plist \
+	--resources=$(gmcs-resources),$(bin-path)/mobjc-glue.dylib \
+	--resources=English.lproj:$(nib-resources) \
 	--vars=APPNAME:$(app-name),VERSION:$(version),BUILDNUM:$(build-num)
+
+# ------------------------------------------------------------------------
+# Misc targets
+update-libraries:
+	cp `pkg-config --variable=Libraries mobjc` bin
+	cp `pkg-config --variable=Libraries mcocoa` bin
+
+# Note that we only clean what we built: so mcocoa and mobjc are
+# not removed.
+clean:
+	-rm bin/csc_flags
+	-rm $(exe-path)
+	-rm $(exe-path).mdb
+	-rm -rf $(app-path)
+
+help:
+	@echo "$(app-name) version $(version)"
+	@echo " "
+	@echo "The primary targets are:"
+	@echo "app              - build the app"
+	@echo "run              - run the app"
+	@echo "update-libraries - copy the installed libraries into bin"
+	@echo " "
+	@echo "Variables include:"
+	@echo "RELEASE - define to enable release builds"
+

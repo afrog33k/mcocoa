@@ -21,12 +21,12 @@ dummy1 := $(shell mkdir bin 2> /dev/null)
 export dummy2 := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
 
 base_version := 0.5.xxx.0										# major.minor.build.revision
-version := $(shell ./get_version.sh $(base_version) build_num)	# this will increment the build number stored in build_num
+version := $(shell mget_version.sh $(base_version) build_num)	# this will increment the build number stored in build_num
 export version := $(strip $(version))
 
 # ------------------
 # Primary targets		
-all: animating-views natty
+all: lib
 
 lib: bin/mcocoa.dll
 
@@ -35,18 +35,6 @@ test: bin/tests.dll
 
 generate: bin/generate.exe
 	cd bin && "$(MONO)" generate.exe --xml=../generate/Frameworks.xml --out=../source
-
-animating-views: bin/mcocoa.dll
-	cd examples/animating-views && make app
-
-run-animating-views: bin/mcocoa.dll
-	cd examples/animating-views && make run
-
-natty: bin/mcocoa.dll
-	cd examples/natty && make app
-
-run-natty: bin/mcocoa.dll
-	cd examples/natty && make run
 
 update-libraries:
 	cp `pkg-config --variable=Libraries mobjc` bin
@@ -61,7 +49,7 @@ bin/generate.exe: generate/*.cs generate/Frameworks.xml bin/csc_flags
 	$(CSC) -out:bin/generate.exe $(CSC_FLAGS) -reference:bin/mobjc.dll -target:exe generate/*.cs
 		
 bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
-	@./gen_version.sh $(version) source/AssemblyVersion.cs
+	@mgen_version.sh $(version) source/AssemblyVersion.cs
 	$(CSC) -out:bin/mcocoa.dll $(CSC_FLAGS) -keyfile:keys -doc:bin/docs.xml -target:library -reference:bin/mobjc.dll @bin/cocoa_files
 
 bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs bin/mcocoa.dll
@@ -82,10 +70,6 @@ gendarme: bin/mobjc.dll
 # Note that we do not want to remove mobjc.
 clean:
 	-rm bin/csc_flags bin/cocoa_files
-	-rm -rf bin/AnimatingViews.app
-	-rm -rf bin/Natty.app
-	-rm bin/animating-views.exe bin/animating-views.exe.mdb
-	-rm bin/natty.exe bin/natty.exe.mdb
 	-rm bin/mcocoa.dll bin/mcocoa.dll.mdb
 	-rm bin/docs.xml
 
@@ -93,22 +77,20 @@ help:
 	@echo "mcocoa version $(version)"
 	@echo " "
 	@echo "The primary targets are:"
-	@echo "generate             - create the cocoa wrapper classes"
-	@echo "lib                  - build the library"
-	@echo "test                 - run the unit tests"
-	@echo "run-animating-views  - build and run the animating-views sample app"
-	@echo "run-natty            - build and run the natty sample app"
-	@echo "update-libraries     - copy the current mobjc libs into bin"
-	@echo "clean                - remove the app bundles and executables from bin"
-	@echo "install              - install the dll and a pkg-config file"
-	@echo "uninstall            - remove the dll and the pkg-config file"
+	@echo "generate         - create the cocoa wrapper classes"
+	@echo "lib              - build the library"
+	@echo "test             - run the unit tests"
+	@echo "update-libraries - copy the current mobjc libs into bin"
+	@echo "clean            - remove the app bundles and executables from bin"
+	@echo "install          - install the dll and a pkg-config file"
+	@echo "uninstall        - remove the dll and the pkg-config file"
 	@echo " "
 	@echo "Variables include:"
 	@echo "RELEASE - define to enable release builds, defaults to not defined"
 	@echo "INSTALL_DIR - where to put the dll, defaults to $(INSTALL_DIR)/lib"
 	@echo " "
-	@echo "Here's an example:"	
-	@echo "sudo make RELEASE=1 install"	
+	@echo "Here's an example:"
+	@echo "sudo make RELEASE=1 install"
 
 pc_file := $(PACKAGE_DIR)/mcocoa.pc
 install: bin/mcocoa.dll
@@ -130,7 +112,7 @@ endif
 	@echo "" >> $(pc_file)
 	@echo "" >> $(pc_file)
 	@echo "Name: mcocoa" >> $(pc_file)
-	@echo "Description: Winforms/Cocoa .NET application framework" >> $(pc_file)
+	@echo "Description: Mono <--> Cocoa Bridge" >> $(pc_file)
 	@echo "Version: $(version)" >> $(pc_file)
 	@echo "Libs: -r:mcocoa.dll" >> $(pc_file)
 
@@ -141,5 +123,5 @@ uninstall:
 
 tar:
 	tar --create --compress --exclude \*/.svn --exclude \*/.svn/\* --file=mcocoa-$(version).tar.gz \
-		AUTHORS CHANGES CHANGE_LOG Dictionary.txt MIT.X11 Makefile README examples gen_version.sh gendarme.ignore generate get_version.sh source tests
+		AUTHORS CHANGES CHANGE_LOG Dictionary.txt MIT.X11 Makefile README examples gendarme.ignore generate source tests
 
