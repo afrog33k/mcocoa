@@ -28,22 +28,22 @@ namespace MCocoa
 	public static partial class Externs
 	{
 		// standard error domains
-		public static readonly NSString NSPOSIXErrorDomain = NSString.Create("NSPOSIXErrorDomain").Retain();
-		public static readonly NSString NSOSStatusErrorDomain = NSString.Create("NSOSStatusErrorDomain").Retain();
-		public static readonly NSString NSMachErrorDomain = NSString.Create("NSMachErrorDomain").Retain();
-		public static readonly NSString Cocoa3Domain = NSString.Create("Cocoa3Domain").Retain();
+		public static readonly LazyString NSPOSIXErrorDomain = new LazyString("NSPOSIXErrorDomain");
+		public static readonly LazyString NSOSStatusErrorDomain = new LazyString("NSOSStatusErrorDomain");
+		public static readonly LazyString NSMachErrorDomain = new LazyString("NSMachErrorDomain");
+		public static readonly LazyString Cocoa3Domain = new LazyString("Cocoa3Domain");
 		
 		// standard userInfo keys
-		public static readonly NSString NSLocalizedDescriptionKey = NSString.Create("NSLocalizedDescription").Retain();
-		public static readonly NSString NSErrorFailingURLStringKey = NSString.Create("NSErrorFailingURLStringKey").Retain();
-		public static readonly NSString NSFilePathErrorKey = NSString.Create("NSFilePath").Retain();
-		public static readonly NSString NSStringEncodingErrorKey = NSString.Create("NSStringEncoding").Retain();
-		public static readonly NSString NSUnderlyingErrorKey = NSString.Create("NSUnderlyingError").Retain();
-		public static readonly NSString NSURLErrorKey = NSString.Create("NSURL").Retain();
-		public static readonly NSString NSLocalizedFailureReasonErrorKey = NSString.Create("NSLocalizedFailureReason").Retain();
-		public static readonly NSString NSLocalizedRecoverySuggestionErrorKey = NSString.Create("NSLocalizedRecoverySuggestion").Retain();
-		public static readonly NSString NSLocalizedRecoveryOptionsErrorKey = NSString.Create("NSLocalizedRecoveryOptions").Retain();
-		public static readonly NSString NSRecoveryAttempterErrorKey = NSString.Create("NSRecoveryAttempter").Retain();
+		public static readonly LazyString NSLocalizedDescriptionKey = new LazyString("NSLocalizedDescription");
+		public static readonly LazyString NSErrorFailingURLStringKey = new LazyString("NSErrorFailingURLStringKey");
+		public static readonly LazyString NSFilePathErrorKey = new LazyString("NSFilePath");
+		public static readonly LazyString NSStringEncodingErrorKey = new LazyString("NSStringEncoding");
+		public static readonly LazyString NSUnderlyingErrorKey = new LazyString("NSUnderlyingError");
+		public static readonly LazyString NSURLErrorKey = new LazyString("NSURL");
+		public static readonly LazyString NSLocalizedFailureReasonErrorKey = new LazyString("NSLocalizedFailureReason");
+		public static readonly LazyString NSLocalizedRecoverySuggestionErrorKey = new LazyString("NSLocalizedRecoverySuggestion");
+		public static readonly LazyString NSLocalizedRecoveryOptionsErrorKey = new LazyString("NSLocalizedRecoveryOptions");
+		public static readonly LazyString NSRecoveryAttempterErrorKey = new LazyString("NSRecoveryAttempter");
 	}
 	
 	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/nserror_Class/Reference/Reference.html">docs</a>.</summary>

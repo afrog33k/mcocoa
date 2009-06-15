@@ -28,24 +28,24 @@ namespace MCocoa
 	public partial class Externs
 	{
 		// Predefined colorspace names
-		public static readonly NSString NSCalibratedWhiteColorSpace = NSString.Create("NSCalibratedWhiteColorSpace").Retain();
-		public static readonly NSString NSCalibratedBlackColorSpace = NSString.Create("NSCalibratedBlackColorSpace").Retain();
-		public static readonly NSString NSCalibratedRGBColorSpace = NSString.Create("NSCalibratedRGBColorSpace").Retain();
-		public static readonly NSString NSDeviceWhiteColorSpace = NSString.Create("NSDeviceWhiteColorSpace").Retain();
-		public static readonly NSString NSDeviceBlackColorSpace = NSString.Create("NSDeviceBlackColorSpace").Retain();
-		public static readonly NSString NSDeviceRGBColorSpace = NSString.Create("NSDeviceRGBColorSpace").Retain();
-		public static readonly NSString NSDeviceCMYKColorSpace = NSString.Create("NSDeviceCMYKColorSpace").Retain();
-		public static readonly NSString NSNamedColorSpace = NSString.Create("NSNamedColorSpace").Retain();
-		public static readonly NSString NSPatternColorSpace = NSString.Create("NSPatternColorSpace").Retain();
-		public static readonly NSString NSCustomColorSpace = NSString.Create("NSCustomColorSpace").Retain();
+		public static readonly LazyString NSCalibratedWhiteColorSpace = new LazyString("NSCalibratedWhiteColorSpace");
+		public static readonly LazyString NSCalibratedBlackColorSpace = new LazyString("NSCalibratedBlackColorSpace");
+		public static readonly LazyString NSCalibratedRGBColorSpace = new LazyString("NSCalibratedRGBColorSpace");
+		public static readonly LazyString NSDeviceWhiteColorSpace = new LazyString("NSDeviceWhiteColorSpace");
+		public static readonly LazyString NSDeviceBlackColorSpace = new LazyString("NSDeviceBlackColorSpace");
+		public static readonly LazyString NSDeviceRGBColorSpace = new LazyString("NSDeviceRGBColorSpace");
+		public static readonly LazyString NSDeviceCMYKColorSpace = new LazyString("NSDeviceCMYKColorSpace");
+		public static readonly LazyString NSNamedColorSpace = new LazyString("NSNamedColorSpace");
+		public static readonly LazyString NSPatternColorSpace = new LazyString("NSPatternColorSpace");
+		public static readonly LazyString NSCustomColorSpace = new LazyString("NSCustomColorSpace");
 		
 		// Keys for deviceDescription dictionaries
-		public static readonly NSString NSDeviceResolution = NSString.Create("NSDeviceResolution").Retain();
-		public static readonly NSString NSDeviceColorSpaceName = NSString.Create("NSDeviceColorSpaceName").Retain();
-		public static readonly NSString NSDeviceBitsPerSample = NSString.Create("NSDeviceBitsPerSample").Retain();
-		public static readonly NSString NSDeviceIsScreen = NSString.Create("NSDeviceIsScreen").Retain();
-		public static readonly NSString NSDeviceIsPrinter = NSString.Create("NSDeviceIsPrinter").Retain();
-		public static readonly NSString NSDeviceSize = NSString.Create("NSDeviceSize").Retain();
+		public static readonly LazyString NSDeviceResolution = new LazyString("NSDeviceResolution");
+		public static readonly LazyString NSDeviceColorSpaceName = new LazyString("NSDeviceColorSpaceName");
+		public static readonly LazyString NSDeviceBitsPerSample = new LazyString("NSDeviceBitsPerSample");
+		public static readonly LazyString NSDeviceIsScreen = new LazyString("NSDeviceIsScreen");
+		public static readonly LazyString NSDeviceIsPrinter = new LazyString("NSDeviceIsPrinter");
+		public static readonly LazyString NSDeviceSize = new LazyString("NSDeviceSize");
 		
 		// Standard gray values for the 2-bit deep grayscale colorspace
 		public const float NSWhite = 1.000000f;

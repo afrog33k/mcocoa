@@ -4,6 +4,8 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
+* Run unit tests again.
+* Make sure natty releases objects.
 * Release checklist:
 	- review tar target
 	- make sure everything is checked in
@@ -19,7 +21,8 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- send an announcement
 	- make sure everything is checked in
 
-* Probably want all init methods to return their declaring type.
+* Probably want all init methods to return their declaring type (if the original
+   returns id).
 * Generate externs:
 	- identify them all (name and file)
 	- create a little native app to evaluate them
