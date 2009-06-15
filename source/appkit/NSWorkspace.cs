@@ -29,22 +29,22 @@ namespace MCocoa
 	public static partial class Externs
 	{
 		// Return values for type in getInfoForFile
-		public static readonly NSString NSPlainFileType = NSString.Create(string.Empty).Retain();
-		public static readonly NSString NSDirectoryFileType = NSString.Create("NXDirectoryFileType").Retain();
-		public static readonly NSString NSApplicationFileType = NSString.Create("app").Retain();
-		public static readonly NSString NSFilesystemFileType = NSString.Create("NXFilesystemFileType").Retain();
-		public static readonly NSString NSShellCommandFileType = NSString.Create("NXShellCommandFileType").Retain();
+		public static readonly LazyString NSPlainFileType = new LazyString(string.Empty);
+		public static readonly LazyString NSDirectoryFileType = new LazyString("NXDirectoryFileType");
+		public static readonly LazyString NSApplicationFileType = new LazyString("app");
+		public static readonly LazyString NSFilesystemFileType = new LazyString("NXFilesystemFileType");
+		public static readonly LazyString NSShellCommandFileType = new LazyString("NXShellCommandFileType");
 		
 		// Possible values for operation in performFileOperation
-		public static readonly NSString NSWorkspaceMoveOperation = NSString.Create("move").Retain();
-		public static readonly NSString NSWorkspaceCopyOperation = NSString.Create("copy").Retain();
-		public static readonly NSString NSWorkspaceLinkOperation = NSString.Create("link").Retain();
-		public static readonly NSString NSWorkspaceCompressOperation = NSString.Create("compress").Retain();
-		public static readonly NSString NSWorkspaceDecompressOperation = NSString.Create("decompress").Retain();
-		public static readonly NSString NSWorkspaceEncryptOperation = NSString.Create("encrypt").Retain();
-		public static readonly NSString NSWorkspaceDecryptOperation = NSString.Create("decrypt").Retain();
-		public static readonly NSString NSWorkspaceDestroyOperation = NSString.Create("destroy").Retain();
-		public static readonly NSString NSWorkspaceRecycleOperation = NSString.Create("recycle").Retain();
-		public static readonly NSString NSWorkspaceDuplicateOperation = NSString.Create("duplicate").Retain();
+		public static readonly LazyString NSWorkspaceMoveOperation = new LazyString("move");
+		public static readonly LazyString NSWorkspaceCopyOperation = new LazyString("copy");
+		public static readonly LazyString NSWorkspaceLinkOperation = new LazyString("link");
+		public static readonly LazyString NSWorkspaceCompressOperation = new LazyString("compress");
+		public static readonly LazyString NSWorkspaceDecompressOperation = new LazyString("decompress");
+		public static readonly LazyString NSWorkspaceEncryptOperation = new LazyString("encrypt");
+		public static readonly LazyString NSWorkspaceDecryptOperation = new LazyString("decrypt");
+		public static readonly LazyString NSWorkspaceDestroyOperation = new LazyString("destroy");
+		public static readonly LazyString NSWorkspaceRecycleOperation = new LazyString("recycle");
+		public static readonly LazyString NSWorkspaceDuplicateOperation = new LazyString("duplicate");
 	}
 }

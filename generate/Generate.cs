@@ -304,33 +304,6 @@ internal sealed class Generate
 		}
 	}
 	
-	// TODO: not sure this is completely legit...
-	private void DoWriteCategoryThreading(string name)
-	{
-		Threading thread = m_threading.FirstOrDefault(t => t.Type == name);
-		if (thread != null)
-		{
-			switch (thread.Model)
-			{
-				case "concurrent":
-					DoWrite("		[ThreadModel(ThreadModel.Concurrent)]");
-					break;
-					
-				case "serializable":
-				case "single":
-					DoWrite("		[ThreadModel(ThreadModel.SingleThread)]");
-					break;
-					
-				case "main":
-					DoWrite("		[ThreadModel(ThreadModel.MainThread)]");
-					break;
-					
-				default:
-					throw new Exception("bad threading: " + thread.Model);
-			}
-		}
-	}
-	
 	private void DoWriteInterfaceTrailer()
 	{
 		if (m_interface.Category == null)
@@ -483,9 +456,6 @@ internal sealed class Generate
 						DoWrite("\t\t");
 					
 					DoWrite("	\t/// <exclude/>");
-					if (m_interface.Category != null)
-						DoWriteCategoryThreading(m_interface.Name);
-					
 					DoWriteMethod(nm);
 					wrote = true;
 				}

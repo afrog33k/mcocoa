@@ -138,7 +138,7 @@ namespace MCocoa
 			List<string> lines = new List<string>();
 			foreach (NSObject o in NSObject.Snapshot())
 			{
-				lines.Add(o.ToString("G", null));
+				lines.Add(o.ToString("S", null));
 			}
 			
 			lines.Sort();
