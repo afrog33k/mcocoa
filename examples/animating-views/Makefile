@@ -24,7 +24,7 @@ exe-path := bin/$(exe-name).exe
 dummy := $(shell mkdir bin 2> /dev/null)
 dummy := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
 
-base_version := 0.1.xxx.0										# major.minor.build.revision
+base_version := 0.6.xxx.0										# major.minor.build.revision
 version := $(shell mget_version.sh $(base_version) build_num)	# this will increment the build number stored in build_num
 version := $(strip $(version))
 

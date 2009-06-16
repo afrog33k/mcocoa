@@ -4,24 +4,6 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Release checklist:
-	- make sure unit tests work
-	- review tar target
-	- sync example version numbers with the lib
-	- make sure everything is checked in
-	- use svn log -r 1:HEAD > CHANGE_LOG 
-	- update CHANGES file
-	- update version number
-	- remove build_num file 
-	- update libraries
-	- install
-	- upload new html docs
-	- update README and wiki
-	- delete the example bin directories
-	- upload a new version to googlecode
-	- send an announcement
-	- make sure everything is checked in
-
 * Probably want all init methods to return their declaring type (if the original
    returns id).
 * Generate externs:
@@ -61,6 +43,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- upload new html docs
 	- update README and wiki
 	- delete the example bin directories
+	- delete the generated code?
 	- upload a new version to googlecode
 	- send an announcement
 	- make sure everything is checked in
