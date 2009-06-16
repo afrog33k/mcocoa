@@ -744,3 +744,309 @@ Added an NSString::Equals(string) overload.
 
 
 ------------------------------------------------------------------------
+r73 | jesjones@mindspring.com | 2009-04-28 20:55:44 -0700 (Tue, 28 Apr 2009) | 7 lines
+
+Index: CHANGE_LOG
+Index: CHANGES
+* Updated.
+
+Index: Makefile
+* Incremented version number.
+
+------------------------------------------------------------------------
+r74 | jesjones@mindspring.com | 2009-05-07 08:27:30 -0700 (Thu, 07 May 2009) | 5 lines
+
+* Documented the threading model supported by the code using a custom
+   attribute.
+* Added a missing lock to AppHelper::QueueDelayed.
+
+
+------------------------------------------------------------------------
+r75 | jesjones@mindspring.com | 2009-05-07 18:35:08 -0700 (Thu, 07 May 2009) | 16 lines
+
+Index: generate/Frameworks.xml
+ * Made NSAutoreleasePool arbitrary instead of main thread.
+ * Made NSMutableData, NSMutableDictionary, NSMutableSet, NSMutableString, NSFileHandle,
+    and NSMutableArray serializable instead of main thread.
+ 	
+Index: source/foundation/NSFileManager.cs
+* NSFileManager is safe to use from multiple threads in Leopard if you create multiple instances
+   so defaultManager now asserts that it is called from the main thread and the type is now
+   arbitrary threaded.
+
+Index: generate/Generate.cs
+* Categories now inherit their thread model from the type they extend.
+
+Index: generate/Threading.cs
+* Added missing file.
+
+------------------------------------------------------------------------
+r76 | jesjones@mindspring.com | 2009-05-07 22:30:22 -0700 (Thu, 07 May 2009) | 3 lines
+
+Updated the ThreadModel class.
+
+
+------------------------------------------------------------------------
+r77 | jesjones@mindspring.com | 2009-05-08 19:54:18 -0700 (Fri, 08 May 2009) | 3 lines
+
+More thread model work.
+
+
+------------------------------------------------------------------------
+r78 | jesjones@mindspring.com | 2009-05-09 09:54:39 -0700 (Sat, 09 May 2009) | 3 lines
+
+Yet another ThreadModel revision.
+
+
+------------------------------------------------------------------------
+r79 | jesjones@mindspring.com | 2009-05-21 11:12:35 -0700 (Thu, 21 May 2009) | 9 lines
+
+Index: source/foundation/NSData.cs
+Index: generate/Frameworks.xml
+* Replaced the NSData bytes, getBytes, getBytes_length, and getBytes_range methods
+   with versions that use byte[] instead of IntPtr.
+
+Index: examples/animating-views/SimpleLayoutView.cs
+* Whitespace.
+
+
+------------------------------------------------------------------------
+r80 | jesjones@mindspring.com | 2009-05-21 15:54:04 -0700 (Thu, 21 May 2009) | 7 lines
+
+Index: source/foundation/NSError.cs
+* Raise throws OperationCanceledException instead of InvalidOperationException if
+   the cocoa exception is Cocoa3Domain and NSUserCancelledError.
+   
+Index: source/appkit/NSApplication.cs
+* Added a comment.
+
+------------------------------------------------------------------------
+r81 | jesjones@mindspring.com | 2009-05-23 07:59:23 -0700 (Sat, 23 May 2009) | 9 lines
+
+Index: source/foundation/NSString.cs
+* Added NSString and string versions of operator+.
+
+Index: source/foundation/NSData.cs
+* Fixed a buffer overflow in the new getBytes_length method.
+
+Index: source/appkit/NSWindowController.cs
+* Added a comment.
+
+------------------------------------------------------------------------
+r82 | jesjones@mindspring.com | 2009-05-23 11:38:40 -0700 (Sat, 23 May 2009) | 10 lines
+
+Index: generate/Frameworks.xml
+* Don't special case the return type for mutableCopyWithZone (it's usually the declaring
+   type, but not always).
+   
+Index: source/foundation/NSAttributedString.cs
+* Added init methods for NSMutableAttributedString.
+
+Index: source/foundation/NSString.cs
+* Added init and static string creation methods for NSMutableString.
+
+------------------------------------------------------------------------
+r83 | jesjones@mindspring.com | 2009-06-06 21:53:49 -0700 (Sat, 06 Jun 2009) | 10 lines
+
+Index: Makefile
+Index: source/appkit/NSTypesetterGlyphInfo.cs
+Index: source/foundation/NSRange.cs
+Index: source/foundation/NSEnumerator.cs
+* Removed DisableRule attributes.
+* Removed smoke make target.
+
+Index: source/appkit/AppHelper.cs
+* Use new AllocAndInitInstance method.
+
+------------------------------------------------------------------------
+r84 | jesjones@mindspring.com | 2009-06-06 22:44:40 -0700 (Sat, 06 Jun 2009) | 6 lines
+
+Index: generate/Generate.cs
+* Add exclude xml doc tags.
+
+Index: Makefile
+* Added docs target using (for now) unreleased mmmdoc tool.
+
+------------------------------------------------------------------------
+r85 | jesjones@mindspring.com | 2009-06-06 22:56:08 -0700 (Sat, 06 Jun 2009) | 16 lines
+
+Index: generate/Generate.cs
+* Add exclude tags to generated enums.
+
+Index: source/foundation/NSFileManager.cs
+Index: source/foundation/NSEnumerator.cs
+Index: source/foundation/NSAffineTransform.cs
+Index: source/foundation/NSError.cs
+Index: source/foundation/Functions.cs
+Index: source/foundation/Notifications.cs
+Index: source/appkit/NSTypesetterGlyphInfo.cs
+Index: source/appkit/NSWorkspace.cs
+Index: source/appkit/NSAttributedString.cs
+Index: source/FastPath.cs
+* Added exclude tags to some wrappers.
+
+
+------------------------------------------------------------------------
+r86 | jesjones@mindspring.com | 2009-06-07 11:53:00 -0700 (Sun, 07 Jun 2009) | 3 lines
+
+Finished first cut at adding xml docs.
+
+
+------------------------------------------------------------------------
+r95 | jesjones@mindspring.com | 2009-06-07 15:17:31 -0700 (Sun, 07 Jun 2009) | 7 lines
+
+Index: README
+* Replaced most of the usage section with a link to the wiki.
+
+Index: source/GeneratedCode.cs
+* Added.
+
+
+------------------------------------------------------------------------
+r96 | jesjones@mindspring.com | 2009-06-07 17:05:42 -0700 (Sun, 07 Jun 2009) | 14 lines
+
+Index: examples/animating-views/SimpleLayoutView.cs
+* Cleaned up the code a bit.
+
+Index: examples/animating-views/Program.cs
+* Removed the try block and some using declarations.
+
+Index: generate/Frameworks.xml
+* initWithFrame: now returns the declaring type instead of NSObject.
+
+Index: examples/animating-views/AssemblyInfo.cs
+Index: examples/animating-views/Info.plist
+* Whitespace.
+
+
+------------------------------------------------------------------------
+r97 | jesjones@mindspring.com | 2009-06-07 18:03:44 -0700 (Sun, 07 Jun 2009) | 6 lines
+
+Cleaned up the examples:
+- Natty DocWindowController loads the document nib in a nicer way.
+- Instead of using IBOutlet<T> fields just use T fields.
+- Use description() instead of To<NSString>().ToString().
+- Fixed a lot of whitespace. 
+
+------------------------------------------------------------------------
+r98 | jesjones@mindspring.com | 2009-06-07 19:02:51 -0700 (Sun, 07 Jun 2009) | 9 lines
+
+Index: source/foundation/NSData.cs
+* Fixed the getBytes using lengths so that they work properly when the length is zero.
+
+Index: source/appkit/NSWindowController.cs
+* Made the custom NSWindowController ctor obsolete (use loadNibNamed_owner instead).
+
+Index: examples/natty/DocWindowController.cs
+* Uses AllocAndInitInstance instead of AllocInstance.
+
+------------------------------------------------------------------------
+r99 | jesjones@mindspring.com | 2009-06-14 09:47:04 -0700 (Sun, 14 Jun 2009) | 15 lines
+
+Index: generate/Frameworks.xml
+* NSBitmapImageRep init methods (and any others with the same name) now return
+   their declaring type instead of NSObject.
+   
+Index: source/foundation/NSGeometry.cs
+Index: source/foundation/NSRange.cs
+* Made IFormattable.
+
+Index: source/foundation/NSData.cs
+* Created Create(byte[]) overload.
+
+Index: source/appkit/NSGraphics.cs
+* Added externs: NSDeviceRGBColorSpace, NSDeviceResolution, NSWhite, etc.
+
+
+------------------------------------------------------------------------
+r100 | jesjones@mindspring.com | 2009-06-14 10:01:51 -0700 (Sun, 14 Jun 2009) | 12 lines
+
+Index: source/appkit/AppHelper.cs
+* Fixed a release warning.
+
+Index: source/appkit/NSApplication.cs
+* Compiles in release.
+
+Index: gendarme.ignore
+* Ignore some more stuff.
+
+Index: Makefile
+* Need to disable warning 1591 in release too.
+
+------------------------------------------------------------------------
+r101 | jesjones@mindspring.com | 2009-06-14 19:54:00 -0700 (Sun, 14 Jun 2009) | 18 lines
+
+Index: generate/Generate.cs
+* Don't add ThreadModel attributes to category methods.
+
+Index: source/appkit/AppHelper.cs
+* dumpObjects now dumps stack traces (if they are enabled).
+
+Index: source/foundation/NSFileManager.cs
+Index: source/foundation/NSError.cs
+Index: source/foundation/Notifications.cs
+Index: source/appkit/NSWorkspace.cs
+Index: source/appkit/NSAttributedString.cs
+Index: source/appkit/NSGraphics.cs
+* Extern strings are now lazily created.
+
+Index: source/LazyObject.cs
+* Added (so that it's easier to track NSString leaks).
+
+
+------------------------------------------------------------------------
+r102 | jesjones@mindspring.com | 2009-06-15 13:31:39 -0700 (Mon, 15 Jun 2009) | 15 lines
+
+Index: gen_version.sh
+Index: get_version.sh
+* Replaced gen_version.sh and get_version.sh with the ones (now) installed
+   by mobjc.
+   
+Index: Makefile
+* Reworked examples so that they are built just like user apps.
+
+Index: examples/animating-views/AssemblyInfo.cs
+Index: examples/animating-views/Makefile
+* AssemblyVersion.cs is now generated by the make file.
+* Uses a local bin directory instead of the mcocoa one.
+* Grab the nib files using a wild card.
+* Added update-libraries, clean, and help targets.
+
+------------------------------------------------------------------------
+r103 | jesjones@mindspring.com | 2009-06-15 19:31:40 -0700 (Mon, 15 Jun 2009) | 5 lines
+
+Index: examples/animating-views/Makefile
+* Removed -checked+ from release.
+* Removed some internal variables which weren't pulling their weight.
+
+
+------------------------------------------------------------------------
+r104 | jesjones@mindspring.com | 2009-06-15 19:32:53 -0700 (Mon, 15 Jun 2009) | 3 lines
+
+Added new MandelZoomer example app.
+
+
+------------------------------------------------------------------------
+r105 | jesjones@mindspring.com | 2009-06-15 20:04:46 -0700 (Mon, 15 Jun 2009) | 3 lines
+
+* Added some more comments to the MandelZoomer example (plus a few
+   minor tweaks).
+   
+------------------------------------------------------------------------
+r106 | jesjones@mindspring.com | 2009-06-15 20:05:41 -0700 (Mon, 15 Jun 2009) | 3 lines
+
+Removed the natty example.
+
+
+------------------------------------------------------------------------
+r107 | jesjones@mindspring.com | 2009-06-15 20:27:42 -0700 (Mon, 15 Jun 2009) | 8 lines
+
+Index: README
+* Updated for changes to examples building.
+
+Index: examples/animating-views/AppIcon.icns
+Index: examples/animating-views/Info.plist
+Index: examples/animating-views/Makefile
+* Added an icon.
+
+------------------------------------------------------------------------

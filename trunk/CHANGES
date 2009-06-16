@@ -1,4 +1,34 @@
--- Version 0.5.0.0 (r46) ----
+-- Version 0.6.0.0 (r107) ----
+
+* Added a missing lock to AppHelper::QueueDelayed.
+* Made the custom NSWindowController ctor obsolete (use loadNibNamed_owner instead).
+* Don't special case the return type for mutableCopyWithZone (it's usually the declaring
+   type, but not always).
+* NSBitmapImageRep init methods (and any others with the same name) now return
+   their declaring type instead of NSObject.
+* Added externs for NSDeviceRGBColorSpace, NSDeviceResolution, NSWhite, etc.
+* Replaced the NSData bytes, getBytes, getBytes_length, and getBytes_range methods
+   with versions that use byte[] instead of IntPtr.
+* Added NSData.Create(byte[]) overload.
+* Added NSString and string versions of operator+.
+* Added init methods for NSMutableAttributedString.
+* Added init and static string creation methods for NSMutableString.
+* NSError.Raise throws OperationCanceledException instead of InvalidOperationException 
+   if the cocoa exception is Cocoa3Domain and NSUserCancelledError.
+* Made NSPoint, NSSize, NSRect, and NSRange IFormattable.
+* Extern NSString objects are now lazily created.
+* Debug dumpObjects method now dumps stack traces (if they are enabled).
+* Documented the threading semantics of types and methods using a new
+   ThreadModelAttribute (which the next version of gendarme will recognize).
+* NSFileManager is safe to use from multiple threads in Leopard if you create multiple 
+   instances so defaultManager now asserts that it is called from the main thread and 
+   the type is now decorated as ThreadModel.SingleThread.
+* Added xml documentation.
+* Reworked examples so that they are built just like user apps.
+* Added an icon to the AnimatingViews example.
+* Replaced natty example with a cooler and better written infinite precision Mandelbrot app.
+
+-- Version 0.5.0.0 (r73) ----
 
 * Fixed the SetFrontProcess code which (sometimes) crashed horribly on intel.
 * Added NSMutableArray.Create methods.
