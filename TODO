@@ -6,6 +6,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 
 * Probably want all init methods to return their declaring type (if the original
    returns id).
+* initWithIdentifier needs to return declaring type.
 * Generate externs:
 	- identify them all (name and file)
 	- create a little native app to evaluate them

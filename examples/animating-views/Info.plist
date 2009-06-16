@@ -20,9 +20,6 @@ for more information on this file. -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	
-	<key>CFBundleIconFile</key>
-	<string></string>
-	
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	
@@ -53,7 +50,7 @@ for more information on this file. -->
 	<string>????</string>
 	
 	<key>CFBundleVersion</key>
-	<string>${BUILDNUM}</string> 
+	<string>${BUILDNUM}</string>
 	
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
