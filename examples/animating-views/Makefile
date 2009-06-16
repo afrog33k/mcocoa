@@ -59,12 +59,12 @@ $(exe-path): bin/csc_flags $(gmcs-files) $(source-files)
 nib-files := $(wildcard *.nib)
 nib-resources := $(shell echo $(nib-files) | sed "s/ /,/g")
 
-$(app-path): $(exe-path) Info.plist bin/mobjc-glue.dylib $(nib-files)
+$(app-path): $(exe-path) Info.plist bin/mobjc-glue.dylib $(nib-files) AppIcon.icns
 	@echo "building $(app-path)"
 	@$(PACK) --app=$(app-path) --exe=$(exe-path) \
 	--mono-flags='$(MONO_FLAGS)' \
 	--plist=Info.plist \
-	--resources=$(gmcs-resources),bin/mobjc-glue.dylib \
+	--resources=$(gmcs-resources),bin/mobjc-glue.dylib,AppIcon.icns \
 	--resources=English.lproj:$(nib-resources) \
 	--vars=APPNAME:$(app-name),VERSION:$(version),BUILDNUM:$(build-num)
 

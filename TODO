@@ -4,12 +4,6 @@ set a symbolic breakpoint at -[NSException raise]
 
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
-* Work on examples:
-	- add some comments
-	- remove natty
-	- update the mcocoa make file
-	- update building and maybe readme
-* Add an animating-views icon.
 * Release checklist:
 	- make sure unit tests work
 	- review tar target
