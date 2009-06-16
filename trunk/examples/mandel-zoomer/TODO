@@ -1,0 +1,79 @@
+http://home.att.net/~Paul.N.Lee/Fractal_Software.html
+
+* Extract should use the old palette (and maybe other stuff).
+* Can use Save a Copy As to export.
+* Add support for randomizing palettes.
+* Might want Zoom By menu too.
+* Should change the cursor to cross-hair.
+* Add a random palette window:
+	- average key colors field
+	- interpolation method
+		http://en.wikipedia.org/wiki/Polynomial_interpolation
+		or splines
+	- interpolated palette
+	- color wells below the palette showing key colors
+	- grabbers extending from the wells into the palette
+	- sentinel wells should not be draggable (so disable grabbers)
+	- dragging outside the window should delete the key color
+	- option drag should duplicate
+	- don't show all the key colors if there are a lot?
+* Temp palettes are cool.
+* Might want duplicate command (duplicates the current doc).
+* Probably need a quadatic to map dwells into the palette.
+* Should be able to add and remove palettes.
+* Should be able to copy image to the pasteboard. Selection too?
+* Should build a fat gmp library.
+* Normalized Iteration Count Algorithm looks interesting:
+	- http://en.wikipedia.org/wiki/Mandelbrot_set#Escape_time_algorithm
+	- not sure its worth it once zoom in a bit tho
+* Would be nice to show a remaining time estimate.
+* Add a coordinate inspector:
+	- hidden by default
+	- shows point, pixel, dwell, palette location
+* Need to call cascadeTopLeftFromPoint ourself for some reason.
+* Should be able to use libgmp without requiring people to install it:
+	- option 1 is to put the dylib in the bundle but then the native lib can't find it
+	  (DYLD_LIBRARY_PATH doesn't seem to be exported to it)
+	- option 2 is to have the native lib statically link and change the managed code
+	  to p/invoke into the native lib for all the gmp calls
+* Add an icon.
+* Try packaging libgmp.3.5.0.dylib with the bundle (and be sure it works w/o gmp
+   installed).
+* Make sure windows and obejcts are going away.
+* Might want to always save as xml and include an export as gif/png/etc option.
+* Fracint uses gif extension blocks to save info.
+* Add a menu to allow number of threads to be set.
+* Might want to divide canvas into cells and randomly hand them off to the threads.
+* Add support for adding and removing palettes:
+	- can remove everything but the default palette?
+	- add a make default command?
+* Buddhabrot  looks cool, see
+	- http://en.wikipedia.org/wiki/Mandelbrot_set
+* http://www.mrob.com/pub/muency/speedimprovements.html
+* Run gendarme.
+* Pref for initial size. Also startup action.
+* Would be neat if doc info had a mini map showing location. Maybe with zoom in
+   and out buttons.
+* Anti-alias?
+* Might want to add some styles:
+	- http://mail.phy.bg.ac.yu/~rakaj/home/MCBC24.pdf
+	- http://nylander.wordpress.com/2005/02/24/mandelbrot-set-biomorph/
+	- http://en.wikipedia.org/wiki/Buddhabrot
+	- min angle is kinda neat:
+		double a1 = double.MaxValue;
+		for (int i = 0; i + 1 < m_points.Count; ++i)
+		{
+			a1 = Math.Min(a1, (Math.PI/2 + Math.Atan((m_points[i + 1].Y - m_points[i].Y)/(m_points[i + 1].X - m_points[i].Y))));
+		}
+		return (float) a1;
+	- maybe min velocity too:
+		double v1 = double.MaxValue;
+		for (int i = 0; i + 1 < m_points.Count; ++i)
+		{
+			v1 = Math.Min(v1, Math.Abs(m_points[i + 1].Magnitude - m_points[i].Magnitude));
+		}
+		return (float) v1;
+* Can we use (or import) the Fractint file format?
+* Optimizations:
+	http://spanky.triumf.ca/www/fractint/periodicity.html#integer_math_anchor
+	

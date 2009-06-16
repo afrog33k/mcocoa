@@ -1,0 +1,35 @@
+# Ignore lists start with a rule name (R) followed by a list of assemblies (A),
+# types (T), and methods (M) to ignore.
+
+# We don't care about these rules.
+R: Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule
+A: mandel-zoomer
+
+R: Gendarme.Rules.Performance.AvoidUnusedParametersRule
+A: mandel-zoomer
+
+R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
+A: mandel-zoomer
+
+R: Gendarme.Rules.Design.ProvideAlternativeNamesForOperatorOverloadsRule
+A: mandel-zoomer
+
+R: Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule
+A: mandel-zoomer
+
+# These rules don't work well with mcocoa.
+R: Gendarme.Rules.Naming#UseCorrectCasingRule
+A: mandel-zoomer
+
+R: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
+A: mandel-zoomer
+
+R: GendarmeGendarme.Rules.Naming.UseCorrectCasingRule
+A: mandel-zoomer
+
+# We deliberately provide a minimal set of operators for BigFloat.
+R: Gendarme.Rules.Design.EnsureSymmetryForOverloadedOperatorsRule
+A: mandel-zoomer
+
+R: Gendarme.Rules.Design.ProvideAlternativeNamesForOperatorOverloadsRule
+A: mandel-zoomer

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fractal exponent="3.50" name="Vivid3">
+  <settings area="160000" maxDwell="12000" left="-7.34520783771996532218@-1:50.0" right="-7.3452078377128626939@-1:50.0" top="-1.89029204243989798257@-1:50.0" bottom="-1.89029204244857993467@-1:50.0" />
+  <palette>
+    <color location="0.000" red="0.024" green="0.059" blue="0.094" />
+    <color location="0.095" red="0.059" green="0.325" blue="0.263" />
+    <color location="0.151" red="0.059" green="0.459" blue="0.180" />
+    <color location="0.166" red="0.071" green="0.498" blue="0.180" />
+    <color location="0.251" red="0.408" green="0.753" blue="0.702" />
+    <color location="0.312" red="0.769" green="0.890" blue="0.933" />
+    <color location="0.327" red="0.796" green="0.890" blue="0.941" />
+    <color location="0.397" red="0.333" green="0.325" blue="0.686" />
+    <color location="0.462" red="0.298" green="0.063" blue="0.443" />
+    <color location="0.487" red="0.322" green="0.012" blue="0.380" />
+    <color location="0.513" red="0.451" green="0.016" blue="0.431" />
+    <color location="0.603" red="0.690" green="0.027" blue="0.180" />
+    <color location="0.638" red="0.784" green="0.071" blue="0.031" />
+    <color location="0.804" red="0.976" green="0.988" blue="0.169" />
+    <color location="0.905" red="0.118" green="0.906" blue="0.153" />
+    <color location="0.970" red="0.078" green="0.855" blue="0.667" />
+    <color location="1.000" red="0.729" green="0.729" blue="0.937" />
+  </palette>
+</fractal>

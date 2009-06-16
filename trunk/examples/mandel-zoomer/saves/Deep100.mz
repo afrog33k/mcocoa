@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fractal exponent="2.00" name="Pale">
+  <settings area="160000" maxDwell="10000" left="-1.266420320840724157011304881297112426068@0:100.5" right="-1.266420320840724157011304875370194811299@0:100.5" top="-3.574056938379312027145964451549037959571@-1:100.5" bottom="-3.574056938379312027145964509812264829501@-1:100.5" />
+  <palette>
+    <color location="0.000" red="0.027" green="0.094" blue="0.020" />
+    <color location="0.221" red="0.055" green="0.667" blue="0.420" />
+    <color location="0.332" red="0.012" green="0.937" blue="0.890" />
+    <color location="0.437" red="0.008" green="0.686" blue="0.176" />
+    <color location="0.477" red="0.012" green="0.592" blue="0.004" />
+    <color location="0.568" red="0.227" green="0.376" blue="0.000" />
+    <color location="0.633" red="0.220" green="0.208" blue="0.000" />
+    <color location="0.663" red="0.157" green="0.125" blue="0.000" />
+    <color location="1.000" red="0.745" green="0.510" blue="0.020" />
+  </palette>
+</fractal>

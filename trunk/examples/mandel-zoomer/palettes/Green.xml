@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<palette>
+  <color location="0.000" red="0.033" green="0.032" blue="0.032" />
+  <color location="0.045" red="0.327" green="0.240" blue="0.222" />
+  <color location="0.090" red="0.622" green="0.362" blue="0.242" />
+  <color location="0.121" red="0.786" green="0.422" blue="0.179" />
+  <color location="0.141" red="0.704" green="0.609" blue="0.190" />
+  <color location="0.151" red="0.652" green="0.663" blue="0.193" />
+  <color location="0.176" red="0.360" green="0.560" blue="0.193" />
+  <color location="0.201" red="0.182" green="0.458" blue="0.199" />
+  <color location="0.231" red="0.154" green="0.335" blue="0.278" />
+  <color location="0.246" red="0.141" green="0.294" blue="0.278" />
+  <color location="0.296" red="0.143" green="0.491" blue="0.321" />
+  <color location="0.337" red="0.090" green="0.649" blue="0.205" />
+  <color location="0.372" red="0.036" green="0.768" blue="0.018" />
+  <color location="0.497" red="0.046" green="0.228" blue="0.022" />
+  <color location="0.518" red="0.051" green="0.333" blue="0.069" />
+  <color location="0.568" red="0.176" green="0.597" blue="0.390" />
+  <color location="0.623" red="0.374" green="0.861" blue="0.839" />
+  <color location="0.673" red="0.224" green="0.855" blue="0.435" />
+  <color location="0.704" red="0.162" green="0.851" blue="0.135" />
+  <color location="0.749" red="0.461" green="0.847" blue="0.018" />
+  <color location="0.779" red="0.538" green="0.659" blue="0.031" />
+  <color location="0.804" red="0.503" green="0.487" blue="0.034" />
+  <color location="0.839" red="0.285" green="0.194" blue="0.028" />
+  <color location="0.874" red="0.097" green="0.044" blue="0.012" />
+  <color location="0.910" red="0.204" green="0.224" blue="0.043" />
+  <color location="0.955" red="0.108" green="0.387" blue="0.123" />
+  <color location="1.000" red="0.190" green="0.532" blue="0.495" />
+</palette>

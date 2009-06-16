@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<palette>
+  <color location="0.000" red="0.031" green="0.098" blue="0.020" />
+  <color location="0.221" red="0.055" green="0.668" blue="0.422" />
+  <color location="0.332" red="0.012" green="0.941" blue="0.891" />
+  <color location="0.437" red="0.008" green="0.688" blue="0.180" />
+  <color location="0.477" red="0.012" green="0.594" blue="0.004" />
+  <color location="0.568" red="0.230" green="0.379" blue="0.000" />
+  <color location="0.633" red="0.223" green="0.211" blue="0.000" />
+  <color location="0.663" red="0.160" green="0.129" blue="0.000" />
+  <color location="1.000" red="0.746" green="0.512" blue="0.020" />
+</palette>
