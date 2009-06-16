@@ -24,6 +24,8 @@ using MObjc;
 using MObjc.Helpers;
 using System;
 
+// Note that this has the same lifetime as the app so we don't bother releasing
+// the window or calling removeObserver.
 [ExportClass("DocumentInfoController", "NSWindowController", Outlets = "left right top bottom maxDwell minDwell precision")]
 internal sealed class DocumentInfoController : NSWindowController
 {

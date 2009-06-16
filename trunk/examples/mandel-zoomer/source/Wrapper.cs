@@ -28,7 +28,7 @@ using System;
 [ExportClass("Wrapper")]
 internal sealed class Wrapper : NSObject
 {
-	public Wrapper(object value) : base(NSObject.AllocAndInitInstance("Wrapper"))
+	private Wrapper(object value) : base(NSObject.AllocAndInitInstance("Wrapper"))
 	{
 		Value = value;
 	}

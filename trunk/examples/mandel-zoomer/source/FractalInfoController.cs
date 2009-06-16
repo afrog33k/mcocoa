@@ -24,6 +24,8 @@ using MObjc;
 using MObjc.Helpers;
 using System;
 
+// Note that this has the same lifetime as the app so we don't bother releasing
+// the window or calling removeObserver.
 [ExportClass("FractalInfoController", "NSWindowController", Outlets = "width height maxDwells timeLabel")]
 internal sealed class FractalInfoController : NSWindowController
 {
@@ -76,7 +78,7 @@ internal sealed class FractalInfoController : NSWindowController
 		{
 			settings.MaxDwell = (ushort) maxDwell;
 			
-			doc.updateSettings(new Wrapper(settings));
+			doc.updateSettings(Wrapper.Create(settings));
 			doc.undoManager().setActionName(NSString.Create("Set Max Dwell"));
 		}
 	}
@@ -93,7 +95,7 @@ internal sealed class FractalInfoController : NSWindowController
 			BigFloat height = width/ratio;
 			settings.Area = (int) (double) (width*height);
 			
-			doc.updateSettings(new Wrapper(settings));
+			doc.updateSettings(Wrapper.Create(settings));
 			doc.undoManager().setActionName(NSString.Create("Set Width"));
 		}
 	}
@@ -110,7 +112,7 @@ internal sealed class FractalInfoController : NSWindowController
 			BigFloat width = height*ratio;
 			settings.Area = (int) (double) (width*height);
 			
-			doc.updateSettings(new Wrapper(settings));
+			doc.updateSettings(Wrapper.Create(settings));
 			doc.undoManager().setActionName(NSString.Create("Set Height"));
 		}
 	}

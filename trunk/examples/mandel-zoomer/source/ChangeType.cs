@@ -21,7 +21,7 @@
 
 using System;
 
-// Used with the StateChanged notification.
+// Used with the DocChange notification.
 [Flags]
 [Serializable]
 internal enum ChangeType

@@ -131,11 +131,6 @@ internal sealed class FractalView : NSView
 		get {return m_selection;}
 	}
 	
-	// TODO: It'd be nice to allow the user to select the format, but I'm not sure how
-	// to do this. You're supposed to be able to do some Info.plist voodoo to allow the
-	// save as dialog provide exports, but even the Apple example the docs point you 
-	// to doesn't seem to work (the Sketch example). Another option is to use setAccessoryView
-	// to add a popup to the save panel.
 	public void saveImage(NSObject sender)
 	{
 		NSSavePanel panel = NSSavePanel.savePanel();
@@ -153,7 +148,6 @@ internal sealed class FractalView : NSView
 			IntPtr.Zero);		// context
 	}
 	
-//	[Register("saveTheImage")]
 	public void saveTheImage(NSSavePanel panel, int returnCode, IntPtr context)
 	{
 		if (returnCode == Enums.NSOKButton)
@@ -219,7 +213,7 @@ internal sealed class FractalView : NSView
 			((point1.y <= point2.y) ? point2.y - point1.y : point1.y - point2.y));
 	}
 	
-	private unsafe void DoRefresh()		// TODO: use unchecked math
+	private unsafe void DoRefresh()		// TODO: use unchecked math?
 	{
 		m_refreshing = !m_document.AllDone;
 		

@@ -30,6 +30,11 @@ using System.Xml;
 [ExportClass("FractalController", "NSWindowController", Outlets = "view")]
 internal sealed class FractalController : NSWindowController
 {
+	// This seems to be a good way to handle nib files: the file's owner is the controller
+	// and the nib is loaded by constructing the controller. The window should have 
+	// Release When Closed set and either the document (in makeWindowControllers)
+	// or the controller ctor should autorelease the controller. Then the only remaining
+	// bit of reference counting is to remove the window reference inside OnDealloc.
 	public FractalController(Document doc) : base(NSObject.AllocAndInitInstance("FractalController"))
 	{
 		m_document = doc;
@@ -91,7 +96,7 @@ internal sealed class FractalController : NSWindowController
 	{
 		FractalSettings settings = DoGetSelectionSettings();
 		
-		m_document.updateSettings(new Wrapper(settings));
+		m_document.updateSettings(Wrapper.Create(settings));
 		m_document.undoManager().setActionName(NSString.Create("Magnify"));
 	}
 	
@@ -120,7 +125,7 @@ internal sealed class FractalController : NSWindowController
 			origin.X + width,
 			origin.Y - height);
 		
-		m_document.updateSettings(new Wrapper(settings));
+		m_document.updateSettings(Wrapper.Create(settings));
 		m_document.undoManager().setActionName(NSString.Create("Zoom In"));
 	}
 	
@@ -140,7 +145,7 @@ internal sealed class FractalController : NSWindowController
 			origin.X.Add(width, precision),
 			origin.Y.Sub(height, precision));
 		
-		m_document.updateSettings(new Wrapper(settings));
+		m_document.updateSettings(Wrapper.Create(settings));
 		m_document.undoManager().setActionName(NSString.Create("Zoom Out"));
 	}
 	
@@ -173,7 +178,7 @@ internal sealed class FractalController : NSWindowController
 		
 		if (name != m_document.Palette.Name)
 		{
-			m_document.updatePalette(new Wrapper(palette));
+			m_document.updatePalette(Wrapper.Create(palette));
 			m_document.undoManager().setActionName(NSString.Create("Set Palette"));
 		}
 	}
@@ -261,7 +266,7 @@ internal sealed class FractalController : NSWindowController
 		BigFloat dy = settings.Extent.Height*hy/10;
 		settings.Extent = settings.Extent.Offset(dx, dy);
 		
-		m_document.updateSettings(new Wrapper(settings));
+		m_document.updateSettings(Wrapper.Create(settings));
 		m_document.undoManager().setActionName(NSString.Create(name));
 	}
 	#endregion

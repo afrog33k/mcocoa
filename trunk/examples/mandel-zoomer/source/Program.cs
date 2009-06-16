@@ -29,24 +29,35 @@ internal static class Program
 {
 	public static void Main(string[] args)
 	{
+		// NSObjects cannot be created until this is set. It should be set after all
+		// assemblies which contain exported or registered mobjc types have been
+		// loaded.
 		Registrar.CanInit = true;
 		
-		var pool = NSAutoreleasePool.Create();
+		// If this is set then mobjc will save stack traces for all NSObjects. The Dump
+		// Objects command in the Debug menu can be used to print the stack traces
+		// for all outstanding objects (normally you'd use the Debug menu to force a
+		// garbage collection before doing this).
 //		NSObject.SaveStackTraces = true;
+		
+		// Pretty much all cocoa objects require that an autorelease pool is active.
+		// One will be created each time through the main event loop, but we
+		// haven't entered the main event loop so we need to create a pool so that
+		// we can create the app.
+		var pool = NSAutoreleasePool.Create();
+		
+		// Creates the application object. Note that there are also Create overloads
+		// which can be used to create a custom NSApplication or to extend the 
+		// Debug menu.
 		NSApplication app = NSApplication.Create("MainMenu.nib");
 			
 		if (Preflight())
 		{
-			// TODO: starting with mono 2.2 the path to the exe is part of the unmanaged command
-			// line arguments, but not the managed command line arguments. So, when cocoa starts
-			// up it opens the exe as a document. The following line suppresses cocoa's argument
-			// processing... 
-			NSUserDefaults.standardUserDefaults().setObject_forKey(NSString.Create("NO"), NSString.Create("NSTreatUnknownArgumentsAsOpen"));
+			// If everything is OK then clear our autorelease pool and enter the main
+			// event loop. Note that run will not return: if you want to hook into process
+			// exit use AppDelegate.applicationWillTerminate.
 			pool.release();
-			
 			app.run();
-			
-			// note that we don't actually land here when quitting...
 		}
 	}
 	
