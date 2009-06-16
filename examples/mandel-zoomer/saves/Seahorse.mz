@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fractal exponent="5.00" name="Plain">
+  <settings area="160000" maxDwell="1200" left="-7.4980719174565602092@-1:9.19" right="-7.40953785644051010628@-1:9.19" top="-1.05190394545195006759@-1:9.19" bottom="-1.13319408771723001417@-1:9.19" />
+  <palette>
+    <color location="0.000" red="0.024" green="0.933" blue="0.075" />
+    <color location="0.020" red="0.063" green="0.937" blue="0.024" />
+    <color location="0.251" red="0.973" green="0.957" blue="0.024" />
+    <color location="0.487" red="0.984" green="0.008" blue="0.024" />
+    <color location="0.497" red="0.976" green="0.008" blue="0.027" />
+    <color location="0.518" red="0.937" green="0.024" blue="0.008" />
+    <color location="0.784" red="0.424" green="0.322" blue="0.000" />
+    <color location="1.000" red="0.012" green="0.020" blue="0.000" />
+  </palette>
+</fractal>
