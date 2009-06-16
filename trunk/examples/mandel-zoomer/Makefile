@@ -77,7 +77,7 @@ $(app-path): $(exe-path) bin/native.dylib source/Info.plist $(nib-files) AppIcon
 	--plist=source/Info.plist \
 	--resources=bin/mobjc.dll,bin/mcocoa.dll,palettes,bin/native.dylib,AppIcon.icns \
 	--resources=English.lproj:$(nib-resources) \
-	--vars=APPNAME:MandelZoomer,VERSION:$(version),BUILDNUM:$(build-num)
+	--vars=APPNAME:$(app-name),VERSION:$(version),BUILDNUM:$(build-num)
 
 # ------------------------------------------------------------------------
 # Misc targets
@@ -100,7 +100,7 @@ gendarme: $(exe-path)
 	@$(GENDARME) $(gendarme_flags) $(exe-path)
 	
 help:
-	@echo "MandelZoomer version $(version)"
+	@echo "$(app-name) version $(version)"
 	@echo " "
 	@echo "The primary targets are:"
 	@echo "app              - build the app"

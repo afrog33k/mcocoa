@@ -230,9 +230,9 @@ internal sealed class FractalController : NSWindowController
 		{
 			enabled = true;
 		}
-		else if (SuperCall("respondsToSelector:", new Selector("validateUserInterfaceItem")).To<bool>())
+		else if (SuperCall(NSWindowController.Class, "respondsToSelector:", new Selector("validateUserInterfaceItem")).To<bool>())
 		{
-			enabled = SuperCall("validateUserInterfaceItem:", sender).To<bool>();
+			enabled = SuperCall(NSWindowController.Class, "validateUserInterfaceItem:", sender).To<bool>();
 		}
 		
 		return enabled;

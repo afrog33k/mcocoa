@@ -75,7 +75,7 @@ internal sealed class SimpleLayoutView : NSView
 	// cause relayout.
 	public new void setFrameSize(NSSize size)
 	{
-		SuperCall("setFrameSize:", size);
+		SuperCall(NSView.Class, "setFrameSize:", size);
 		DoLayout();
 	}
 	#endregion
