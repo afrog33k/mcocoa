@@ -26,6 +26,9 @@ for more information on this file. -->
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	
+	<key>CFBundleIconFile</key>
+	<string>AppIcon.icns</string>
+	
 	<key>LSMinimumSystemVersion</key>	<!-- note that mcocoa requires 10.5 -->
 	<string>10.5.0</string>
 	
