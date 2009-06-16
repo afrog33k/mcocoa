@@ -5,13 +5,15 @@ set a symbolic breakpoint at -[NSException raise]
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
 * Work on examples:
-	- add mandelzoomer
-	- make sure mandelzoomer releases windows
-	- make sure mandelzoomer releases objects
+	- remove bin and AssemblyVersion.cs
+	- checkin
+	- add some comments
 	- remove natty
 	- update the mcocoa make file
 	- update building and maybe readme
+* Add an animating-views icon.
 * Release checklist:
+	- make sure unit tests work
 	- review tar target
 	- sync example version numbers with the lib
 	- make sure everything is checked in
@@ -23,6 +25,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- install
 	- upload new html docs
 	- update README and wiki
+	- delete the example bin directories
 	- upload a new version to googlecode
 	- send an announcement
 	- make sure everything is checked in
@@ -34,9 +37,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- create a little native app to evaluate them
 	- use the output of the native file to generate an Externs.cs file
 	- add comments to identify the original file
-* Might want to replace the Natty example with something more nifty. Note also
-   that the natty example is kind of hosed: doc windows aren't released properly
-   and the document.nib looks completely wrong.
+* Get mandel-zoomer doing a bit better with gendarme.
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
    methods use unsigned typed. Perhaps we can fix this by generating signed
    overloads and decorating the original versions with CLSCompliant.
@@ -54,7 +55,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- search for TODO (everywhere)
 	- run gendarme
 	- make sure unit tests work
-	- make sure examples work in debug		NSTextStorage
+	- make sure examples work in debug
 	- make sure examples work in release
 	- review tar target
 	- make sure everything is checked in
@@ -67,6 +68,7 @@ http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/Ja
 	- install
 	- upload new html docs
 	- update README and wiki
+	- delete the example bin directories
 	- upload a new version to googlecode
 	- send an announcement
 	- make sure everything is checked in
