@@ -49,9 +49,11 @@ internal sealed class AppDelegate : NSObject
 	
 	public void applicationWillTerminate(NSObject notification)
 	{
+#if DEBUG
 		// These are fairly expensive to create and it's easy to mess up and
 		// create tons inside loops so we'll print the count here.
 		Console.WriteLine("{0} BigFloat instances were created.", BigFloat.InstanceCount);
+#endif
 	}
 	
 	public void showDocInfo(NSObject sender)

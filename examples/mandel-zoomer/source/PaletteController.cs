@@ -24,6 +24,8 @@ using MObjc;
 using MObjc.Helpers;
 using System;
 
+// Note that this has the same lifetime as the app so we don't bother releasing
+// the window or calling removeObserver.
 [ExportClass("PaletteController", "NSWindowController", Outlets = "exponent")]
 internal sealed class PaletteController : NSWindowController
 {

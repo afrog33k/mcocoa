@@ -26,10 +26,11 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml;
 
+// Cocoa will instantiate these using the NSDocumentClass entry from Info.plist. 
 [ExportClass("Document", "NSDocument")]
 internal sealed class Document : NSDocument
 {
-	// Value is a DocChange.
+	// Value is a DocChange instance.
 	public static readonly NSString StateChanged = NSString.Create("document state changed").Retain();
 	
 	private Document(IntPtr instance) : base(instance)

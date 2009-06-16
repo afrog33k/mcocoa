@@ -5,8 +5,6 @@ set a symbolic breakpoint at -[NSException raise]
 http://developer.apple.com/techpubs/macosx/Cocoa/ProgrammingTopics/JavaBridge/JavaBridge.html
 
 * Work on examples:
-	- remove bin and AssemblyVersion.cs
-	- checkin
 	- add some comments
 	- remove natty
 	- update the mcocoa make file

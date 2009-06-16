@@ -23,6 +23,8 @@ using MCocoa;
 using MObjc;
 using System;
 
+// Used with NSNotificationCenter to notify views and inspectors that a
+// document has changed.
 [ExportClass("DocChange")]
 internal sealed class DocChange : NSObject
 {
