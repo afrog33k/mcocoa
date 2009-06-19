@@ -3,7 +3,9 @@
 CSC ?= gmcs
 MONO ?= mono
 NUNIT ?= nunit-console2
-GENDARME ?= /usr/local/bin/gendarme
+GENDARME ?= gendarme
+GET_VERSION ?= mget_version.sh
+GEN_VERSION ?= mgen_version.sh
 
 ifdef RELEASE
 	# Note that -debug+ just generates an mdb file.
@@ -21,7 +23,7 @@ dummy1 := $(shell mkdir bin 2> /dev/null)
 export dummy2 := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
 
 base_version := 0.6.xxx.0										# major.minor.build.revision
-version := $(shell mget_version.sh $(base_version) build_num)	# this will increment the build number stored in build_num
+version := $(shell "$(GET_VERSION)" $(base_version) build_num)	# this will increment the build number stored in build_num
 export version := $(strip $(version))
 
 # ------------------
@@ -49,7 +51,7 @@ bin/generate.exe: generate/*.cs generate/Frameworks.xml bin/csc_flags
 	$(CSC) -out:bin/generate.exe $(CSC_FLAGS) -reference:bin/mobjc.dll -target:exe generate/*.cs
 		
 bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
-	@mgen_version.sh $(version) source/AssemblyVersion.cs
+	@"$(GEN_VERSION)" $(version) source/AssemblyVersion.cs
 	$(CSC) -out:bin/mcocoa.dll $(CSC_FLAGS) -keyfile:keys -doc:bin/docs.xml -target:library -reference:bin/mobjc.dll @bin/cocoa_files
 
 bin/tests.dll: bin/csc_flags tests/*.cs generate/*.cs bin/mcocoa.dll

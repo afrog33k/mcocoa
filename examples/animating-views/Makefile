@@ -4,6 +4,8 @@
 # Public variables
 CSC ?= gmcs
 PACK ?= cocoa-pack
+GET_VERSION ?= mget_version.sh
+GEN_VERSION ?= mgen_version.sh
 
 ifdef RELEASE
 	CSC_FLAGS ?= -warn:4 -optimize+ -d:TRACE
@@ -25,11 +27,11 @@ dummy := $(shell mkdir bin 2> /dev/null)
 dummy := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
 
 base_version := 0.6.xxx.0										# major.minor.build.revision
-version := $(shell mget_version.sh $(base_version) build_num)	# this will increment the build number stored in build_num
+version := $(shell "$(GET_VERSION)" $(base_version) build_num)	# this will increment the build number stored in build_num
 version := $(strip $(version))
 
 build-num := $(shell echo "$(version)" | cut -d . -f 3)
-dummy := $(shell mgen_version.sh $(version) AssemblyVersion.cs /dev/null)
+dummy := $(shell "$(GEN_VERSION)" $(version) AssemblyVersion.cs /dev/null)
 dummy := $(shell if [[ "$(GCC_FLAGS)" != `cat bin/gcc_flags 2> /dev/null` ]]; then echo "$(GCC_FLAGS)" > bin/gcc_flags; fi)
 
 # ------------------
