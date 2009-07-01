@@ -325,6 +325,16 @@ namespace MCocoa
 			get {return origin.y + size.height;}
 		}
 		
+		public NSPoint TopLeft
+		{
+			get {return new NSPoint(Left, Top);}
+		}
+		
+		public NSPoint BottomRight
+		{
+			get {return new NSPoint(Right, Bottom);}
+		}
+		
 		public NSPoint Center
 		{
 			get {return new NSPoint(origin.x + size.width/2.0f, origin.y + size.height/2.0f);}

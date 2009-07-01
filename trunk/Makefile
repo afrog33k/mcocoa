@@ -4,8 +4,8 @@ CSC ?= gmcs
 MONO ?= mono
 NUNIT ?= nunit-console2
 GENDARME ?= gendarme
-GET_VERSION ?= mget_version.sh
-GEN_VERSION ?= mgen_version.sh
+GET_VERSION ?= /usr/local/bin/mget_version.sh
+GEN_VERSION ?= /usr/local/bin/mgen_version.sh
 
 ifdef RELEASE
 	# Note that -debug+ just generates an mdb file.
