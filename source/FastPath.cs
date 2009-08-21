@@ -44,12 +44,20 @@ namespace MCocoa
 		
 		public static IntPtr CreateU8Buffer(string instance)
 		{
-			return Marshal.StringToHGlobalAuto(instance);
+			// NSString does not seem to support embedded nulls so to avoid a premature
+			// truncation we'll replace nulls with the replacement character.
+			string s = instance.Replace('\x0', Replacement);
+			
+			return Marshal.StringToHGlobalAuto(s);
 		}
 		
 		public static IntPtr CreateU32Buffer(string instance)
 		{
-			return Marshal.StringToHGlobalUni(instance);
+			// NSString does not seem to support embedded nulls so to avoid a premature
+			// truncation we'll replace nulls with the replacement character.
+			string s = instance.Replace('\x0', Replacement);
+			
+			return Marshal.StringToHGlobalUni(s);
 		}
 		
 		// instance is just used to pick the correct overload
@@ -70,5 +78,7 @@ namespace MCocoa
 		{
 			Marshal.FreeHGlobal(buffer);
 		}
+		
+		private static readonly char Replacement = '\xFFFD';
 	}
 }
