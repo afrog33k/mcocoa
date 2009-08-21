@@ -44,20 +44,16 @@ namespace MCocoa
 		
 		public static NSString Create(string str)
 		{
-			IntPtr buffer = Marshal.StringToHGlobalAuto(str);
+			IntPtr buffer = FastPath.CreateU8Buffer(str);
 			NSString result = ms_class.Call("stringWithUTF8String:", buffer).To<NSString>();
-			Marshal.FreeHGlobal(buffer);
+			FastPath.FreeBuffer(str, buffer);
 			
 			return result;
 		}
 		
 		public static NSString Create(string format, params object[] args)
 		{
-			IntPtr buffer = Marshal.StringToHGlobalAuto(string.Format(format, args));
-			NSString result = ms_class.Call("stringWithUTF8String:", buffer).To<NSString>();
-			Marshal.FreeHGlobal(buffer);
-			
-			return result;
+			return Create(string.Format(format, args));
 		}
 		
 		public static NSString operator+(NSString lhs, NSString rhs)
