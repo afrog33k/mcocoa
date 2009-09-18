@@ -26,11 +26,11 @@ using System.IO;
 internal sealed class ObjectModel	
 {
 	public void Parse(string inPath)
-	{	
+	{
 		m_inPath = inPath;
-				
+		
 		string text = File.ReadAllText(m_inPath);
-	
+		
 		DoTypedefs(text);
 		DoProtocols(text);
 		
@@ -58,7 +58,7 @@ internal sealed class ObjectModel
 		
 		else if (!m_typeMapping.TryGetValue(type, out result))
 			result = type;
-			
+		
 		return result;
 	}
 	
@@ -105,7 +105,7 @@ internal sealed class ObjectModel
 			Console.Error.WriteLine("{0} TypeResult was listed twice", method);
 	}
 	
-	#region Private Methods ---------------------------------------------------
+	#region Private Methods
 	private void DoTypedefs(string text)
 	{
 		TypedefParser parser = new TypedefParser(m_inPath, text);
@@ -114,14 +114,14 @@ internal sealed class ObjectModel
 		{
 			KeyValuePair<string, string> m = parser.Mapping;
 			parser.Advance();
-						
+			
 			if (!m_typeMapping.ContainsKey(m.Key))
 				m_typeMapping.Add(m.Key, m.Value);
 			else if (m_typeMapping[m.Key] != m.Value)
 				throw new Exception(string.Format("Typedef {0} has multiple values in {1}", m.Key, m_inPath));
 		}
 	}
-		
+	
 	private List<NativeEnum> DoEnums(string text)
 	{
 		List<NativeEnum> enums = new List<NativeEnum>();
@@ -131,7 +131,7 @@ internal sealed class ObjectModel
 		while (!parser.AtEnd)
 		{
 			enums.Add(parser.Enum);
-			parser.Advance();			
+			parser.Advance();
 		}
 		
 		return enums;
@@ -170,7 +170,7 @@ internal sealed class ObjectModel
 	}
 	#endregion
 	
-	#region Private Methods ---------------------------------------------------
+	#region Private Methods
 	private string m_inPath;
 	private Dictionary<string, string> m_typeMapping = new Dictionary<string, string>();
 	private List<NativeFile> m_files = new List<NativeFile>();
