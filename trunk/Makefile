@@ -36,7 +36,7 @@ check: bin/tests.dll
 	cd bin && "$(NUNIT)" tests.dll -nologo
 
 generate: bin/generate.exe
-	cd bin && "$(MONO)" generate.exe --xml=../generate/Frameworks.xml --out=../source
+	cd bin && "$(MONO)" --debug generate.exe --xml=../generate/Frameworks.xml --out=../source
 
 update-libraries:
 	cp `pkg-config --variable=Libraries mobjc` bin
