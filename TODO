@@ -17,7 +17,6 @@ Menlo font is a good monospaces font?
 * Stagger windows in examples.
 * Might want to use standard install dir names. See
 	http://www.gnu.org/software/automake/manual/standards/Directory-Variables.html#Directory-Variables
-* initWithIdentifier needs to return declaring type.
 * Generate externs:
 	- identify them all (name and file)
 	- create a little native app to evaluate them
