@@ -44,6 +44,10 @@ with underscores and the last colon is dropped (so "archiveRootObject:toFile:" b
 "archiveRootObject_toFile"). If the name conflicts with a C# keyword it is appended
 with an underscore.
 
+mcocoa currently only ships with wrappers for Foundation and AppKit. If you want
+to use another framework you can do so with dynamic calls (NSObject.Call) or build
+custom C# wrappers. The quartz-chart example illustrates both of these techniques.
+
 See <http://code.google.com/p/mcocoa/w/list> for more usage notes and API
 References.
 

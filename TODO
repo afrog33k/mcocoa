@@ -10,12 +10,9 @@ might want to look into adding a helper for gcd, might need to add special code 
 OpenCL (easy gpu programming)
 Menlo font is a good monospaces font?
 
-* Work on the quartz example:
-	- add a pointer to the quartz example somewhere (maybe in the default Frameworks.xml
-	  file too)
 * Get rid of appkit CIColor and CIImage
-* Use a static class for class category methods on interfaces not in the current framework.
 * Need to checkin CGAffineTransform.cs.
+* Make sure code-gen is OK for ScriptingBridge.
 * Might want to change generate to use peg-sharp.
 * Add custom NSDictionary and NSMutableDictionary dictionaryWithObjectsAndKeys
 	- might want to update quartz example too
