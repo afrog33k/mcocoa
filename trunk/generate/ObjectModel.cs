@@ -77,10 +77,18 @@ internal sealed class ObjectModel
 		string result;
 		
 		if (type == "unichar")
+		{
 			result = "char";
-		
-		else if (!m_typeMapping.TryGetValue(type, out result))
+		}
+		else if (m_typeMapping.TryGetValue(type, out result))
+		{
+			if (result == "*")
+				throw new Exception(string.Format("Typedef {0} has an ambiguous value", type));
+		}
+		else
+		{
 			result = type;
+		}
 		
 		return result;
 	}
@@ -207,7 +215,7 @@ internal sealed class ObjectModel
 			if (!m_typeMapping.ContainsKey(m.Key))
 				m_typeMapping.Add(m.Key, m.Value);
 			else if (m_typeMapping[m.Key] != m.Value)
-				throw new Exception(string.Format("Typedef {0} has multiple values in {1}", m.Key, m_inPath));
+				m_typeMapping[m.Key] = "*";			// this is a problem, but only if we need the value
 		}
 	}
 	
