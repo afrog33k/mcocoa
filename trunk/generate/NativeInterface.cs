@@ -25,21 +25,21 @@ using System.Collections.Generic;
 internal sealed class NativeInterface
 {
 	public string Name {get; set;}
-
-	// Will be null if Categories is not empty.
+	
+	// Will be null if Category is not null.
 	public string BaseName {get; set;}
-
+	
 	// May be empty.
 	public string[] Protocols {get; set;}
-
+	
 	// May be null.
 	public string Category {get; set;}
 	
-	public List<NativeMethod> Methods 
+	public List<NativeMethod> Methods
 	{
 		get {return m_methods;}
 	}
-		
+	
 	public void Add(NativeMethod method)
 	{
 		m_methods.Add(method);

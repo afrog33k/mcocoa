@@ -5,6 +5,8 @@
 # Public variables
 CSC ?= gmcs
 PACK ?= cocoa-pack
+MONO ?= mono
+GENERATE ?= ../../../bin/generate.exe
 GET_VERSION ?= mget_version.sh
 GEN_VERSION ?= mgen_version.sh
 
@@ -20,9 +22,11 @@ endif
 # Internal variables
 exe-name := quartz-chart
 app-name := QuartzChart
+framework-name := quartz
 
 app-path := bin/$(app-name).app
 exe-path := bin/$(exe-name).exe
+framework-path := bin/$(framework-name).dll
 
 dummy := $(shell mkdir bin 2> /dev/null)
 dummy := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
@@ -40,6 +44,9 @@ all: app
 
 app: $(app-path)
 
+generate: QuartzFramework.xml
+	cd bin && "$(MONO)" --debug $(GENERATE) --xml=../QuartzFramework.xml --out=../quartz
+
 # Note that running this way (instead of via open or the Finder) allows us to see 
 # console output in the terminal instead of the system log.
 run: $(app-path)
@@ -49,10 +56,14 @@ run: $(app-path)
 # Binary targets 	
 
 # assembly 
-source-files := source/*.cs
+dll-files := quartz/*.cs quartz/core/generated/*.cs quartz/composer/generated/*.cs
+$(framework-path): bin/csc_flags bin/mobjc.dll bin/mcocoa.dll $(dll-files)
+	@"$(GEN_VERSION)" $(version) quartz/AssemblyVersion.cs
+	$(CSC) -out:$@ $(CSC_FLAGS) -target:library -reference:bin/mobjc.dll,bin/mcocoa.dll $(dll-files)
 
-$(exe-path): bin/csc_flags bin/mobjc.dll bin/mcocoa.dll $(source-files)
-	$(CSC) -out:$@ $(CSC_FLAGS) -unsafe+ -r:bin/mobjc.dll,bin/mcocoa.dll -target:exe $(source-files)
+exe-files := source/*.cs
+$(exe-path): bin/csc_flags bin/mobjc.dll bin/mcocoa.dll $(framework-path) $(exe-files)
+	$(CSC) -out:$@ $(CSC_FLAGS) -unsafe+ -r:bin/mobjc.dll,bin/mcocoa.dll,$(framework-path) -target:exe $(exe-files)
 
 # bundle
 nib-files := $(wildcard source/*.nib)
@@ -63,7 +74,7 @@ $(app-path): $(exe-path) source/Info.plist $(nib-files)
 	@$(PACK) --app=$(app-path) --exe=$(exe-path) \
 	--mono-flags='$(MONO_FLAGS)' \
 	--plist=source/Info.plist \
-	--resources=bin/mobjc.dll,bin/mcocoa.dll,Chart.qtz \
+	--resources=bin/mobjc.dll,bin/mcocoa.dll,Chart.qtz,$(framework-path) \
 	--resources=English.lproj:$(nib-resources) \
 	--vars=APPNAME:$(app-name),VERSION:$(version),BUILDNUM:$(build-num)
 

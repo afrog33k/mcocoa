@@ -22,10 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
-internal sealed class ObjectModel	
+// Parses all the native headers and records the information that Generate will
+// use to emit the C# wrappers.
+internal sealed class ObjectModel
 {
-	public void Parse(string inPath)
+	public void Parse(string inPath, bool emitting)
 	{
 		m_inPath = inPath;
 		
@@ -36,7 +39,27 @@ internal sealed class ObjectModel
 		
 		List<NativeEnum> enums = DoEnums(text);
 		List<NativeInterface> interfaces = DoInterfaces(text);
-		m_files.Add(new NativeFile(inPath, enums, interfaces));
+//		Console.WriteLine("{0}", inPath);
+//		foreach (NativeInterface nn in interfaces)
+//			Console.WriteLine("    {0}", nn);
+		m_known.AddRange(from i in interfaces where i.Category == null select i.Name);
+		
+		var file = new NativeFile(inPath, enums, interfaces);
+		m_knownFiles.Add(file);
+		
+		if (emitting)
+		{
+			m_emitted.AddRange(from i in interfaces where i.Category == null select i.Name);
+			m_files.Add(file);
+		}
+	}
+	
+	public void PostParse()
+	{
+		foreach (NativeFile file in m_knownFiles)
+		{
+			DoAddMethods(file);
+		}
 	}
 	
 	public void Reset()
@@ -62,14 +85,34 @@ internal sealed class ObjectModel
 		return result;
 	}
 	
+	// Returns true if the type is one we've seen.
+	public bool KnownType(string name)
+	{
+		return m_known.Contains(name);
+	}
+	
+	// Returns true if the type is one for which we emit code.
+	public bool EmittedType(string name)
+	{
+		// NSObject is part of mobjc so we never emit a class for it.
+		if (name == "NSObject")
+			return false;
+		
+		return m_emitted.Contains(name);
+	}
+	
 	public string MapResult(string iname, string mname, string rtype)
 	{
 		string result;
-		
+	
 		if (m_resultMap.TryGetValue(mname, out result))
 		{
 			if (result == null)
 				result = iname;
+		}
+		else if (rtype == "id" && (mname.StartsWith("init") || mname.StartsWith("copyWithZone:")))
+		{
+			result = iname;
 		}
 		else
 			result = rtype;
@@ -105,7 +148,53 @@ internal sealed class ObjectModel
 			Console.Error.WriteLine("{0} TypeResult was listed twice", method);
 	}
 	
+	public bool TryGetMethods(NativeInterface ni, out List<NativeMethod> methods)
+	{
+		return m_methods.TryGetValue(ni, out methods);
+	}
+	
 	#region Private Methods
+	private void DoAddMethods(NativeFile file)
+	{
+		foreach (NativeInterface ni in file.Interfaces)
+		{
+			NativeInterface ri = ni;
+			
+			if (ni.Category == null)
+			{
+				DoAddMethods(ri, ni.Methods);
+			}
+			else
+			{
+				if (KnownType(ni.Name))
+				{
+					ri = FindInterface(ni.Name);
+					DoAddMethods(ri, ni.Methods);
+				}
+				else
+					Console.Error.WriteLine("Ignoring the {0} category for interface {1} (can't find the interface).", ni.Category, ni.Name);
+			}
+			
+			foreach (string p in ni.Protocols)
+			{
+				NativeProtocol pp = FindProtocol(p);
+				DoAddMethods(ri, pp.Methods);
+			}
+		}
+	}
+	
+	private void DoAddMethods(NativeInterface ni, List<NativeMethod> methods)
+	{
+		List<NativeMethod> m;
+		if (!m_methods.TryGetValue(ni, out m))
+		{
+			m = new List<NativeMethod>();
+			m_methods.Add(ni, m);
+		}
+		
+		m.AddRange(methods);
+	}
+	
 	private void DoTypedefs(string text)
 	{
 		TypedefParser parser = new TypedefParser(m_inPath, text);
@@ -177,5 +266,9 @@ internal sealed class ObjectModel
 	private Dictionary<string, NativeProtocol> m_protocols = new Dictionary<string, NativeProtocol>();
 	private Dictionary<string, NativeInterface> m_interfaces = new Dictionary<string, NativeInterface>();
 	private Dictionary<string, string> m_resultMap = new Dictionary<string, string>();
+	private List<NativeFile> m_knownFiles = new List<NativeFile>();
+	private List<string> m_known = new List<string>();
+	private List<string> m_emitted = new List<string>();
+	private Dictionary<NativeInterface, List<NativeMethod>> m_methods = new Dictionary<NativeInterface, List<NativeMethod>>();
 	#endregion
 }

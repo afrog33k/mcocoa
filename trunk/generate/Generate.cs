@@ -25,35 +25,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+// This is the class the actually emits the C# code.
 internal sealed class Generate
 {
 	public Generate(ObjectModel objects)
 	{
 		m_objects = objects;
-		
-		foreach (NativeFile file in m_objects.Files)
-		{
-			foreach (NativeInterface ni in file.Interfaces)
-			{
-				NativeInterface ri = ni;
-				
-				if (ni.Category == null)
-				{
-					DoAddMethods(ri, ni.Methods);
-				}
-				else if (ni.Name != "CIColor" && ni.Name != "CIImage")
-				{
-					ri = m_objects.FindInterface(ni.Name);
-					DoAddMethods(ri, ni.Methods);
-				}
-				
-				foreach (string p in ni.Protocols)
-				{
-					NativeProtocol pp = m_objects.FindProtocol(p);
-					DoAddMethods(ri, pp.Methods);
-				}
-			}
-		}
 	}
 	
 	public void Code(string outDir, Blacklist[] blacklist, Threading[] threading)
@@ -115,7 +92,8 @@ internal sealed class Generate
 			{
 				DoWrite("	/// <exclude/>");
 				DoWrite("	[Serializable]");
-				DoWrite("	public enum {0}", value.Name);
+				string backing = value.Values.Any(v => v.Contains("1U ")) ? " : uint" : string.Empty;
+				DoWrite("	public enum {0}{1}", value.Name, backing);
 				DoWrite("	{");
 				for (int i = 0; i < value.Names.Length; ++i)
 				{	
@@ -194,11 +172,16 @@ internal sealed class Generate
 				if (i > 0)
 					DoWrite();
 				
-				DoWriteInterfaceHeader();
-				DoGenerateMethods();
-				DoWriteInterfaceTrailer();
-				
-				buffer.Append(m_buffer.ToString());
+				if (m_objects.KnownType(m_interface.Name))
+				{
+					DoWriteInterfaceHeader();
+					DoGenerateMethods();
+					DoWriteInterfaceTrailer();
+					
+					buffer.Append(m_buffer.ToString());
+				}
+				else
+					Console.Error.WriteLine("Ignoring {0} ({1} isn't a known type)", m_interface, m_interface.Name);
 			}
 		}
 	}
@@ -207,18 +190,11 @@ internal sealed class Generate
 	{
 		if (m_interface.Category != null)
 		{
-			if (m_interface.Name == "CIColor" || m_interface.Name == "CIImage")
+			if (!m_objects.EmittedType(m_interface.Name))
 			{
 				DoWrite("	/// <exclude/>");
 				DoWrite("	// {0} category", m_interface.Category);
-				DoWrite("	public partial class {0} : {1}", m_interface.Name, "NSObject");
-				DoWrite("	{");
-			}
-			else if (m_interface.Name == "NSObject")
-			{
-				DoWrite("	/// <exclude/>");
-				DoWrite("	// {0} category", m_interface.Category);
-				DoWrite("	public static class {0}ForNSObject", m_interface.Category);
+				DoWrite("	public static class {0}For{1}", m_interface.Category, m_interface.Name);
 				DoWrite("	{");
 			}
 			else
@@ -417,12 +393,15 @@ internal sealed class Generate
 		}
 		else if (m_interface.Category != null)
 		{
-			defined = DoInterfaceHasMethod(nm.Name, nm.IsClass);
-			
-			if (!defined && m_interface.Name != "NSOject" && m_interface.Name != "CIColor" && m_interface.Name != "CIImage")
+			if (m_objects.EmittedType(m_interface.Name))
 			{
-				NativeInterface ri = m_objects.FindInterface(m_interface.Name);
-				defined = DoBaseHasMethod(ri.BaseName, nm.Name, nm.IsClass);
+				defined = DoInterfaceHasMethod(nm.Name, nm.IsClass);
+				
+				if (!defined)
+				{
+					NativeInterface ri = m_objects.FindInterface(m_interface.Name);
+					defined = DoBaseHasMethod(ri.BaseName, nm.Name, nm.IsClass);
+				}
 			}
 		}
 		else
@@ -438,17 +417,12 @@ internal sealed class Generate
 				if (nm.ArgTypes.Length > 0 && nm.ArgTypes[nm.ArgTypes.Length - 1] == "...")
 				{
 					DoWrite("		// skipping variadic {0}", nm.Name);
-					Console.Error.WriteLine("found variadic {0}::{1}", m_interface.Name, nm.Name);
+					Console.Error.WriteLine("Ignoring {0}::{1} (it's variadic)", m_interface.Name, nm.Name);
 				}
 				else if (nm.ArgTypes.Length > 0 && nm.ArgTypes.Any(t => t.Contains("( * )")))
 				{
 					DoWrite("		// skipping function pointer {0}", nm.Name);
-					Console.Error.WriteLine("found function pointer {0}::{1}", m_interface.Name, nm.Name);
-				}
-				else if (m_interface.Category != null && m_interface.Name == "NSObject" && nm.IsClass)
-				{
-					DoWrite("		// skipping {0} (can't have NSObject class category methods)", nm.Name);
-					Console.Error.WriteLine("found NSObject class category {0}::{1}", m_interface.Name, nm.Name);
+					Console.Error.WriteLine("Ignoring {0}::{1} (it uses a function pointer)", m_interface.Name, nm.Name);
 				}
 				else
 				{
@@ -481,17 +455,17 @@ internal sealed class Generate
 			m_buffer.AppendLine("		[Pure]");
 		
 		// signature		
-		m_buffer.Append("		public ");  
-		if (method.IsClass || (m_interface.Category != null && m_interface.Name == "NSObject"))
+		m_buffer.Append("		public ");
+		if (method.IsClass || (m_interface.Category != null && !m_objects.EmittedType(m_interface.Name)))
 			m_buffer.Append("static ");
 		
 		m_buffer.Append(minfo.ResultType.Managed);
 		m_buffer.Append(" ");
 		m_buffer.Append(name);
 		m_buffer.Append("(");
-		if (m_interface.Category != null && m_interface.Name == "NSObject")
+		if (m_interface.Category != null && !m_objects.EmittedType(m_interface.Name) && !method.IsClass)
 		{
-			m_buffer.Append("this NSObject _instance");
+			m_buffer.AppendFormat("this {0} _instance", m_interface.Name);
 			if (method.ArgNames.Length > 0)
 				m_buffer.Append(", ");
 		}
@@ -540,7 +514,7 @@ internal sealed class Generate
 					{
 						m_buffer.AppendFormat("			IntPtr {0}Ptr = Marshal.AllocHGlobal(4);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
 						m_buffer.AppendFormat("			Marshal.WriteInt32({0}Ptr, 0);{1}", minfo.ArgNames[i].Managed, Environment.NewLine);
-						m_buffer.AppendLine("			"); 
+						m_buffer.AppendLine("			");
 					}
 					else
 					{
@@ -570,8 +544,11 @@ internal sealed class Generate
 			m_buffer.Append(") ");
 		}
 		
-		if (m_interface.Category != null && m_interface.Name == "NSObject")
-			m_buffer.Append("_instance.");
+		if (m_interface.Category != null && !m_objects.EmittedType(m_interface.Name))
+			if (method.IsClass)
+				m_buffer.AppendFormat("{0}.Class.", m_interface.Name);
+			else
+				m_buffer.Append("_instance.");
 		else if (method.IsClass)
 			m_buffer.Append("ms_class.");
 		
@@ -685,8 +662,11 @@ internal sealed class Generate
 		if (m_labels.TryGetValue(rkey, out rlabel))
 		{
 			string thisPtr;
-			if (m_interface.Category != null && m_interface.Name == "NSObject")
-				thisPtr = "_instance";
+			if (m_interface.Category != null && !m_objects.EmittedType(m_interface.Name))
+				if (method.IsClass)
+					thisPtr = string.Format("{0}.Class", m_interface.Name);
+				else
+					thisPtr = "_instance";
 			else if (method.IsClass)
 				thisPtr = "ms_class";
 			else
@@ -723,8 +703,11 @@ internal sealed class Generate
 		if (m_labels.TryGetValue(rkey, out rlabel) && m_labels.TryGetValue(a0key, out a0label))
 		{
 			string thisPtr;
-			if (m_interface.Category != null && m_interface.Name == "NSObject")
-				thisPtr = "_instance";
+			if (m_interface.Category != null && !m_objects.EmittedType(m_interface.Name))
+				if (method.IsClass)
+					thisPtr = string.Format("{0}.Class", m_interface.Name);
+				else
+					thisPtr = "_instance";
 			else if (method.IsClass)
 				thisPtr = "ms_class";
 			else
@@ -765,8 +748,11 @@ internal sealed class Generate
 		if (m_labels.TryGetValue(rkey, out rlabel) && m_labels.TryGetValue(a0key, out a0label) && m_labels.TryGetValue(a1key, out a1label))
 		{
 			string thisPtr;
-			if (m_interface.Category != null && m_interface.Name == "NSObject")
-				thisPtr = "_instance";
+			if (m_interface.Category != null && !m_objects.EmittedType(m_interface.Name))
+				if (method.IsClass)
+					thisPtr = string.Format("{0}.Class", m_interface.Name);
+				else
+					thisPtr = "_instance";
 			else if (method.IsClass)
 				thisPtr = "ms_class";
 			else
@@ -975,7 +961,7 @@ internal sealed class Generate
 	{
 		bool has = false;
 		
-		if (m_interface.Name != "NSObject" && m_interface.Name != "CIColor" && m_interface.Name != "CIImage")
+		if (m_interface.Name != "NSObject")
 		{
 			NativeInterface ni = m_objects.FindInterface(m_interface.Name);
 			if (ni.Methods.Count > 0)
@@ -1005,15 +991,20 @@ internal sealed class Generate
 	{
 		bool has = false;
 		
-		if (iname != null && iname != "NSObject" && iname != "CIColor" && iname != "CIImage")
+		if (iname != null && iname != "NSObject")
 		{
 			NativeInterface ni = m_objects.FindInterface(iname);
-			List<NativeMethod> methods = m_methods[ni];
-			if (methods.Count > 0)
-				has = methods.Any(m => m.Name == mname && m.IsClass == isClass);
-			
-			if (!has)
-				has = DoBaseHasMethod(ni.BaseName, mname, isClass);
+			List<NativeMethod> methods;
+			if (m_objects.TryGetMethods(ni, out methods))
+			{
+				if (methods.Count > 0)
+					has = methods.Any(m => m.Name == mname && m.IsClass == isClass);
+				
+				if (!has)
+					has = DoBaseHasMethod(ni.BaseName, mname, isClass);
+			}
+			else
+				throw new Exception("Couldn't find the methods for interface " + iname);
 		}
 		
 		if (!has)
@@ -1037,12 +1028,12 @@ internal sealed class Generate
 	{
 		string suffix = string.Empty;
 		
-		if (m_interface.Name != "NSObject" && m_interface.Name != "CIColor" && m_interface.Name != "CIImage")
+		if (m_objects.EmittedType(m_interface.Name))
 		{
 			NativeInterface ri = m_objects.FindInterface(m_interface.Name);
 			
 			List<NativeMethod> methods;
-			if (m_methods.TryGetValue(ri, out methods))
+			if (m_objects.TryGetMethods(ri, out methods))
 			{
 				if (method.IsClass)
 				{
@@ -1109,18 +1100,6 @@ internal sealed class Generate
 	private void DoWrite(string format, params object[] args)
 	{
 		m_buffer.AppendLine(string.Format(format, args));
-	}
-	
-	private void DoAddMethods(NativeInterface ni, List<NativeMethod> methods)
-	{
-		List<NativeMethod> m;
-		if (!m_methods.TryGetValue(ni, out m))
-		{
-			m = new List<NativeMethod>();
-			m_methods.Add(ni, m);
-		}
-		
-		m.AddRange(methods);
 	}
 	
 	private string DoMapEnumValue(string value)
@@ -1447,6 +1426,7 @@ internal sealed class Generate
 				case "unichar":
 					return "char";
 					
+				case "CFTimeInterval":
 				case "double":
 					return "double";
 					
@@ -1470,6 +1450,7 @@ internal sealed class Generate
 				case "NSComparisonResult":
 				case "NSInteger":
 				case "OSStatus":
+				case "ptrdiff_t":				// TODO: some of these types are not 64-bit safe (but mono isn't either...)
 				case "SInt32":
 				case "SRefCon":
 					return "Int32";
@@ -1478,10 +1459,63 @@ internal sealed class Generate
 				case "long long":
 					return "Int64";
 					
+				case "CFAllocatorRef":
+				case "CFArrayRef":
+				case "CFAttributedStringRef":
+				case "CFBagRef":
+				case "CFBinaryHeapRef":
+				case "CFBitVectorRef":
+				case "CFBooleanRef":
+				case "CFBundleRef":
+				case "CFCalendarRef":
+				case "CFCharacterSetRef":
+				case "CFDataRef":
+				case "CFDateFormatterRef":
+				case "CFDateRef":
+				case "CFDictionaryRef":
+				case "CFErrorRef":
+				case "CFFileDescriptorRef":
+				case "CFLocaleRef":
+				case "CFMachPortRef":
+				case "CFMessagePortRef":
+				case "CFMutableAttributedStringRef":
+				case "CFMutableBagRef":
+				case "CFMutableBitVectorRef":
+				case "CFMutableCharacterSetRef":
+				case "CFMutableDataRef":
+				case "CFMutableDictionaryRef":
+				case "CFMutableSetRef":
+				case "CFNotificationCenterRef":
+				case "CFNumberFormatterRef":
+				case "CFNumberRef":
+				case "CFPlugInRef":
+				case "CFReadStreamRef":
+				case "CFRunLoopObserverRef":
 				case "CFRunLoopRef":
+				case "CFRunLoopSourceRef":
+				case "CFRunLoopTimerRef":
+				case "CFSetRef":
+				case "CFSocketRef":
+				case "CFStringTokenizerRef":
+				case "CFTreeRef":
+				case "CFURLRef":
+				case "CFUserNotificationRef":
+				case "CFWriteStreamRef":
+				case "CFXMLNodeRef":
+				case "CFXMLParserRef":
+				case "CFXMLTreeRef":
+				case "CGColorRef":
 				case "CGColorSpaceRef":
+				case "CGContextRef":
 				case "CGEventRef":
 				case "CGImageRef":
+				case "CGLayerRef":
+				case "CGLContextObj":
+				case "CGLPBufferObj":
+				case "CGLPixelFormatObj":
+				case "CGLRendererInfoObj":
+				case "CVBufferRef":
+				case "CVImageBufferRef":
 				case "char *":
 				case "const NSGlyph *":
 				case "const void *":
@@ -1547,6 +1581,7 @@ internal sealed class Generate
 				case "NSUInteger":
 				case "OSType":
 				case "ResType":
+				case "size_t":
 				case "uint32_t":
 				case "unsigned":
 				case "unsigned int":
@@ -1574,7 +1609,7 @@ internal sealed class Generate
 						type = type.Substring(0, type.Length - 1).Trim();
 						type = objects.MapType(type);
 						
-						if (type.StartsWith("NS") && type != "NSInteger" && type != "NSUInteger")
+						if (objects.KnownType(type))
 						{
 							return type;
 						}
@@ -1730,7 +1765,6 @@ internal sealed class Generate
 	private NativeInterface m_interface;
 	private Blacklist[] m_blacklist;
 	private Threading[] m_threading;
-	private Dictionary<NativeInterface, List<NativeMethod>> m_methods = new Dictionary<NativeInterface, List<NativeMethod>>();
 	#endregion
 }
 

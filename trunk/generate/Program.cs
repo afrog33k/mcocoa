@@ -41,7 +41,7 @@ internal static class Program
 			if (ms_file != null)
 			{
 				ObjectModel objects = new ObjectModel();
-				objects.Parse(ms_file);
+				objects.Parse(ms_file, true);
 				
 				Generate generate = new Generate(objects);
 				generate.Code(ms_outDir, new Blacklist[0], new Threading[0]);
@@ -101,7 +101,6 @@ internal static class Program
 	private static void DoGenerateFromXML(ObjectModel objects, XmlNode framework)
 	{
 		string name = framework.Attributes["name"].Value;
-		string dir = framework.Attributes["path"].Value;
 		Blacklist[] blacklist = DoGetBlacklist(framework);
 		Threading[] threading = DoGetThreading(framework);
 		
@@ -119,16 +118,34 @@ internal static class Program
 		}
 		Directory.CreateDirectory(outPath);
 		
-		objects.Reset();									// resets everything but typedefs
-		files = Directory.GetFiles(dir, "*.h");
-		foreach (string inFile in files)
+		string dir;
+		foreach (XmlNode child in framework.ChildNodes)
 		{
-			if (!inFile.EndsWith("NSObjCRuntime.h"))
-				objects.Parse(inFile);
+			if (child.Name == "Include")
+			{
+				dir = child.Attributes["path"].Value;
+				DoParseHeaders(objects, dir, false);
+			}
 		}
+		
+		dir = framework.Attributes["path"].Value;
+		DoParseHeaders(objects, dir, true);
+		objects.PostParse();
 		
 		Generate generate = new Generate(objects);
 		generate.Code(outPath, blacklist, threading);
+	}
+	
+	private static void DoParseHeaders(ObjectModel objects, string dir, bool emitting)
+	{
+		objects.Reset();									// clears the list of files which is what is used to generate the C# files
+		
+		string[] files = Directory.GetFiles(dir, "*.h");
+		foreach (string inFile in files)
+		{
+			if (!inFile.EndsWith("NSObjCRuntime.h"))
+				objects.Parse(inFile, emitting);
+		}
 	}
 	
 	private static Blacklist[] DoGetBlacklist(XmlNode framework)

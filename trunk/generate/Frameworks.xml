@@ -46,7 +46,7 @@
 		
 		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
 		<Threading>
-		<Type name = "NSArray" model = "concurrent"/>
+			<Type name = "NSArray" model = "concurrent"/>
 			<Type name = "NSNotification" model = "concurrent"/>
 			<Type name = "NSAssertionHandler" model = "concurrent"/>
 			<Type name = "NSNotificationCenter" model = "concurrent"/>
@@ -176,7 +176,6 @@
 		<TypeResult name = "characterSetWithRange:" type = "NSCharacterSet"/>
 		<TypeResult name = "contentView" type = "NSView"/>			<!-- usually this is a NSClipView, but sometimes it is just an NSView -->
 		<TypeResult name = "controlCharacterSet" type = "NSCharacterSet"/>
-		<TypeResult name = "copyWithZone:"/>
 		<TypeResult name = "currentCalendar" type = "NSCalendar"/>
 		<TypeResult name = "currentDocument" type = "NSDocument"/>
 		<TypeResult name = "currentLocale" type = "NSLocale"/>
@@ -218,117 +217,6 @@
 		<TypeResult name = "indexSet"/>
 		<TypeResult name = "indexSetWithIndex:"/>
 		<TypeResult name = "indexSetWithIndexesInRange:"/>
-		<TypeResult name = "initByReferencingFile:"/>
-		<TypeResult name = "initByReferencingURL:"/>
-		<TypeResult name = "initForReadingWithData:"/>
-		<TypeResult name = "initForWritingWithMutableData:"/>
-		<TypeResult name = "initToBuffer:capacity:"/>
-		<TypeResult name = "initToFileAtPath:append:"/>
-		<TypeResult name = "initToMemory"/>
-		<TypeResult name = "initWithArray:"/>
-		<TypeResult name = "initWithArray:copyItems:"/>
-		<TypeResult name = "initWithAttributedString:"/>
-		<TypeResult name = "initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:"/>
-		<TypeResult name = "initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:"/>
-		<TypeResult name = "initWithBytes:objCType:"/>
-		<TypeResult name = "initWithBytes:length:"/>
-		<TypeResult name = "initWithBytes:length:encoding:"/>
-		<TypeResult name = "initWithBytesNoCopy:length:"/>
-		<TypeResult name = "initWithBytesNoCopy:length:freeWhenDone:"/>
-		<TypeResult name = "initWithBytesNoCopy:length:encoding:freeWhenDone:"/>
-		<TypeResult name = "initWithBool:"/>
-		<TypeResult name = "initWithCalendarIdentifier:"/>
-		<TypeResult name = "initWithCapacity:"/>
-		<TypeResult name = "initWithChar:"/>
-		<TypeResult name = "initWithCGImage:"/>
-		<TypeResult name = "initWithCIImage:"/>
-		<TypeResult name = "initWithCoder:"/>
-		<TypeResult name = "initWithCharacters:length:"/>
-		<TypeResult name = "initWithCharactersNoCopy:length:freeWhenDone:"/>
-		<TypeResult name = "initWithColor:"/>
-		<TypeResult name = "initWithColors:"/>
-		<TypeResult name = "initWithColors:atLocations:colorSpace:"/>
-		<TypeResult name = "initWithCondition:"/>
-		<TypeResult name = "initWithContentRect:styleMask:backing:defer:"/>
-		<TypeResult name = "initWithContentRect:styleMask:backing:defer:screen:"/>
-		<TypeResult name = "initWithContentsOfFile:"/>
-		<TypeResult name = "initWithContentsOfFile:options:error:"/>
-		<TypeResult name = "initWithContentsOfFile:encoding:error:"/>
-		<TypeResult name = "initWithContentsOfFile:usedEncoding:error:"/>
-		<TypeResult name = "initWithContentsOfMappedFile:"/>
-		<TypeResult name = "initWithContentsOfURL:"/>
-		<TypeResult name = "initWithContentsOfURL:encoding:error:"/>
-		<TypeResult name = "initWithContentsOfURL:options:error:"/>
-		<TypeResult name = "initWithContentsOfURL:usedEncoding:error:"/>
-		<TypeResult name = "initWithCString:encoding:"/>
-		<TypeResult name = "initWithData:"/>
-		<TypeResult name = "initWithData:encoding:"/>
-		<TypeResult name = "initWithDictionary:"/>
-		<TypeResult name = "initWithDictionary:copyItems:"/>
-		<TypeResult name = "initWithDomain:code:userInfo:"/>
-		<TypeResult name = "initWithDouble:"/>
-		<TypeResult name = "initWithFileAtPath:"/>
-		<TypeResult name = "initWithFileDescriptor:"/>
-		<TypeResult name = "initWithFileDescriptor:closeOnDealloc:"/>
-		<TypeResult name = "initWithFireDate:interval:target:selector:userInfo:repeats:"/>
-		<TypeResult name = "initWithFloat:"/>
-		<TypeResult name = "initWithFocusedViewRect:"/>
-		<TypeResult name = "initWithFormat:arguments:"/>
-		<TypeResult name = "initWithFormat:locale:arguments:"/>
-		<TypeResult name = "initWithFrame:"/>
-		<TypeResult name = "initWithFrame:pullsDown:"/>
-		<TypeResult name = "initWithFrame:textContainer:"/>
-		<TypeResult name = "initWithIconRef:"/>
-		<TypeResult name = "initWithIndex:"/>
-		<TypeResult name = "initWithIndexesInRange:"/>
-		<TypeResult name = "initWithIndexSet:"/>
-		<TypeResult name = "initWithInt:"/>
-		<TypeResult name = "initWithInteger:"/>
-		<TypeResult name = "initWithKeyOptions:valueOptions:capacity:"/>
-		<TypeResult name = "initWithKeyPointerFunctions:valuePointerFunctions:capacity:"/>
-		<TypeResult name = "initWithLength:"/>
-		<TypeResult name = "initWithLocaleIdentifier:"/>
-		<TypeResult name = "initWithLong:"/>
-		<TypeResult name = "initWithInvocation:"/>
-		<TypeResult name = "initWithLongLong:"/>
-		<TypeResult name = "initWithName:reason:userInfo:"/>
-		<TypeResult name = "initWithNibName:bundle:"/>
-		<TypeResult name = "initWithNotificationCenter:"/>
-		<TypeResult name = "initWithObjects:count:"/>
-		<TypeResult name = "initWithObjects:forKeys:"/>
-		<TypeResult name = "initWithObjects:forKeys:count:"/>
-		<TypeResult name = "initWithOptions:"/>
-		<TypeResult name = "initWithOptions:capacity:"/>
-		<TypeResult name = "initWithPath:"/>
-		<TypeResult name = "initWithPasteboard:"/>
-		<TypeResult name = "initWithPointerFunctions:capacity:"/>
-		<TypeResult name = "initWithShort:"/>
-		<TypeResult name = "initWithSize:"/>
-		<TypeResult name = "initWithStartingColor:endingColor:"/>
-		<TypeResult name = "initWithString:"/>
-		<TypeResult name = "initWithString:attributes:"/>
-		<TypeResult name = "initWithString:calendarFormat:"/>
-		<TypeResult name = "initWithString:calendarFormat:locale:"/>
-		<TypeResult name = "initWithTarget:selector:object:"/>
-		<TypeResult name = "initWithTitle:"/>
-		<TypeResult name = "initWithTitle:action:keyEquivalent:"/>
-		<TypeResult name = "initWithTimeIntervalSinceReferenceDate:"/>
-		<TypeResult name = "initWithTimeInterval:sinceDate:"/>
-		<TypeResult name = "initWithTimeIntervalSinceNow:"/>
-		<TypeResult name = "initWithYear:month:day:hour:minute:second:timeZone:"/>
-		<TypeResult name = "initWithSet:"/>
-		<TypeResult name = "initWithSet:copyItems:"/>
-		<TypeResult name = "initWithUnsignedChar:"/>
-		<TypeResult name = "initWithUnsignedInt:"/>
-		<TypeResult name = "initWithUnsignedInteger:"/>
-		<TypeResult name = "initWithUnsignedLong:"/>
-		<TypeResult name = "initWithUnsignedLongLong:"/>
-		<TypeResult name = "initWithUnsignedShort:"/>
-		<TypeResult name = "initWithUTF8String:"/>
-		<TypeResult name = "initWithWindow:"/>
-		<TypeResult name = "initWithWindowNibName:"/>
-		<TypeResult name = "initWithWindowNibNameOwner:"/>
-		<TypeResult name = "initWithWindowNibPathOwner:"/>
 		<TypeResult name = "invertedSet" type = "NSCharacterSet"/>
 		<TypeResult name = "letterCharacterSet" type = "NSCharacterSet"/>
 		<TypeResult name = "localizedScannerWithString:"/>

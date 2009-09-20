@@ -11,23 +11,17 @@ OpenCL (easy gpu programming)
 Menlo font is a good monospaces font?
 
 * Work on the quartz example:
-	- do a checkin (be sure to nuke the quartz bin dir)
-	- generate the quartz wrappers
-		` probably need some sort of header dependency elements
-		` need both global and local TypeResults
-		` be sure to add comments
-	- get the app working with quartz
-	- make sure ScriptingBridge.framework can be generated (multi-char constants)
-	- make sure foundation and appkit still generate
 	- add a pointer to the quartz example somewhere (maybe in the default Frameworks.xml
 	  file too)
+* Get rid of appkit CIColor and CIImage
+* Use a static class for class category methods on interfaces not in the current framework.
+* Need to checkin CGAffineTransform.cs.
+* Might want to change generate to use peg-sharp.
 * Add custom NSDictionary and NSMutableDictionary dictionaryWithObjectsAndKeys
 	- might want to update quartz example too
 * Stagger windows in examples.
 * Might want to use standard install dir names. See
 	http://www.gnu.org/software/automake/manual/standards/Directory-Variables.html#Directory-Variables
-* Probably want all init methods to return their declaring type (if the original
-   returns id).
 * initWithIdentifier needs to return declaring type.
 * Generate externs:
 	- identify them all (name and file)
