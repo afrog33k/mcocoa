@@ -10,8 +10,6 @@ might want to look into adding a helper for gcd, might need to add special code 
 OpenCL (easy gpu programming)
 Menlo font is a good monospaces font?
 
-* Get rid of appkit CIColor and CIImage
-* Need to checkin CGAffineTransform.cs.
 * Make sure code-gen is OK for ScriptingBridge.
 * Might want to change generate to use peg-sharp.
 * Add custom NSDictionary and NSMutableDictionary dictionaryWithObjectsAndKeys
