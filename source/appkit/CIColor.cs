@@ -1,15 +1,14 @@
 using MObjc;
 using System;
 
+#if false
 namespace MCocoa
 {
-	[Register]
-	public partial class CIColor : NSObject
+	internal partial class CIColor : NSObject
 	{
 		public CIColor(IntPtr instance) : base(instance)
 		{
 		}
-		
-		// TODO: missing a lot of methods
 	}
 }
+#endif

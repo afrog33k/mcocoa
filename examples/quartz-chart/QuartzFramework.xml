@@ -1,0 +1,43 @@
+<!-- This is used to specify the frameworks for which to generate C# wrappers and to configure
+the wrappers. -->
+<Generate>
+	<!-- There can be multiple Framework elements. The C# code will be placed inside a directory
+	named using the name attribute. -->
+	<Framework name = "core" path = "/System/Library/Frameworks/QuartzCore.framework/Versions/Current/Headers">
+		
+		<!-- If the framework depends upon interfaces, protocols, or types from another framework
+		you'll need to list them here. This element may appear more than once and it remains in
+		effect for any subsequent Framework elements. -->
+		<Include path = "/System/Library/Frameworks/Foundation.framework/Versions/Current/Headers"/>
+		
+		<!-- Lists the methods for which we won't generate C# code and the reason why. The reason
+		can be arbitrary text and is included in the generated code as a comment. There are two
+		situations where you may want to list a method here: 1) to suppress warnings for methods
+		that we can't generate wrappers for (typically variadic methods) 2) to suppress the generation
+		of a method for which we provide a hand-written alternative. -->
+		<Blacklist>
+			<Method interface = "CIFilter" method = "apply:" reason = "because it is variadic"/>
+			<Method interface = "CIFilter" method = "filterWithName:keysAndValues:key0" reason = "because it is variadic"/>
+			<Method interface = "CISampler" method = "samplerWithImage:keysAndValues:key0" reason = "because it is variadic"/>
+			<Method interface = "CISampler" method = "initWithImage:keysAndValues:key0" reason = "because it is variadic"/>
+			<Method interface = "NSValue" method = "valueWithCATransform3D:" reason = "because it needs a hand-written version"/>
+			<Method interface = "NSValue" method = "CATransform3DValue" reason = "because it needs a hand-written version"/>
+		</Blacklist>
+		
+		<!-- This is used to mark thread safe methods using ThreadModelAttribute. This attribute
+		is used by Gendarme to identify code which is incorrectly threaded. (See generate/Frameworks.xml
+		for an example). -->
+		<Threading>
+		</Threading>
+	</Framework>
+	
+	<Framework name = "composer" path = "/System/Library/Frameworks/Quartz.framework/Versions/Current/Frameworks/QuartzComposer.framework/Versions/Current/Headers">
+		<Include path = "/System/Library/Frameworks/AppKit.framework/Versions/Current/Headers"/>
+	</Framework>
+	
+	<!-- A lot of Cocoa methods are typed to return an id which is really annoying. To make these methods more
+	pleasant to deal with you can add their names here and the generator will type them with either the specified
+	type or the interface type. -->
+	<TypeResults>
+	</TypeResults>
+</Generate>

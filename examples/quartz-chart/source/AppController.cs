@@ -39,13 +39,18 @@ internal sealed class AppController : NSObject
 		base.OnDealloc();
 	}
 	
+	// Frameworks that are not part of the standard mcocoa wrappers can be called
+	// dynamically (as in the commented out code below) or the generate tool can
+	// be used to create wrapper classes for that framework.
 	public void awakeFromNib()
 	{
 		m_tableView = this["tableView"].To<NSTableView>();
-		m_view = this["view"].To<NSView>();
-
+		m_view = this["view"].To<QCView>();
+//		m_view = this["view"].To<NSView>();
+		
 		NSString path = NSBundle.mainBundle().pathForResource_ofType(NSString.Create("Chart"), NSString.Create("qtz"));
-		bool loaded = m_view.Call("loadCompositionFromFile:", path).To<bool>();
+		bool loaded = m_view.loadCompositionFromFile(path);
+//		bool loaded = m_view.Call("loadCompositionFromFile:", path).To<bool>();
 		if (!loaded)
 			throw new System.IO.FileNotFoundException(string.Format("Couldn't load '{0:D}'", path));
 		
@@ -111,7 +116,8 @@ internal sealed class AppController : NSObject
 	#region Private Methods
 	private void DoUpdateChart()
 	{
-		m_view.Call("setValue:forInputKey:", m_data, ParameterKeyData);
+		m_view.setValue_forInputKey(m_data, ParameterKeyData);
+//		m_view.Call("setValue:forInputKey:", m_data, ParameterKeyData);
 		
 		float max = 0.0f;
 		for (uint i = 0; i < m_data.count(); ++i)
@@ -121,7 +127,8 @@ internal sealed class AppController : NSObject
 			if (value > max)
 				max = value;
 		}
-		m_view.Call("setValue:forInputKey:", NSNumber.numberWithFloat(max > 0.0 ? 1.0f / max : 1.0f), ParameterKeyScale);
+		m_view.setValue_forInputKey(NSNumber.numberWithFloat(max > 0.0 ? 1.0f / max : 1.0f), ParameterKeyScale);
+//		m_view.Call("setValue:forInputKey:", NSNumber.numberWithFloat(max > 0.0 ? 1.0f / max : 1.0f), ParameterKeyScale);
 	}
 	
 	private void DoAppendData(string label, int data)
@@ -141,7 +148,8 @@ internal sealed class AppController : NSObject
 	private readonly NSString ParameterKeyScale = NSString.Create("Scale").Retain();
 	
 	private NSTableView m_tableView;
-	private NSView m_view;
+	private QCView m_view;
+//	private NSView m_view;
 	private NSMutableArray m_data = NSMutableArray.Create().Retain();
 	#endregion
 }

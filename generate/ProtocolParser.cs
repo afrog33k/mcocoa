@@ -25,10 +25,10 @@ using System.Collections.Generic;
 internal sealed class ProtocolParser : Parser
 {
 	public ProtocolParser(string path, string text) : base(path, text)
-	{	
+	{
 	}
 	
-	public bool AtEnd 
+	public bool AtEnd
 	{
 		get {return Protocol == null;}
 	}
@@ -55,13 +55,17 @@ internal sealed class ProtocolParser : Parser
 		Protocol = new NativeProtocol();
 		Protocol.Protocols = new string[0];
 		
-		DoParseHeader();
-		DoParseMethods();
-		DoParseLiteral("@end");
+		if (DoParseHeader())
+		{
+			DoParseMethods();
+			DoParseLiteral("@end");
+		}
+		else
+			Protocol = null;
 	}
 	
 	// Header := '@protocol' Name Protocols? 
-	private void DoParseHeader()
+	private bool DoParseHeader()
 	{
 		m_tokenizer.Advance();
 		
@@ -69,6 +73,8 @@ internal sealed class ProtocolParser : Parser
 		
 		if ("<" == m_tokenizer.Token)
 			DoParseProtocols();
+		
+		return ";" != m_tokenizer.Token;	// we want to skip forward declarations
 	}
 	
 	// Methods := Method*
@@ -95,4 +101,3 @@ internal sealed class ProtocolParser : Parser
 		DoParseSymbol('>');
 	}
 }
-

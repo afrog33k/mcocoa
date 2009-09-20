@@ -97,7 +97,7 @@ internal abstract class Parser
 				m_tokenizer.Advance();
 				argTypes.Add(DoParseParensBody());
 				DoParseSymbol(')');
-	
+				
 				argNames.Add(DoParseName());
 			}
 		}
@@ -108,8 +108,8 @@ internal abstract class Parser
 	private string DoParseParensBody()
 	{
 		string result = string.Empty;
-
-		int nesting = 1;		
+		
+		int nesting = 1;
 		while (!m_tokenizer.AtEnd)
 		{			
 			if ("(" == m_tokenizer.Token)
@@ -123,7 +123,7 @@ internal abstract class Parser
 			result += m_tokenizer.Token + " ";
 			m_tokenizer.Advance();
 		}
-
+		
 		return result.Trim();
 	}
 	
@@ -159,14 +159,26 @@ internal abstract class Parser
 	
 	protected string DoParseMethodName()
 	{
-		string name = DoParseName();
+		string name;
 		
-		if (m_tokenizer.Token == ":")
+		if (m_tokenizer.Token != ":")
 		{
-			name += ":";
+			name = DoParseName();
+			
+			if (m_tokenizer.Token == ":")
+			{
+				name += ":";
+				m_tokenizer.Advance();
+			}
+		}
+		else
+		{
+			// A few methods have weird names like CAMediaTimingFunction.
+			// functionWithControlPoints::::
+			name = ":";
 			m_tokenizer.Advance();
 		}
-
+		
 		return name;
 	}
 	
@@ -174,7 +186,7 @@ internal abstract class Parser
 	{
 		if (m_tokenizer.Token != text)
 			throw new Exception(string.Format("Expected '{0}'. {1}", text, m_tokenizer));
-					
+		
 		m_tokenizer.Advance();
 	}
 	
