@@ -1,3 +1,4 @@
+<!-- See the quartz-chart example for details on generating wrappers for other frameworks. -->
 <Generate>
 	<Framework name = "foundation" path = "/System/Library/Frameworks/Foundation.framework/Versions/Current/Headers">
 		<Blacklist>
