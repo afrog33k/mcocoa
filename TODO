@@ -12,28 +12,25 @@ Menlo font is a good monospaces font?
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
-* Use peg-sharp:
-	- should we (optionally?) generate all the frameworks?
-* Probably should handle properties somehow.
-* Generate structs? Preprocessor might cause problems with this. 
-* Ditto with fields.
-* Add properties for public fields?
-* Get rid of Dictionary.txt
 * Add custom NSDictionary and NSMutableDictionary dictionaryWithObjectsAndKeys
 	- might want to update quartz example too
 * Stagger windows in examples.
+* Get mandel-zoomer doing a bit better with gendarme.
 * Generate externs:
 	- identify them all (name and file)
 	- create a little native app to evaluate them
 	- use the output of the native file to generate an Externs.cs file
 	- add comments to identify the original file
-* Get mandel-zoomer doing a bit better with gendarme.
+* Probably should handle properties somehow.
+* Generate structs? Preprocessor might cause problems with this. 
+* Ditto with fields.
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
    methods use unsigned typed. Perhaps we can fix this by generating signed
    overloads and decorating the original versions with CLSCompliant.
 * Might want a white list for out arguments (can't tell from the headers if they
   are supposed to be arrays or not, see NSBezierPath.getLineDashCountPhase)
 * Might want an option to emit deprecated methods.
+* Might want a make target to generate an assembly for every apple obj-c framework.
 * It would be really nice if the generator preprocessed the source files. That would
    allow us to generate assemblies for earlier versions of the framework, reduce the
    chance for emitting stuff we shouldn't, and clean up the grammar.
