@@ -23,6 +23,12 @@ using System;
 
 internal sealed class Blacklist
 {
+	public Blacklist(string name, string reason)
+	{
+		Enum = name;
+		Reason = reason;
+	}
+	
 	public Blacklist(string interface_, string method, string reason)
 	{
 		Interface = interface_;
@@ -30,10 +36,12 @@ internal sealed class Blacklist
 		Reason = reason;
 	}
 	
+	public string Enum {get; private set;}
+	
 	public string Interface {get; private set;}
-
+	
 	public string Method {get; private set;}
-
+	
 	public string Reason {get; private set;}
 }
 

@@ -3,6 +3,7 @@
 CSC ?= gmcs
 MONO ?= mono
 NUNIT ?= nunit-console2
+PEG-SHARP ?= peg-sharp
 GENDARME ?= gendarme
 GET_VERSION ?= /usr/local/bin/mget_version.sh
 GEN_VERSION ?= /usr/local/bin/mgen_version.sh
@@ -47,7 +48,10 @@ cocoa_files := $(strip $(shell find source -name "*.cs" -print))
 bin/cocoa_files: $(cocoa_files)
 	@echo "$(cocoa_files)" > bin/cocoa_files
 		
-bin/generate.exe: generate/*.cs generate/Frameworks.xml bin/csc_flags
+generate/NewParser.cs: generate/NewParser.peg
+	$(PEG-SHARP) --out=generate/NewParser.cs generate/NewParser.peg
+
+bin/generate.exe: generate/*.cs generate/NewParser.cs generate/Frameworks.xml bin/csc_flags
 	$(CSC) -out:bin/generate.exe $(CSC_FLAGS) -reference:bin/mobjc.dll -target:exe generate/*.cs
 		
 bin/mcocoa.dll: keys bin/csc_flags bin/mobjc.dll bin/cocoa_files
