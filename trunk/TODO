@@ -13,17 +13,10 @@ http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
 * Use peg-sharp:
-	- handle properties?
-	- handle fields?
-	- look into using XPath
-	- get rid of the old parsers
-	- get rid of ObjectModel.Parse
-	- make sure mcocoa works
-	- make sure test-generate still works
-	- get rid of the test-generate target?
-	- fix DoMapEnumValue
 	- should we (optionally?) generate all the frameworks?
+* Probably should handle properties somehow.
 * Generate structs? Preprocessor might cause problems with this. 
+* Ditto with fields.
 * Add properties for public fields?
 * Get rid of Dictionary.txt
 * Add custom NSDictionary and NSMutableDictionary dictionaryWithObjectsAndKeys
