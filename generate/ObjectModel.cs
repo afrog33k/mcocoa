@@ -21,73 +21,94 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 // Parses all the native headers and records the information that Generate will
 // use to emit the C# wrappers.
 internal sealed class ObjectModel
 {
-	public void Parse(string inPath, bool emitting)
-	{
-		m_inPath = inPath;
-		
-		string text = File.ReadAllText(m_inPath);
-		
-		DoTypedefs(text);
-		DoProtocols(text);
-		
-		List<NativeEnum> enums = DoEnums(text);
-		List<NativeInterface> interfaces = DoInterfaces(text);
-//		Console.WriteLine("{0}", inPath);
-//		foreach (NativeInterface nn in interfaces)
-//			Console.WriteLine("    {0}", nn);
-		m_known.AddRange(from i in interfaces where i.Category == null select i.Name);
-		
-		var file = new NativeFile(inPath, enums, interfaces);
-		m_knownFiles.Add(file);
-		
-		if (emitting)
-		{
-			m_emitted.AddRange(from i in interfaces where i.Category == null select i.Name);
-			m_files.Add(file);
-		}
-	}
-	
-	public void PostParse()
-	{
-		foreach (NativeFile file in m_knownFiles)
-		{
-			DoAddMethods(file);
-		}
-	}
-	
-	public void Reset()
-	{
-		m_files = new List<NativeFile>();
-	}
-	
 	public IEnumerable<NativeFile> Files
 	{
 		get {return m_files;}
+	}
+	
+	public string ExpandDefines(string text)
+	{
+		foreach (var entry in m_defineMapping)
+		{
+			if (text.Contains(entry.Key))
+				if (entry.Value != "*")
+					text = text.Replace(entry.Key, entry.Value);	// this is kind of scary...
+				else
+					throw new Exception(string.Format("Define {0} has an ambiguous value", entry.Key));
+		}
+		
+		return text;
 	}
 	
 	public string MapType(string type)
 	{
 		string result;
 		
-		if (type == "unichar")
+		switch (type)
 		{
-			result = "char";
-		}
-		else if (m_typeMapping.TryGetValue(type, out result))
-		{
-			if (result == "*")
-				throw new Exception(string.Format("Typedef {0} has an ambiguous value", type));
-		}
-		else
-		{
-			result = type;
+			case "unichar":
+				result = "char";
+				break;
+				
+			case "NSInteger":
+			case "WebNSInteger":
+				result = "int";
+				break;
+			
+			case "AudioUnit":
+			case "AuthorizationEngineRef":
+			case "AuthorizationRef":
+			case "Component":
+			case "ComponentInstance":
+			case "CSIdentityAuthorityRef":
+			case "CSIdentityRef":
+			case "CVOpenGLBufferRef":
+			case "CVPixelBufferRef":
+			case "Handle":
+			case "jobject":
+			case "JSGlobalContextRef":
+			case "JSObjectRef":
+			case "Media":
+			case "MovieController":
+			case "QTDataReference":
+			case "QTVisualContextRef":
+			case "SecCertificateRef":
+			case "SecIdentityRef":
+			case "SecKeychainRef":
+			case "SecTrustRef":
+			case "TISInputSourceRef":
+			case "Track":
+				result = "IntPtr";
+				break;
+			
+			case "AuthorizationString":
+				result = "string";
+				break;
+			
+			case "gid_t":
+			case "NSUInteger":
+			case "uid_t":
+			case "WebNSUInteger":
+				result = "uint";
+				break;
+			
+			default:
+				if (m_typeMapping.TryGetValue(type, out result))
+				{
+					if (result == "*")
+						throw new Exception(string.Format("Typedef {0} has an ambiguous value", type));
+				}
+				else
+				{
+					result = type;
+				}
+				break;
 		}
 		
 		return result;
@@ -109,6 +130,8 @@ internal sealed class ObjectModel
 		return m_emitted.Contains(name);
 	}
 	
+	// Used to map a method result type to something saner (typically id
+	// to the interface type).
 	public string MapResult(string iname, string mname, string rtype)
 	{
 		string result;
@@ -133,7 +156,7 @@ internal sealed class ObjectModel
 		NativeProtocol result;
 		
 		if (!m_protocols.TryGetValue(name, out result))
-			throw new Exception("Couldn't find protocol " + name);
+			throw new ArgumentException("Couldn't find protocol " + name);
 			
 		return result;
 	}
@@ -148,50 +171,58 @@ internal sealed class ObjectModel
 		return result;
 	}
 	
-	public void AddResultMapping(string method, string type)
-	{
-		if (!m_resultMap.ContainsKey(method))
-			m_resultMap.Add(method, type);
-		else
-			Console.Error.WriteLine("{0} TypeResult was listed twice", method);
-	}
-	
 	public bool TryGetMethods(NativeInterface ni, out List<NativeMethod> methods)
 	{
 		return m_methods.TryGetValue(ni, out methods);
 	}
 	
-	#region Private Methods
-	private void DoAddMethods(NativeFile file)
+	public void Reset()
 	{
-		foreach (NativeInterface ni in file.Interfaces)
+		m_files.Clear();
+	}
+	
+	#region Populate Methods
+	public void AddDefine(string name, string value)
+	{
+//Console.WriteLine("{0} = {1}", name, value);
+		if (!m_defineMapping.ContainsKey(name))
+			m_defineMapping.Add(name, value);
+		else if (m_defineMapping[name] != value)
+			m_defineMapping[name] = "*";					// this is a problem, but only if we need the value
+	}
+	
+	public void AddTypedef(string name, string value)
+	{
+		if (!m_typeMapping.ContainsKey(name))
+			m_typeMapping.Add(name, value);
+		else if (m_typeMapping[name] != value)
+			m_typeMapping[name] = "*";					// this is a problem, but only if we need the value
+	}
+	
+	public void AddProtocol(NativeProtocol protocol)
+	{
+		m_protocols.Add(protocol.Name, protocol);
+	}
+	
+	public void AddFile(NativeFile file, IEnumerable<NativeInterface> interfaces)
+	{
+		if (m_files.Exists(f => f.Path == file.Path))
+			throw new Exception(file.Path + " has already been queued up.");
+			
+		m_emitted.AddRange(from i in interfaces where i.Category == null select i.Name);
+		m_files.Add(file);
+	}
+	
+	public void AddInterface(NativeInterface ni)
+	{
+		if (ni.Category == null)
 		{
-			NativeInterface ri = ni;
-			
-			if (ni.Category == null)
-			{
-				DoAddMethods(ri, ni.Methods);
-			}
-			else
-			{
-				if (KnownType(ni.Name))
-				{
-					ri = FindInterface(ni.Name);
-					DoAddMethods(ri, ni.Methods);
-				}
-				else
-					Console.Error.WriteLine("Ignoring the {0} category for interface {1} (can't find the interface).", ni.Category, ni.Name);
-			}
-			
-			foreach (string p in ni.Protocols)
-			{
-				NativeProtocol pp = FindProtocol(p);
-				DoAddMethods(ri, pp.Methods);
-			}
+			m_known.Add(ni.Name);
+			m_interfaces.Add(ni.Name, ni);
 		}
 	}
 	
-	private void DoAddMethods(NativeInterface ni, List<NativeMethod> methods)
+	public void AddMethods(NativeInterface ni, IEnumerable<NativeMethod> methods)
 	{
 		List<NativeMethod> m;
 		if (!m_methods.TryGetValue(ni, out m))
@@ -203,80 +234,24 @@ internal sealed class ObjectModel
 		m.AddRange(methods);
 	}
 	
-	private void DoTypedefs(string text)
+	public void AddResultMapping(string method, string type)
 	{
-		TypedefParser parser = new TypedefParser(m_inPath, text);
-		
-		while (!parser.AtEnd)
-		{
-			KeyValuePair<string, string> m = parser.Mapping;
-			parser.Advance();
-			
-			if (!m_typeMapping.ContainsKey(m.Key))
-				m_typeMapping.Add(m.Key, m.Value);
-			else if (m_typeMapping[m.Key] != m.Value)
-				m_typeMapping[m.Key] = "*";			// this is a problem, but only if we need the value
-		}
-	}
-	
-	private List<NativeEnum> DoEnums(string text)
-	{
-		List<NativeEnum> enums = new List<NativeEnum>();
-		
-		EnumParser parser = new EnumParser(m_inPath, text);
-		
-		while (!parser.AtEnd)
-		{
-			enums.Add(parser.Enum);
-			parser.Advance();
-		}
-		
-		return enums;
-	}
-	
-	private void DoProtocols(string text)
-	{
-		ProtocolParser pscanner = new ProtocolParser(m_inPath, text);
-		
-		while (!pscanner.AtEnd)
-		{
-			NativeProtocol protocol = pscanner.Protocol;
-			m_protocols.Add(protocol.Name, protocol);
-			
-			pscanner.Advance();
-		}
-	}
-	
-	private List<NativeInterface> DoInterfaces(string text)
-	{
-		List<NativeInterface> interfaces = new List<NativeInterface>();
-		
-		InterfaceParser parser = new InterfaceParser(m_inPath, text);
-		
-		while (!parser.AtEnd)
-		{
-			NativeInterface ni = parser.Interface;	
-			if (ni.Category == null)
-				m_interfaces.Add(ni.Name, ni);
-			interfaces.Add(ni);
-			
-			parser.Advance();
-		}
-		
-		return interfaces;
+		if (!m_resultMap.ContainsKey(method))
+			m_resultMap.Add(method, type);
+		else
+			Console.Error.WriteLine("{0} TypeResult was listed twice", method);
 	}
 	#endregion
 	
 	#region Private Methods
-	private string m_inPath;
 	private Dictionary<string, string> m_typeMapping = new Dictionary<string, string>();
+	private Dictionary<string, string> m_defineMapping = new Dictionary<string, string>();
 	private List<NativeFile> m_files = new List<NativeFile>();
 	private Dictionary<string, NativeProtocol> m_protocols = new Dictionary<string, NativeProtocol>();
 	private Dictionary<string, NativeInterface> m_interfaces = new Dictionary<string, NativeInterface>();
 	private Dictionary<string, string> m_resultMap = new Dictionary<string, string>();
-	private List<NativeFile> m_knownFiles = new List<NativeFile>();
 	private List<string> m_known = new List<string>();
-	private List<string> m_emitted = new List<string>();
+	private List<string> m_emitted = new List<string>();	// more properly the types we are going to emit
 	private Dictionary<NativeInterface, List<NativeMethod>> m_methods = new Dictionary<NativeInterface, List<NativeMethod>>();
 	#endregion
 }

@@ -29,7 +29,7 @@ internal sealed class NativeProtocol
 	// May be empty.
 	public string[] Protocols {get; set;}
 
-	public List<NativeMethod> Methods 
+	public List<NativeMethod> Methods
 	{
 		get {return m_methods;}
 	}

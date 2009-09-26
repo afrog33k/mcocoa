@@ -97,10 +97,14 @@ internal sealed class Generate
 				DoWrite("	{");
 				for (int i = 0; i < value.Names.Length; ++i)
 				{	
-					if (value.Values[i].Length > 0)
-						DoWrite("		{0} = {1},", value.Names[i], DoMapEnumValue(value.Values[i]));
-					else
-						DoWrite("		{0},", value.Names[i]);
+					Blacklist black = m_blacklist.SingleOrDefault(b => b.Enum == value.Names[i]);
+					if (black == null)
+					{
+						if (value.Values[i].Length > 0)
+							DoWrite("		{0} = {1},", value.Names[i], DoMapEnumValue(value.Values[i]));
+						else
+							DoWrite("		{0},", value.Names[i]);
+					}
 				}
 			}
 			else
@@ -112,46 +116,67 @@ internal sealed class Generate
 				int? v = 0;
 				for (int i = 0; i < value.Names.Length; ++i)
 				{
-					if (value.Values[i].Length > 0)
+					Blacklist black = m_blacklist.SingleOrDefault(b => b.Enum == value.Names[i]);
+					if (black == null)
 					{
-						string vv = DoMapEnumValue(value.Values[i].Trim());
-						
-						int tmp;
-						if (vv.StartsWith("0x") && vv.Length >= 10 && vv[2] >= '8')
+						if (value.Values[i].Length > 0)
 						{
-							if (vv.EndsWith("UL"))
-								vv = vv.Substring(0, vv.Length - 2);
+							string vv = DoMapEnumValue(value.Values[i].Trim());
+							
+							int tmp;
+							if (vv.StartsWith("0x") && vv.Length >= 10 && vv[2] >= '8')
+							{
+								if (vv.EndsWith("UL"))
+									vv = vv.Substring(0, vv.Length - 2);
+									
+								DoWrite("		public const uint {0} = {1};", value.Names[i], vv);
+								v = null;
+							}
+							else if (vv.Contains("1L") || vv.Contains("2L") || vv.Contains("3L") || vv.Contains("4L") || vv.Contains("5L"))
+							{
+								DoWrite("		public const long {0} = {1};", value.Names[i], vv);
+							}
+							else if (vv.Contains("1UL") || vv.Contains("2UL") || vv.Contains("3UL") || vv.Contains("4UL") || vv.Contains("5UL"))
+							{
+								DoWrite("		public const ulong {0} = {1};", value.Names[i], vv);
+							}
+							else if (vv.Contains("1U") || vv.Contains("2U") || vv.Contains("3U") || vv.Contains("4U") || vv.Contains("5U"))
+							{
+								DoWrite("		public const uint {0} = {1};", value.Names[i], vv);
+							}
+							else if (vv == "NSIntegerMax")
+							{
+								DoWrite("		public const int {0} = int.MaxValue;", value.Names[i]);
+								v = null;
+							}
+							else if (vv == "NSUIntegerMax")
+							{
+								DoWrite("		public const uint {0} = uint.MaxValue;", value.Names[i]);
+								v = null;
+							}
+							else if (value.Names[i] == "NSXMLNodePreserveAll")
+							{
+								DoWrite("		public const uint {0} = {1};", value.Names[i], vv);
+								v = null;
+							}
+							else
+							{
+								DoWrite("		public const int {0} = {1};", value.Names[i], vv);
 								
-							DoWrite("		public const uint {0} = {1};", value.Names[i], vv);
-							v = null;
+								if (int.TryParse(vv, out tmp))
+									v = tmp + 1;
+								else
+									v = null;
+							}
 						}
-						else if (vv == "NSUIntegerMax")
+						else if (v.HasValue)
 						{
-							DoWrite("		public const uint {0} = uint.MaxValue;", value.Names[i]);
-							v = null;
-						}
-						else if (value.Names[i] == "NSXMLNodePreserveAll")
-						{
-							DoWrite("		public const uint {0} = {1};", value.Names[i], vv);
-							v = null;
+							DoWrite("		public const int {0} = {1};", value.Names[i], v.Value);
+							v = v.Value + 1;
 						}
 						else
-						{
-							DoWrite("		public const int {0} = {1};", value.Names[i], vv);
-							
-							if (int.TryParse(vv, out tmp))
-								v = tmp + 1;
-							else
-								v = null;
-						}
+							throw new Exception(string.Format("Couldn't compute a value for {0} in {1}", value.Names[i], m_inPath));
 					}
-					else if (v.HasValue)
-					{
-						DoWrite("		public const int {0} = {1};", value.Names[i], v.Value);
-						v = v.Value + 1;
-					}
-					else
-						throw new Exception(string.Format("Couldn't compute a value for {0} in {1}", value.Names[i], m_inPath));
 				}
 			}
 			
@@ -349,31 +374,38 @@ internal sealed class Generate
 		
 	private void DoGenerateProtocolMethods(List<string> names, string pname)
 	{
-		DoWrite("\t\t");
-		DoWrite("		#region {0} Methods", pname);
-		
-		bool writeBlank = false;
-		NativeProtocol protocol = m_objects.FindProtocol(pname);
-		for (int i = 0; i < protocol.Methods.Count; ++i)
+		try
 		{
-			NativeMethod method = protocol.Methods[i];
-			if (names.IndexOf(method.Name + method.IsClass) < 0 && !DoInterfaceHasMethod(method.Name, method.IsClass))
+			NativeProtocol protocol = m_objects.FindProtocol(pname);
+			DoWrite("\t\t");
+			DoWrite("		#region {0} Methods", pname);
+			
+			bool writeBlank = false;
+			for (int i = 0; i < protocol.Methods.Count; ++i)
 			{
-				if (DoGenerateMethod(method, writeBlank, protocol))
+				NativeMethod method = protocol.Methods[i];
+				if (names.IndexOf(method.Name + method.IsClass) < 0 && !DoInterfaceHasMethod(method.Name, method.IsClass))
 				{
-					names.Add(method.Name + method.IsClass);
-					writeBlank = true;
+					if (DoGenerateMethod(method, writeBlank, protocol))
+					{
+						names.Add(method.Name + method.IsClass);
+						writeBlank = true;
+					}
 				}
+				else
+					DoWrite("		// skipping {0} (it's already defined)", method.Name);
 			}
-			else
-				DoWrite("		// skipping {0} (it's already defined)", method.Name);
+			
+			foreach (string p2 in protocol.Protocols)
+				if (p2 != "NSObject")
+					DoGenerateProtocolMethods(names, p2);
+			
+			DoWrite("		#endregion");
 		}
-		
-		foreach (string p2 in protocol.Protocols)
-			if (p2 != "NSObject")
-				DoGenerateProtocolMethods(names, p2);
-		
-		DoWrite("		#endregion");
+		catch (ArgumentException)
+		{
+			Console.Error.WriteLine("Skipping {0} protocol methods (can't find the protocol).", pname);
+		}
 	}
 	
 	private bool DoGenerateMethod(NativeMethod nm, bool writeBlank, NativeProtocol protocol)	
@@ -998,10 +1030,14 @@ internal sealed class Generate
 			if (m_objects.TryGetMethods(ni, out methods))
 			{
 				if (methods.Count > 0)
+				{
 					has = methods.Any(m => m.Name == mname && m.IsClass == isClass);
+				}
 				
 				if (!has)
+				{
 					has = DoBaseHasMethod(ni.BaseName, mname, isClass);
+				}
 			}
 			else
 				throw new Exception("Couldn't find the methods for interface " + iname);
@@ -1063,6 +1099,10 @@ internal sealed class Generate
 		{
 			result = "class_";
 		}
+		else if (name == "event")
+		{
+			result = "event_";
+		}
 		else if (name == "object")
 		{
 			result = "object_";
@@ -1106,6 +1146,7 @@ internal sealed class Generate
 	{
 		switch (value)
 		{
+#if false
 			case "CFByteOrderUnknown":
 				return "0";
 			
@@ -1264,6 +1305,14 @@ internal sealed class Generate
 			
 			case "NX_SUBTYPE_TABLET_PROXIMITY":
 				return "2";
+#endif
+			
+			default:
+				if (value.Length == 6 && value[0] == '\'' && value[5] == '\'')
+					value = string.Format("0x{0:x2}{1:x2}{2:x2}{3:x2}", (int) value[1], (int) value[2], (int) value[3], (int) value[4]);
+				else
+					value = m_objects.ExpandDefines(value);
+				break;
 		}
 		
 		return value;
@@ -1450,6 +1499,7 @@ internal sealed class Generate
 				case "NSComparisonResult":
 				case "NSInteger":
 				case "OSStatus":
+				case "pid_t":
 				case "ptrdiff_t":				// TODO: some of these types are not 64-bit safe (but mono isn't either...)
 				case "SInt32":
 				case "SRefCon":
@@ -1588,6 +1638,11 @@ internal sealed class Generate
 				case "UTF32Char":
 					return "UInt32";
 					
+				case "CFIndex":
+				case "CFOptionFlags":
+				case "CFTypeID":
+				case "LSLaunchFlags":
+				case "OptionBits":
 				case "unsigned long":
 				case "unsigned long long":
 					return "UInt64";

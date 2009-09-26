@@ -28,25 +28,19 @@ using System.Xml;
 
 internal static class Program
 {
-	public static void Main(string[] args)
+	public static int Main(string[] args)
 	{
-		foreach (string arg in args)
-			DoProcessArg(arg);
+		int result = 0;
 		
-		if (!m_exiting)
-			DoValidateArgs();
-		
-		if (!m_exiting)
+		try
 		{
-			if (ms_file != null)
-			{
-				ObjectModel objects = new ObjectModel();
-				objects.Parse(ms_file, true);
-				
-				Generate generate = new Generate(objects);
-				generate.Code(ms_outDir, new Blacklist[0], new Threading[0]);
-			}
-			else
+			foreach (string arg in args)
+				DoProcessArg(arg);
+			
+			if (!m_exiting)
+				DoValidateArgs();
+			
+			if (!m_exiting)
 			{
 				XmlReader reader = XmlReader.Create(ms_xml);
 				XmlDocument xml = new XmlDocument();
@@ -80,6 +74,13 @@ internal static class Program
 				}
 			}
 		}
+		catch (ParserException e)
+		{
+			Console.Error.WriteLine(e.Message);
+			result = 1;
+		}
+		
+		return result;
 	}
 	
 	private static void DoAddResultType(ObjectModel objects, XmlNode tr)
@@ -119,35 +120,41 @@ internal static class Program
 		Directory.CreateDirectory(outPath);
 		
 		string dir;
+		var analyze = new AnalyzeHeader(objects);
 		foreach (XmlNode child in framework.ChildNodes)
 		{
 			if (child.Name == "Include")
 			{
 				dir = child.Attributes["path"].Value;
-				DoParseHeaders(objects, dir, false);
+				DoParseHeaders(analyze, dir, false);
 			}
 		}
 		
+		objects.Reset();			// need to clear out any files from previous frameworks
 		dir = framework.Attributes["path"].Value;
-		DoParseHeaders(objects, dir, true);
-		objects.PostParse();
+		DoParseHeaders(analyze, dir, true);
 		
+		analyze.PostParse();
 		Generate generate = new Generate(objects);
 		generate.Code(outPath, blacklist, threading);
 	}
 	
-	private static void DoParseHeaders(ObjectModel objects, string dir, bool emitting)
+	private static void DoParseHeaders(AnalyzeHeader analyze, string dir, bool emitting)
 	{
-		objects.Reset();									// clears the list of files which is what is used to generate the C# files
-		
+		var parser = new NewParser();
 		string[] files = Directory.GetFiles(dir, "*.h");
 		foreach (string inFile in files)
 		{
 			if (!inFile.EndsWith("NSObjCRuntime.h"))
-				objects.Parse(inFile, emitting);
+			{
+				string text = File.ReadAllText(inFile);
+				XmlNode node = parser.Parse(text, inFile);
+				
+				analyze.Header(node.ChildNodes[0], inFile, emitting);
+			}
 		}
 	}
-	
+
 	private static Blacklist[] DoGetBlacklist(XmlNode framework)
 	{
 		var black = new List<Blacklist>();
@@ -161,6 +168,10 @@ internal static class Program
 					if (child.Name == "Method")
 					{
 						black.Add(new Blacklist(child.Attributes["interface"].Value, child.Attributes["method"].Value, child.Attributes["reason"].Value));
+					}
+					else if (child.Name == "Enum")
+					{
+						black.Add(new Blacklist(child.Attributes["name"].Value, child.Attributes["reason"].Value));
 					}
 				}
 			}
@@ -192,11 +203,7 @@ internal static class Program
 	
 	private static void DoProcessArg(string arg)
 	{
-		if (arg.StartsWith("--file="))
-		{
-			ms_file = arg.Substring("--file=".Length);
-		}
-		else if (arg.StartsWith("--xml="))
+		if (arg.StartsWith("--xml="))
 		{
 			ms_xml = arg.Substring("--xml=".Length);
 		}
@@ -226,15 +233,9 @@ internal static class Program
 	
 	private static void DoValidateArgs()
 	{
-		if (ms_file == null && ms_xml == null)
+		if (ms_xml == null)
 		{
-			Console.Error.WriteLine("One of --xml or --file must be used.");
-			m_exiting = true;
-		}
-		
-		if (ms_file != null && ms_xml != null)
-		{
-			Console.Error.WriteLine("Can't use both --xml and --file.");
+			Console.Error.WriteLine("--xml must be used.");
 			m_exiting = true;
 		}
 		
@@ -245,7 +246,6 @@ internal static class Program
 		}
 	}
 	
-	private static string ms_file;
 	private static string ms_xml;
 	private static string ms_outDir;
 	private static bool m_exiting;
