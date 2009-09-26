@@ -58,7 +58,7 @@ internal sealed class ObjectModel
 				
 			case "NSInteger":
 			case "WebNSInteger":
-				result = "int";
+				result = "Int32";
 				break;
 			
 			case "AudioUnit":
@@ -95,7 +95,7 @@ internal sealed class ObjectModel
 			case "NSUInteger":
 			case "uid_t":
 			case "WebNSUInteger":
-				result = "uint";
+				result = "UInt32";
 				break;
 			
 			default:
