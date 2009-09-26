@@ -137,5 +137,5 @@ uninstall:
 
 dist:
 	tar --create --compress --exclude \*/.svn --exclude \*/.svn/\* --file=mcocoa-$(version).tar.gz \
-		AUTHORS CHANGES CHANGE_LOG Dictionary.txt MIT.X11 Makefile README examples gendarme.ignore generate source tests
+		AUTHORS CHANGES CHANGE_LOG MIT.X11 Makefile README examples gendarme.ignore generate source tests
 

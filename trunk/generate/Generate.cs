@@ -1574,7 +1574,7 @@ internal sealed class Generate
 				case "long long *":
 					return "out Int64";
 					
-				case "NSRange **":
+				case "NSRange *":
 				case "NSRangePointer":
 					return "out NSRange";
 					
