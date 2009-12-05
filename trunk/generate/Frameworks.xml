@@ -19,7 +19,7 @@
 			<Method interface = "NSData" method = "getBytes:length:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSData" method = "getBytes:range:" reason = "because there is a hand-written version"/>
 
-			<Method interface = "NSDictionary" method = "dictionaryWithObjectsAndKeys:" reason = "because it is variadic"/>
+			<Method interface = "NSDictionary" method = "dictionaryWithObjectsAndKeys:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSDictionary" method = "initWithObjectsAndKeys:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSException" method = "raise:format:" reason = "because it is variadic"/>

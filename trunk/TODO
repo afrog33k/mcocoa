@@ -12,8 +12,6 @@ Menlo font is a good monospaces font?
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
-* Add custom NSDictionary and NSMutableDictionary dictionaryWithObjectsAndKeys
-	- might want to update quartz example too
 * Stagger windows in examples.
 * Get mandel-zoomer doing a bit better with gendarme.
 * Generate externs:
