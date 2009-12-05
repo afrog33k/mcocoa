@@ -20,6 +20,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using MObjc;
+using MObjc.Helpers;
 using System;
 using System.Collections.Generic;
 using OldCollections = System.Collections;
@@ -29,6 +30,13 @@ namespace MCocoa
 	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSDictionary_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSDictionary : NSObject, IEnumerable<KeyValuePair<NSObject, NSObject>>
 	{
+		public static NSDictionary dictionaryWithObjectsAndKeys(params NSObject[] args)
+		{
+			// TODO: This is not ideal but it's hard to efficiently create an immutable
+			// dictionary using this method when we don't support variadic method calls.
+			return NSMutableDictionary.dictionaryWithObjectsAndKeys(args);
+		}
+		
 		OldCollections.IEnumerator OldCollections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
@@ -47,6 +55,23 @@ namespace MCocoa
 				
 				key = keys.nextObject();
 			}
+		}
+	}
+	
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/mac/library/documentation/Cocoa/Reference/Foundation/Classes/NSMutableDictionary_Class/Reference/Reference.html#//apple_ref/occ/cl/NSMutableDictionary">docs</a>.</summary>
+	public partial class NSMutableDictionary : NSDictionary
+	{
+		public static new NSMutableDictionary dictionaryWithObjectsAndKeys(params NSObject[] args)
+		{
+			Contract.Requires(args.Length % 2 == 0, "args length must be even");
+			
+			var result = NSMutableDictionary.Create();
+			for (int i = 0; i < args.Length; i += 2)
+			{
+				result.setObject_forKey(args[i], args[i + 1]);
+			}
+			
+			return result;
 		}
 	}
 }

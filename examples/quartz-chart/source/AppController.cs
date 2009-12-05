@@ -46,11 +46,9 @@ internal sealed class AppController : NSObject
 	{
 		m_tableView = this["tableView"].To<NSTableView>();
 		m_view = this["view"].To<QCView>();
-//		m_view = this["view"].To<NSView>();
 		
 		NSString path = NSBundle.mainBundle().pathForResource_ofType(NSString.Create("Chart"), NSString.Create("qtz"));
 		bool loaded = m_view.loadCompositionFromFile(path);
-//		bool loaded = m_view.Call("loadCompositionFromFile:", path).To<bool>();
 		if (!loaded)
 			throw new System.IO.FileNotFoundException(string.Format("Couldn't load '{0:D}'", path));
 		
@@ -117,7 +115,6 @@ internal sealed class AppController : NSObject
 	private void DoUpdateChart()
 	{
 		m_view.setValue_forInputKey(m_data, ParameterKeyData);
-//		m_view.Call("setValue:forInputKey:", m_data, ParameterKeyData);
 		
 		float max = 0.0f;
 		for (uint i = 0; i < m_data.count(); ++i)
@@ -128,14 +125,13 @@ internal sealed class AppController : NSObject
 				max = value;
 		}
 		m_view.setValue_forInputKey(NSNumber.numberWithFloat(max > 0.0 ? 1.0f / max : 1.0f), ParameterKeyScale);
-//		m_view.Call("setValue:forInputKey:", NSNumber.numberWithFloat(max > 0.0 ? 1.0f / max : 1.0f), ParameterKeyScale);
 	}
 	
 	private void DoAppendData(string label, int data)
 	{
-		var dict = NSMutableDictionary.Create();
-		dict.setObject_forKey(NSString.Create(label), DataKeyLabel);
-		dict.setObject_forKey(NSNumber.numberWithInt(data), DataKeyValue);
+		var dict = NSMutableDictionary.dictionaryWithObjectsAndKeys(
+			NSString.Create(label), DataKeyLabel,
+			NSNumber.numberWithInt(data), DataKeyValue);
 		
 		m_data.addObject(dict);
 	}
@@ -149,7 +145,6 @@ internal sealed class AppController : NSObject
 	
 	private NSTableView m_tableView;
 	private QCView m_view;
-//	private NSView m_view;
 	private NSMutableArray m_data = NSMutableArray.Create().Retain();
 	#endregion
 }
