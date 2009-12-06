@@ -66,6 +66,37 @@ namespace MCocoa
 			for (uint i = 0; i < count(); ++i)
 				yield return objectAtIndex(i);
 		}
+		
+		/// <exclude/>
+		public delegate int SortFunction(NSObject lhs, NSObject rhs, IntPtr context);
+		
+		/// <exclude/>
+		public NSArray sortedArrayUsingFunction_context(SortFunction function, IntPtr context)
+		{
+			Action<IntPtr, IntPtr, IntPtr> thunk = (IntPtr lhs, IntPtr rhs, IntPtr ctxt) =>
+				function(NSObject.Lookup(lhs), NSObject.Lookup(rhs), ctxt);
+			
+			IntPtr fp = Marshal.GetFunctionPointerForDelegate(thunk);
+			NSArray result = Call("sortedArrayUsingFunction:context:", fp, context).To<NSArray>();
+			
+			GC.KeepAlive(thunk);
+			
+			return result;
+		}
+		
+		/// <exclude/>
+		public NSArray sortedArrayUsingFunction_context_hint(SortFunction function, IntPtr context, NSData hint)
+		{
+			Action<IntPtr, IntPtr, IntPtr> thunk = (IntPtr lhs, IntPtr rhs, IntPtr ctxt) =>
+				function(NSObject.Lookup(lhs), NSObject.Lookup(rhs), ctxt);
+			
+			IntPtr fp = Marshal.GetFunctionPointerForDelegate(thunk);
+			NSArray result = Call("sortedArrayUsingFunction:context:hint:", fp, context, hint).To<NSArray>();
+			
+			GC.KeepAlive(thunk);
+			
+			return result;
+		}
 	}
 	
 	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSMutableArray_Class/Reference/Reference.html">docs</a>.</summary>
@@ -94,6 +125,18 @@ namespace MCocoa
 			handle.Free();
 			
 			return result;
+		}
+		
+		/// <exclude/>
+		public void sortUsingFunction_context(SortFunction function, IntPtr context)
+		{
+			Action<IntPtr, IntPtr, IntPtr> thunk = (IntPtr lhs, IntPtr rhs, IntPtr ctxt) =>
+				function(NSObject.Lookup(lhs), NSObject.Lookup(rhs), ctxt);
+			
+			IntPtr fp = Marshal.GetFunctionPointerForDelegate(thunk);
+			Call("sortUsingFunction:context:", fp, context);
+			
+			GC.KeepAlive(thunk);
 		}
 	}
 }
