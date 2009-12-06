@@ -136,7 +136,7 @@ internal sealed class FractalView : NSView
 		NSSavePanel panel = NSSavePanel.savePanel();
 		panel.setTitle(NSString.Create("Save Image"));
 		panel.setCanCreateDirectories(true);
-		panel.setRequiredFileType(NSString.Create("png"));
+		panel.setAllowedFileTypes(NSArray.Create("png"));
 //		panel.setAllowedFileTypes(NSArray.Create("bmp", "gif", "jpeg", "png", "tiff"));
 		panel.setAllowsOtherFileTypes(false);
 		panel.beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo(

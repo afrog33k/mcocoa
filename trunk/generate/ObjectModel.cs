@@ -166,7 +166,7 @@ internal sealed class ObjectModel
 		NativeInterface result;
 		
 		if (!m_interfaces.TryGetValue(name, out result))
-			throw new Exception("Couldn't find interface " + name);
+			throw new KeyNotFoundException("Couldn't find interface " + name);
 			
 		return result;
 	}

@@ -43,6 +43,29 @@
 			<Method interface = "NSString" method = "localizedStringWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "stringByAppendingFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "stringWithFormat:" reason = "because it is variadic"/>
+			
+			<Enum name = "NSMappedRead" reason = "because there is a hand-written version"/>
+			<Enum name = "NSUncachedRead" reason = "because there is a hand-written version"/>
+			<Enum name = "NSAtomicWrite" reason = "because there is a hand-written version"/>
+			<Enum name = "NSHashTableStrongMemory" reason = "because there is a hand-written version"/>
+			<Enum name = "NSHashTableZeroingWeakMemory" reason = "because there is a hand-written version"/>
+			<Enum name = "NSHashTableCopyIn" reason = "because there is a hand-written version"/>
+			<Enum name = "NSHashTableObjectPointerPersonality" reason = "because there is a hand-written version"/>
+			
+			<Enum name = "NSLocaleLanguageDirectionUnknown" reason = "because there is a hand-written version"/>
+			<Enum name = "NSLocaleLanguageDirectionLeftToRight" reason = "because there is a hand-written version"/>
+			<Enum name = "NSLocaleLanguageDirectionRightToLeft" reason = "because there is a hand-written version"/>
+			<Enum name = "NSLocaleLanguageDirectionTopToBottom" reason = "because there is a hand-written version"/>
+			<Enum name = "NSLocaleLanguageDirectionBottomToTop" reason = "because there is a hand-written version"/>
+			
+			<Enum name = "NSMapTableStrongMemory" reason = "because there is a hand-written version"/>
+			<Enum name = "NSMapTableZeroingWeakMemory" reason = "because there is a hand-written version"/>
+			<Enum name = "NSMapTableCopyIn" reason = "because there is a hand-written version"/>
+			<Enum name = "NSMapTableObjectPointerPersonality" reason = "because there is a hand-written version"/>
+			<Enum name = "NSXMLNodePreserveEmptyElements" reason = "because there is a hand-written version"/>
+			<Enum name = "NSXMLNodePreserveQuotes" reason = "because there is a hand-written version"/>
+			<Enum name = "NSXMLNodePreserveAll" reason = "because there is a hand-written version"/>
+			<Enum name = "NSTextCheckingAllTypes" reason = "because there is a hand-written version"/>
 		</Blacklist>
 		
 		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
@@ -139,6 +162,8 @@
 			<Method interface = "NSGradient" method = "initWithColorsAndLocations:" reason = "because it is variadic"/>
 			<Method interface = "NSMatrix" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
 			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because it has a function pointer"/>
+			
+			<Enum name = "NSTouchPhaseTouching" reason = "because there is a hand-written version"/>
 		</Blacklist>
 		
 		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
