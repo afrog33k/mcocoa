@@ -12,6 +12,7 @@ Menlo font is a good monospaces font?
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
+* Can we get blocks and function pointers working?
 * Stagger windows in examples.
 * Get mandel-zoomer doing a bit better with gendarme.
 * Generate externs:

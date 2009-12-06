@@ -124,7 +124,12 @@ internal sealed class Generate
 							string vv = DoMapEnumValue(value.Values[i].Trim());
 							
 							int tmp;
-							if (vv.StartsWith("0x") && vv.Length >= 10 && vv[2] >= '8')
+							if (vv.StartsWith("0x") && vv.Contains("ULL"))
+							{
+								DoWrite("		public const ulong {0} = {1};", value.Names[i], vv);
+								v = null;
+							}
+							else if (vv.StartsWith("0x") && vv.Length >= 10 && vv[2] >= '8')
 							{
 								if (vv.EndsWith("UL"))
 									vv = vv.Substring(0, vv.Length - 2);
@@ -132,15 +137,15 @@ internal sealed class Generate
 								DoWrite("		public const uint {0} = {1};", value.Names[i], vv);
 								v = null;
 							}
-							else if (vv.Contains("1L") || vv.Contains("2L") || vv.Contains("3L") || vv.Contains("4L") || vv.Contains("5L"))
+							else if (vv.Contains("0L") || vv.Contains("1L") || vv.Contains("2L") || vv.Contains("3L") || vv.Contains("4L") || vv.Contains("5L"))
 							{
 								DoWrite("		public const long {0} = {1};", value.Names[i], vv);
 							}
-							else if (vv.Contains("1UL") || vv.Contains("2UL") || vv.Contains("3UL") || vv.Contains("4UL") || vv.Contains("5UL"))
+							else if (vv.Contains("0UL") || vv.Contains("1UL") || vv.Contains("2UL") || vv.Contains("3UL") || vv.Contains("4UL") || vv.Contains("5UL"))
 							{
 								DoWrite("		public const ulong {0} = {1};", value.Names[i], vv);
 							}
-							else if (vv.Contains("1U") || vv.Contains("2U") || vv.Contains("3U") || vv.Contains("4U") || vv.Contains("5U"))
+							else if (vv.Contains("0U") || vv.Contains("1U") || vv.Contains("2U") || vv.Contains("3U") || vv.Contains("4U") || vv.Contains("5U"))
 							{
 								DoWrite("		public const uint {0} = {1};", value.Names[i], vv);
 							}
@@ -193,20 +198,23 @@ internal sealed class Generate
 			
 			if (m_interface.Category == null || m_interface.Category != "NSDeprecated")
 			{
-				m_buffer = new StringBuilder();
-				if (i > 0)
-					DoWrite();
-				
-				if (m_objects.KnownType(m_interface.Name))
+				if (m_interface.Name != "NSOpenGLLayer")	// NSOpenGLLayer relies on CAOpenGLLayer whichis in quartz, not appkit... 
 				{
-					DoWriteInterfaceHeader();
-					DoGenerateMethods();
-					DoWriteInterfaceTrailer();
+					m_buffer = new StringBuilder();
+					if (i > 0)
+						DoWrite();
 					
-					buffer.Append(m_buffer.ToString());
+					if (m_objects.KnownType(m_interface.Name))
+					{
+						DoWriteInterfaceHeader();
+						DoGenerateMethods();
+						DoWriteInterfaceTrailer();
+						
+						buffer.Append(m_buffer.ToString());
+					}
+					else
+						Console.Error.WriteLine("Ignoring {0} ({1} isn't a known type)", m_interface, m_interface.Name);
 				}
-				else
-					Console.Error.WriteLine("Ignoring {0} ({1} isn't a known type)", m_interface, m_interface.Name);
 			}
 		}
 	}
@@ -455,6 +463,16 @@ internal sealed class Generate
 				{
 					DoWrite("		// skipping function pointer {0}", nm.Name);
 					Console.Error.WriteLine("Ignoring {0}::{1} (it uses a function pointer)", m_interface.Name, nm.Name);
+				}
+				else if (nm.ArgTypes.Length > 0 && (nm.ArgTypes.Any(t => t.Contains("( ^ )")) || nm.ArgTypes.Any(t => t.Contains("(^)"))))
+				{
+					DoWrite("		// skipping block {0}", nm.Name);
+					Console.Error.WriteLine("Ignoring {0}::{1} (it uses a block)", m_interface.Name, nm.Name);
+				}
+				else if (nm.ReturnType.Contains("( ^ )") || nm.ReturnType.Contains("(^)"))
+				{
+					DoWrite("		// skipping block {0}", nm.Name);
+					Console.Error.WriteLine("Ignoring {0}::{1} (it uses a block)", m_interface.Name, nm.Name);
 				}
 				else
 				{
@@ -1406,6 +1424,7 @@ internal sealed class Generate
 				case "id *":
 				case "IconRef":
 				case "NSAppleEventManagerSuspensionID":
+				case "NSComparator":
 				case "NSDistantObject *":
 				case "NSGlyph *":
 				case "NSModalSession":
@@ -1463,6 +1482,7 @@ internal sealed class Generate
 				case "NSAttributeType":
 				case "NSGlyph":
 				case "NSUInteger":
+				case "NSSortOptions":
 				case "OSType":
 				case "ResType":
 				case "size_t":
@@ -1479,6 +1499,7 @@ internal sealed class Generate
 				case "OptionBits":
 				case "unsigned long":
 				case "unsigned long long":
+				case "uint64_t":
 					return "UInt64";
 					
 				default:
