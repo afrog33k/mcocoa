@@ -24,19 +24,22 @@ using System;
 internal sealed class NativeMethod
 {
 	public bool IsClass {get; set;}
-
+	
 	// Something like "decodeClassName:asClassName:".
 	public string Name {get; set;}
-
+	
 	// Something like "void", "NSDate *", etc.
 	public string ReturnType {get; set;}
-
+	
 	// May be empty.
 	public string[] ArgNames {get; set;}
-
+	
 	// May be empty.
 	public string[] ArgTypes {get; set;}
-
+	
+	// May be null.
+	public string Obsolete {get; set;}
+	
 	public override string ToString()
 	{
 		string result = string.Empty;		// debugging code so we won't bother with StringBuilder
