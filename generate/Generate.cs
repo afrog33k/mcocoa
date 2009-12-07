@@ -196,25 +196,22 @@ internal sealed class Generate
 		{
 			m_interface = file.Interfaces[i];
 			
-			if (m_interface.Category == null || m_interface.Category != "NSDeprecated")
+			if (m_interface.Name != "NSOpenGLLayer")	// NSOpenGLLayer relies on CAOpenGLLayer whichis in quartz, not appkit... 
 			{
-				if (m_interface.Name != "NSOpenGLLayer")	// NSOpenGLLayer relies on CAOpenGLLayer whichis in quartz, not appkit... 
+				m_buffer = new StringBuilder();
+				if (i > 0)
+					DoWrite();
+				
+				if (m_objects.KnownType(m_interface.Name))
 				{
-					m_buffer = new StringBuilder();
-					if (i > 0)
-						DoWrite();
+					DoWriteInterfaceHeader();
+					DoGenerateMethods();
+					DoWriteInterfaceTrailer();
 					
-					if (m_objects.KnownType(m_interface.Name))
-					{
-						DoWriteInterfaceHeader();
-						DoGenerateMethods();
-						DoWriteInterfaceTrailer();
-						
-						buffer.Append(m_buffer.ToString());
-					}
-					else
-						Console.Error.WriteLine("Ignoring {0} ({1} isn't a known type)", m_interface, m_interface.Name);
+					buffer.Append(m_buffer.ToString());
 				}
+				else
+					Console.Error.WriteLine("Ignoring {0} ({1} isn't a known type)", m_interface, m_interface.Name);
 			}
 		}
 	}
@@ -503,6 +500,14 @@ internal sealed class Generate
 		string name = DoGetMethodName(method.Name, DoGetMethodSuffix(method));
 		if (PureMethods.IsPure(name))
 			m_buffer.AppendLine("		[Pure]");
+			
+		// obsolete attribute
+		if (method.Obsolete != null)
+		{
+			m_buffer.Append("		[Obsolete(\"");
+			m_buffer.Append(method.Obsolete);
+			m_buffer.AppendLine("\")]");
+		}
 		
 		// signature		
 		m_buffer.Append("		public ");

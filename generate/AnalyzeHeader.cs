@@ -101,7 +101,7 @@ internal sealed class AnalyzeHeader
 	// EnumEntry := Identifier;
 	private void DoAnalyzeEnum(XmlNode node)
 	{
-		if (DoFind(node, "Deprecated") == null)
+		if (DoFindDeprecated(node) == null)
 		{
 			XmlNode identifier = DoFindLast(node, "Identifier");
 			string name = identifier != null ? identifier.InnerText : null;
@@ -135,26 +135,28 @@ internal sealed class AnalyzeHeader
 	// Interface := Attribute? Deprecated? Availability? '@interface' C InterfaceSig ('{' C Fields '}' C (';' S)?)? InterfaceMember* '@end' C;
 	private void DoAnalyzeInterface(XmlNode node)
 	{
-		if (DoFind(node, "Deprecated") == null)
-		{
-			XmlNode sig = DoFind(node, "InterfaceSig");
-			NativeInterface ni = DoAnalyzeInterfaceSig(sig);
+		string deprecated = DoFindDeprecated(node);
+		
+		XmlNode sig = DoFind(node, "InterfaceSig");
+		NativeInterface ni = DoAnalyzeInterfaceSig(sig);
+		
+		if (deprecated == null)
+			deprecated = DoFindDeprecated(sig);
 			
-			foreach (XmlNode child in node.ChildNodes)
+		foreach (XmlNode child in node.ChildNodes)
+		{
+			if ("InterfaceMember" == child.Name)
 			{
-				if ("InterfaceMember" == child.Name)
+				NativeMethod method = DoAnalyzeInterfaceMember(child, deprecated);
+				if (method != null)
 				{
-					NativeMethod method = DoAnalyzeInterfaceMember(child);
-					if (method != null)
-					{
-						ni.Add(method);
-					}
+					ni.Add(method);
 				}
 			}
-			
-			m_interfaces.Add(ni);
-			m_objects.AddInterface(ni);
 		}
+		
+		m_interfaces.Add(ni);
+		m_objects.AddInterface(ni);
 	}
 	
 	// InterfaceSig := Identifier BaseClass C ProtocolList ProtocolList;	# for NSWindow
@@ -176,7 +178,7 @@ internal sealed class AnalyzeHeader
 		XmlNode category = DoFind(node, "Category");
 		XmlNode protocolsNode = DoFind(node, "IdentifierList");	// the ProtocolList returns the IdentifierList instead of itself
 		string[] protocols = protocolsNode != null ? DoAnalyzeIdentifierList(protocolsNode) : new string[0];
-			
+		
 		if (category != null)
 		{
 			ni = new NativeInterface{Name = name, Protocols = protocols, Category = category.ChildNodes[1].InnerText};
@@ -204,30 +206,29 @@ internal sealed class AnalyzeHeader
 	// Protocol := Deprecated? Availability? '@protocol' C Identifier ProtocolList? InterfaceMember* '@end' C;
 	private void DoAnalyzeProtocol(XmlNode node)
 	{
-		if (DoFind(node, "Deprecated") == null)
+		string deprecated = DoFindDeprecated(node);
+		
+		XmlNode identifier = DoFind(node, "Identifier");
+		
+		XmlNode protocolsNode = DoFind(node, "IdentifierList");	// the ProtocolList returns the IdentifierList instead of itself
+		string[] protocols = protocolsNode != null ? DoAnalyzeIdentifierList(protocolsNode) : new string[0];
+		
+		var protocol = new NativeProtocol{Name = identifier.InnerText, Protocols = protocols};
+		
+		foreach (XmlNode child in node.ChildNodes)
 		{
-			XmlNode identifier = DoFind(node, "Identifier");
-			
-			XmlNode protocolsNode = DoFind(node, "IdentifierList");	// the ProtocolList returns the IdentifierList instead of itself
-			string[] protocols = protocolsNode != null ? DoAnalyzeIdentifierList(protocolsNode) : new string[0];
-			
-			var protocol = new NativeProtocol{Name = identifier.InnerText, Protocols = protocols};
-			
-			foreach (XmlNode child in node.ChildNodes)
+			if ("InterfaceMember" == child.Name)
 			{
-				if ("InterfaceMember" == child.Name)
-				{
-					NativeMethod method = DoAnalyzeInterfaceMember(child);
-					if (method != null)
-						protocol.Add(method);
-				}
+				NativeMethod method = DoAnalyzeInterfaceMember(child, deprecated);
+				if (method != null)
+					protocol.Add(method);
 			}
-			m_objects.AddProtocol(protocol);
 		}
+		m_objects.AddProtocol(protocol);
 	}
 	
 	// InterfaceMember := Comment / Preprocessor / Method / Enum / Extern / Property / Typedef / ('@optional' S) / ('@required' S);
-	private NativeMethod DoAnalyzeInterfaceMember(XmlNode node)
+	private NativeMethod DoAnalyzeInterfaceMember(XmlNode node, string deprecated)
 	{
 		NativeMethod method = null;
 		
@@ -238,7 +239,7 @@ internal sealed class AnalyzeHeader
 		}
 		else if ("Method" == child.Name)
 		{
-			method = DoAnalyzeMethod(child);
+			method = DoAnalyzeMethod(child, deprecated);
 		}
 		else if ("Preprocessor" == child.Name && child.Attributes["alternative"].Value == "1")
 		{
@@ -259,61 +260,59 @@ internal sealed class AnalyzeHeader
 	// VarArgs := ',' S '...' S ('NS_REQUIRES_NIL_TERMINATION' S)?;
 	// 
 	// ParensType := '(' S Type ')' S;
-	private NativeMethod DoAnalyzeMethod(XmlNode node)
+	private NativeMethod DoAnalyzeMethod(XmlNode node, string deprecated)
 	{
-		NativeMethod result = null;
+		deprecated = deprecated ?? DoFindDeprecated(node);
 		
-		if (DoFind(node, "Deprecated") == null)
+		var name = new System.Text.StringBuilder();
+		string rtype = node.ChildNodes[1].Name == "ParensType" ? node.ChildNodes[1].InnerText : "id";
+		var argNames = new List<string>();
+		var argTypes = new List<string>();
+		
+		XmlNode identifier = DoFind(node, "Identifier");
+		if (identifier != null)
 		{
-			var name = new System.Text.StringBuilder();
-			string rtype = node.ChildNodes[1].Name == "ParensType" ? node.ChildNodes[1].InnerText : "id";
-			var argNames = new List<string>();
-			var argTypes = new List<string>();
-			
-			XmlNode identifier = DoFind(node, "Identifier");
-			if (identifier != null)
-			{
-				name.Append(identifier.InnerText);
-			}
-			else
-			{
-				for (int i = 1; i < node.ChildNodes.Count; ++i)
-				{
-					XmlNode p = node.ChildNodes[i];
-					if (p.Name == "Parameter")
-					{
-						if (p.ChildNodes[0].Name == "Identifier")
-							name.Append(p.ChildNodes[0].InnerText);
-						name.Append(':');
-						
-						XmlNode parens = DoFind(p, "ParensType");
-						XmlNode aname = DoFindLast(p, "Identifier");
-						if (parens != null)
-							argTypes.Add(parens.InnerText);
-						else
-							argTypes.Add("id");
-						if (argNames.Contains(aname.InnerText))
-							argNames.Add(aname.InnerText + "2");		// clientAcceptedChangesForRecordWithIdentifier:formattedRecord:newRecordIdentifier: has duplicate argument names...
-						else
-							argNames.Add(aname.InnerText);
-					}
-				}
-				
-				XmlNode varArgs = DoFind(node, "VarArgs");
-				if (varArgs != null)
-				{
-					argNames.Add(string.Empty);
-					argTypes.Add("...");
-				}
-			}
-			
-			result = new NativeMethod{
-				IsClass = node.ChildNodes[0].Value == "+",
-				Name = name.ToString(),
-				ReturnType = rtype,
-				ArgNames = argNames.ToArray(),
-				ArgTypes = argTypes.ToArray()};
+			name.Append(identifier.InnerText);
 		}
+		else
+		{
+			for (int i = 1; i < node.ChildNodes.Count; ++i)
+			{
+				XmlNode p = node.ChildNodes[i];
+				if (p.Name == "Parameter")
+				{
+					if (p.ChildNodes[0].Name == "Identifier")
+						name.Append(p.ChildNodes[0].InnerText);
+					name.Append(':');
+					
+					XmlNode parens = DoFind(p, "ParensType");
+					XmlNode aname = DoFindLast(p, "Identifier");
+					if (parens != null)
+						argTypes.Add(parens.InnerText);
+					else
+						argTypes.Add("id");
+					if (argNames.Contains(aname.InnerText))
+						argNames.Add(aname.InnerText + "2");		// clientAcceptedChangesForRecordWithIdentifier:formattedRecord:newRecordIdentifier: has duplicate argument names...
+					else
+						argNames.Add(aname.InnerText);
+				}
+			}
+			
+			XmlNode varArgs = DoFind(node, "VarArgs");
+			if (varArgs != null)
+			{
+				argNames.Add(string.Empty);
+				argTypes.Add("...");
+			}
+		}
+		
+		var result = new NativeMethod{
+			IsClass = node.ChildNodes[0].Value == "+",
+			Name = name.ToString(),
+			ReturnType = rtype,
+			ArgNames = argNames.ToArray(),
+			ArgTypes = argTypes.ToArray(),
+			Obsolete = deprecated};
 		
 		return result;
 	}
@@ -322,7 +321,7 @@ internal sealed class AnalyzeHeader
 	// Struct := 'struct' S Identifier? '{' S (Field / Union)* '}' S Identifier Deprecated? ';' S;
 	private void DoAnalyzeStruct(XmlNode node)
 	{
-		if (DoFind(node, "Deprecated") == null)
+		if (DoFindDeprecated(node) == null)
 		{
 			XmlNode child = DoFindLast(node, "Identifier");
 			Console.WriteLine("Ignoring struct {0}", child.InnerText);
@@ -353,6 +352,28 @@ internal sealed class AnalyzeHeader
 			identifiers.Add(node.ChildNodes[i].InnerText);
 		
 		return identifiers.ToArray();
+	}
+	
+	private string DoFindDeprecated(XmlNode node)
+	{
+		string deprecated = null;
+		
+		XmlNode n = DoFind(node, "Deprecated");
+		if (n != null)
+		{
+			deprecated = n.InnerText;
+		}
+		else
+		{
+			n = DoFind(node, "Category");
+			if (n != null)
+			{
+				if (n.InnerText.Contains(("NSDeprecated")))
+					deprecated = "NSDeprecated";
+			}
+		}
+		
+		return deprecated;
 	}
 	
 	private XmlNode DoFind(XmlNode node, string name)
