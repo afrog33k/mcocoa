@@ -75,16 +75,17 @@ gendarme: bin/mobjc.dll
 
 # Note that we do not want to remove mobjc.
 clean:
-	-rm bin/csc_flags bin/cocoa_files
-	-rm bin/mcocoa.dll bin/mcocoa.dll.mdb
-	-rm bin/docs.xml
+	-rm -f bin/csc_flags bin/cocoa_files
+	-rm -f bin/mcocoa.dll bin/mcocoa.dll.mdb
+	-rm -f bin/docs.xml
+	-rm -f bin/csc_flags
 
 distclean:
 	-rm -rf bin
 	-rm -rf docs
-	-rm build_num
-	-rm keys
-	-rm source/AssemblyVersion.cs
+	-rm -f build_num
+	-rm -f keys
+	-rm -f source/AssemblyVersion.cs
 
 help:
 	@echo "mcocoa version $(version)"
