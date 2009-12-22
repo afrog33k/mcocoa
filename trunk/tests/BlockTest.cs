@@ -23,6 +23,7 @@ using MCocoa;
 using MObjc;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 // Function pointer and block tests.
 [TestFixture]
@@ -66,4 +67,26 @@ public class BlockTest
 		
 		pool.release();
 	}
+	
+	[Test]
+	public void Block()
+	{
+		NSAutoreleasePool pool = NSAutoreleasePool.Create();
+		
+		NSString s = NSString.Create("hello\nthere");
+		
+		var lines = new List<string>();
+		s.enumerateLinesUsingBlock(line =>
+		{
+			lines.Add(line.description().ToString());
+			return false;
+		});
+		
+		Assert.AreEqual(2, lines.Count);
+		Assert.AreEqual("hello", lines[0]);
+		Assert.AreEqual("there", lines[1]);
+		
+		pool.release();
+	}
+	
 }

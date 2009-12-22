@@ -14,7 +14,7 @@ ifdef RELEASE
 	CSC_FLAGS += -warn:4 -optimize+ -d:TRACE
 	MONO_FLAGS += --desktop
 else
-	CSC_FLAGS += -checked+ -debug+ -warn:4 -d:DEBUG -d:TRACE
+	CSC_FLAGS += -checked+ -debug+ -warnaserror+ -warn:4 -d:DEBUG -d:TRACE
 # TODO: Enable warnaserror once we get blocks working.
 #	CSC_FLAGS += -checked+ -debug+ -warnaserror+ -warn:4 -d:DEBUG -d:TRACE
 	MONO_FLAGS += --desktop --debug

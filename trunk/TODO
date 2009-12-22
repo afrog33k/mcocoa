@@ -8,11 +8,12 @@ NSURL is now the canonical way to refer to a file
 bookmarks replace aliases (and support custom metadata)
 might want to look into adding a helper for gcd, might need to add special code to support blocks
 OpenCL (easy gpu programming)
-Menlo font is a good monospaces font?
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
-* Can we get blocks and function pointers working?
+* If users are responsible for hanging onto delegates when using blocks then need a
+   note in the README or wiki or docs.
+* Might want to get rid of _i
 * Might want a better error message if make generate was never called.
 * There are a few bugs on the web site.
 
