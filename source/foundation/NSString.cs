@@ -88,6 +88,43 @@ namespace MCocoa
 			Marshal.FreeHGlobal(buffer);
 		}
 		
+		/// <remarks>Callback uses a return argument for stopped since delegates cannot
+		/// have ref arguments.</remarks>
+		public void enumerateLinesUsingBlock(Func<NSString, bool> callback)
+		{
+			Action<IntPtr, IntPtr, IntPtr> thunk = (IntPtr context, IntPtr linePtr, IntPtr stop) =>
+			{
+				var line = NSObject.Lookup(linePtr).To<NSString>();
+				bool stopped = callback(line);
+				if (stopped)
+					Marshal.WriteByte(stop, 1);
+			};
+			
+			var block = new ExtendedBlock(thunk);
+			Call("enumerateLinesUsingBlock:", block);
+			GC.KeepAlive(block);
+		}
+		
+		// Need this because System.Action has no version which takes five arguments.		
+		private delegate void EnumerateThunk(IntPtr context, IntPtr substring, NSRange substringRange, NSRange enclosingRange, IntPtr stop);
+		
+		/// <remarks>Callback uses a return argument for stopped since delegates cannot
+		/// have ref arguments.</remarks>
+		public void enumerateSubstringsInRange_options_usingBlock(NSRange range, uint opts, Func<NSString, NSRange, NSRange, bool> callback)
+		{
+			EnumerateThunk thunk = (IntPtr context, IntPtr substringPtr, NSRange substringRange, NSRange enclosingRange, IntPtr stop) =>
+			{
+				var substring = NSObject.Lookup(substringPtr).To<NSString>();
+				bool stopped = callback(substring, substringRange, enclosingRange);
+				if (stopped)
+					Marshal.WriteByte(stop, 1);
+			};
+			
+			var block = new ExtendedBlock(thunk);
+			Call("enumerateSubstringsInRange: options: usingBlock:", block);
+			GC.KeepAlive(block);
+		}
+		
 		public char this[int index]
 		{
 			get {return characterAtIndex((uint) index);}

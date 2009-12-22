@@ -11,6 +11,9 @@
 			<Method interface = "NSAssertionHandler" method = "handleFailureInMethod:object:file:lineNumber:description:" reason = "because it is variadic"/>
 			<Method interface = "NSAssertionHandler" method = "handleFailureInFunction:file:lineNumber:description:" reason = "because it is variadic"/>
 			
+			<Method interface = "NSBlockOperation" method = "blockOperationWithBlock:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSBlockOperation" method = "addExecutionBlock:" reason = "because there is a hand-written version"/>
+			
 			<Method interface = "NSCoder" method = "encodeValuesOfObjCTypes:" reason = "because it is variadic"/>
 			<Method interface = "NSCoder" method = "decodeValuesOfObjCTypes:" reason = "because it is variadic"/>
 			
@@ -18,23 +21,33 @@
 			<Method interface = "NSData" method = "getBytes:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSData" method = "getBytes:length:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSData" method = "getBytes:range:" reason = "because there is a hand-written version"/>
-
+			
 			<Method interface = "NSDictionary" method = "dictionaryWithObjectsAndKeys:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSDictionary" method = "initWithObjectsAndKeys:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSException" method = "raise:format:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSFileManager" method = "defaultManager" reason = "because we assert that the current thread is the main thread"/>
+			<Method interface = "NSFileManager" method = "enumeratorAtURL:includingPropertiesForKeys:options:errorHandler:" reason = "because there is a hand-written version"/>
 			
 			<Method interface = "NSMutableArray" method = "sortUsingFunction:context:" reason = "because there is a hand-written version"/>
 			
 			<Method interface = "NSMutableString" method = "appendFormat:" reason = "because it is variadic"/>
+			
+			<Method interface = "NSNotificationCenter" method = "addObserverForName:object:queue:usingBlock:" reason = "because there is a hand-written version"/>
+			
+			<Method interface = "NSOperation" method = "completionBlock" reason = "because there is a hand-written version"/>
+			<Method interface = "NSOperation" method = "setCompletionBlock:" reason = "because there is a hand-written version"/>
+			
+			<Method interface = "NSOperationQueue" method = "addOperationWithBlock:" reason = "because there is a hand-written version"/>
 			
 			<Method interface = "NSPredicate" method = "predicateWithFormat:" reason = "because it is variadic"/>
 			
 			<Method interface = "NSSet" method = "setWithObjects:" reason = "because it is variadic"/>
 			<Method interface = "NSSet" method = "initWithObjects:" reason = "because it is variadic"/>
 			
+			<Method interface = "NSString" method = "enumerateLinesUsingBlock:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSString" method = "enumerateSubstringsInRange:options:usingBlock:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSString" method = "initWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "initWithFormat:locale:" reason = "because it is variadic"/>
 			<Method interface = "NSString" method = "initWithCharactersNoCopy:length:freeWhenDone:" reason = "because the characters need to be copied"/>
@@ -71,39 +84,41 @@
 		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
 		<Threading>
 			<Type name = "NSArray" model = "concurrent"/>
-			<Type name = "NSNotification" model = "concurrent"/>
 			<Type name = "NSAssertionHandler" model = "concurrent"/>
-			<Type name = "NSNotificationCenter" model = "concurrent"/>
 			<Type name = "NSAttributedString" model = "concurrent"/>
-			<Type name = "NSNumber" model = "concurrent"/>
 			<Type name = "NSCalendarDate" model = "concurrent"/>
-			<Type name = "NSObject" model = "concurrent"/>
 			<Type name = "NSCharacterSet" model = "concurrent"/>
-			<Type name = "NSPortCoder" model = "concurrent"/>
 			<Type name = "NSConditionLock" model = "concurrent"/>
-			<Type name = "NSPortMessage" model = "concurrent"/>
 			<Type name = "NSConnection" model = "concurrent"/>
-			<Type name = "NSPortNameServer" model = "concurrent"/>
 			<Type name = "NSData" model = "concurrent"/>
-			<Type name = "NSProtocolChecker" model = "concurrent"/>
 			<Type name = "NSDate" model = "concurrent"/>
+			<Type name = "NSDecimalNumber" model = "concurrent"/>
+			<Type name = "NSDecimalNumberHandler" model = "concurrent"/>
+			<Type name = "NSDeserializer" model = "concurrent"/>
+			<Type name = "NSDictionary" model = "concurrent"/>
+			<Type name = "NSDistantObject" model = "concurrent"/>
+			<Type name = "NSDistributedLock" model = "concurrent"/>
+			<Type name = "NSDistributedNotificationCenter" model = "concurrent"/>
+			<Type name = "NSException" model = "concurrent"/>
+			<Type name = "NSLock" model = "concurrent"/>
+			<Type name = "NSMethodSignature" model = "concurrent"/>
+			<Type name = "NSNotification" model = "concurrent"/>
+			<Type name = "NSNotificationCenter" model = "concurrent"/>
+			<Type name = "NSNumber" model = "concurrent"/>
+			<Type name = "NSObject" model = "concurrent"/>
+			<Type name = "NSPortCoder" model = "concurrent"/>
+			<Type name = "NSPortMessage" model = "concurrent"/>
+			<Type name = "NSPortNameServer" model = "concurrent"/>
+			<Type name = "NSProtocolChecker" model = "concurrent"/>
 			<Type name = "NSProxy" model = "concurrent"/>
 			<Type name = "NSRecursiveLock" model = "concurrent"/>
-			<Type name = "NSDecimalNumber" model = "concurrent"/>
 			<Type name = "NSSet" model = "concurrent"/>
-			<Type name = "NSDecimalNumberHandler" model = "concurrent"/>
 			<Type name = "NSString" model = "concurrent"/>
-			<Type name = "NSDeserializer" model = "concurrent"/>
 			<Type name = "NSThread" model = "concurrent"/>
-			<Type name = "NSDictionary" model = "concurrent"/>
-			<Type name = "NSTimeZone" model = "concurrent"/>
-			<Type name = "NSDistantObject" model = "concurrent"/>
 			<Type name = "NSTimer" model = "concurrent"/>
-			<Type name = "NSDistributedLock" model = "concurrent"/>
+			<Type name = "NSTimeZone" model = "concurrent"/>
 			<Type name = "NSUserDefaults" model = "concurrent"/>
-			<Type name = "NSDistributedNotificationCenter" model = "concurrent"/>
 			<Type name = "NSValue" model = "concurrent"/>
-			<Type name = "NSMethodSignature" model = "concurrent"/>
 			
 			<!-- Apple lists this as thread unsafe but they also require you to create and use
 			one in threads so it seems like it just can't be used concurrently. -->
@@ -115,33 +130,34 @@
 			<Type name = "NSFileManager" model = "single"/>
 			
 			<!-- These are presumably safe to use from one thread at a time. -->
+			<Type name = "NSFileHandle" model = "serializable"/>
+			<Type name = "NSMutableArray" model = "serializable"/>
 			<Type name = "NSMutableData" model = "serializable"/>
 			<Type name = "NSMutableDictionary" model = "serializable"/>
 			<Type name = "NSMutableSet" model = "serializable"/>
 			<Type name = "NSMutableString" model = "serializable"/>
-			<Type name = "NSFileHandle" model = "serializable"/>
-			<Type name = "NSMutableArray" model = "serializable"/>
 			
 			<!-- These are explicitly mentioned as thread unsafe. -->
 			<Type name = "NSAppleScript" model = "main"/>
-			<Type name = "NSMutableAttributedString" model = "main"/>
 			<Type name = "NSArchiver" model = "main"/>
-			<Type name = "NSMutableCharacterSet" model = "main"/>
 			<Type name = "NSBundle" model = "main"/>
+			<Type name = "NSCalendar" model = "main"/>
 			<Type name = "NSCoder" model = "main"/>
 			<Type name = "NSCountedSet" model = "main"/>
 			<Type name = "NSDateFormatter" model = "main"/>
-			<Type name = "NSNotificationQueue" model = "main"/>
 			<Type name = "NSEnumerator" model = "main"/>
+			<Type name = "NSFormatter" model = "main"/>
+			<Type name = "NSHost" model = "main"/>
+			<Type name = "NSInvocation" model = "main"/>
+			<Type name = "NSMutableAttributedString" model = "main"/>
+			<Type name = "NSMutableCharacterSet" model = "main"/>
+			<Type name = "NSNotificationQueue" model = "main"/>
 			<Type name = "NSNumberFormatter" model = "main"/>
 			<Type name = "NSPipe" model = "main"/>
 			<Type name = "NSPort" model = "main"/>
-			<Type name = "NSFormatter" model = "main"/>
 			<Type name = "NSProcessInfo" model = "main"/>
 			<Type name = "NSRunLoop" model = "main"/>
-			<Type name = "NSHost" model = "main"/>
 			<Type name = "NSScanner" model = "main"/>
-			<Type name = "NSInvocation" model = "main"/>
 			<Type name = "NSSerializer" model = "main"/>
 			<Type name = "NSTask" model = "main"/>
 			<Type name = "NSUnarchiver" model = "main"/>
@@ -157,10 +173,12 @@
 			<Method interface = "NSBezierPath" method = "appendBezierPathWithPoints:count:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "subviews" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "setSubviews:" reason = "because there is a hand-written version"/>
-			
 			<Method interface = "NSAlert" method = "alertWithMessageText:defaultButton:alternateButton:otherButton:informativeTextWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSGradient" method = "initWithColorsAndLocations:" reason = "because it is variadic"/>
 			<Method interface = "NSMatrix" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
+			<Method interface = "NSSavePanel" method = "beginSheetModalForWindow:completionHandler:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSSavePanel" method = "beginWithCompletionHandler:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSSpellChecker" method = "requestCheckingOfString:range:types:options:inSpellDocumentWithTag:completionHandler:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because there is a hand-written version"/>
 			
 			<Enum name = "NSTouchPhaseTouching" reason = "because there is a hand-written version"/>
@@ -174,11 +192,33 @@
 			<Type name = "NSGradient" model = "serializable"/>
 			<Type name = "NSGraphicsContext" model = "serializable"/>
 			<Type name = "NSImage" model = "serializable"/>
+			<Type name = "NSResponder" model = "serializable"/>
 			<Type name = "NSView" model = "concurrent"/>		<!-- except create, destroy, resize, move, and "other" operations -->
 			<Type name = "NSWindow" model = "serializable"/>
 			
-			<!-- These are not listed as thread safe but they are base classes of thread safe classes... -->
-			<Type name = "NSResponder" model = "concurrent"/>
+			<!-- These are explicitly mentioned as thread unsafe. -->
+			<Type name = "NSCell" model = "main"/>
+			<Type name = "NSActionCell" model = "main"/>
+			<Type name = "NSButtonCell" model = "main"/>
+			<Type name = "NSMenuItemCell" model = "main"/>
+			<Type name = "NSPopUpButtonCell" model = "main"/>
+			<Type name = "NSDatePickerCell" model = "main"/>
+			<Type name = "NSFormCell" model = "main"/>
+			<Type name = "NSLevelIndicatorCell" model = "main"/>
+			<Type name = "NSPathCell" model = "main"/>
+			<Type name = "NSSegmentedCell" model = "main"/>
+			<Type name = "NSSliderCell" model = "main"/>
+			<Type name = "NSStepperCell" model = "main"/>
+			<Type name = "NSTextFieldCell" model = "main"/>
+			<Type name = "NSComboBoxCell" model = "main"/>
+			<Type name = "NSPathComponentCell" model = "main"/>
+			<Type name = "NSSearchFieldCell" model = "main"/>
+			<Type name = "NSSecureTextFieldCell" model = "main"/>
+			<Type name = "NSTableHeaderCell" model = "main"/>
+			<Type name = "NSTokenFieldCell" model = "main"/>
+			<Type name = "NSBrowserCell" model = "main"/>
+			<Type name = "NSImageCell" model = "main"/>
+			<Type name = "NSTextAttachmentCell" model = "main"/>
 		</Threading>
 	</Framework>
 	

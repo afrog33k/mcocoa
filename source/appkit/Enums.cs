@@ -57,17 +57,17 @@ namespace MCocoa
 		public const ulong NSXMLNodePreserveEmptyElements = (NSXMLNodeExpandEmptyElement | NSXMLNodeCompactEmptyElement);
 		public const ulong NSXMLNodePreserveQuotes = (NSXMLNodeUseSingleQuotes | NSXMLNodeUseDoubleQuotes);
 		public const ulong NSXMLNodePreserveAll = (
-            NSXMLNodePreserveNamespaceOrder | 
-            NSXMLNodePreserveAttributeOrder | 
-            NSXMLNodePreserveEntities | 
-            NSXMLNodePreservePrefixes | 
-            NSXMLNodePreserveCDATA | 
-            NSXMLNodePreserveEmptyElements | 
-            NSXMLNodePreserveQuotes | 
-            NSXMLNodePreserveWhitespace |
-            NSXMLNodePreserveDTD |
-            NSXMLNodePreserveCharacterReferences |
-            0xFFF00000);
+			NSXMLNodePreserveNamespaceOrder |
+			NSXMLNodePreserveAttributeOrder |
+			NSXMLNodePreserveEntities |
+			NSXMLNodePreservePrefixes |
+			NSXMLNodePreserveCDATA |
+			NSXMLNodePreserveEmptyElements |
+			NSXMLNodePreserveQuotes |
+			NSXMLNodePreserveWhitespace |
+			NSXMLNodePreserveDTD |
+			NSXMLNodePreserveCharacterReferences |
+			0xFFF00000);
 		
 		public const ulong NSTextCheckingAllTypes = (NSTextCheckingAllSystemTypes | NSTextCheckingAllCustomTypes);
 		

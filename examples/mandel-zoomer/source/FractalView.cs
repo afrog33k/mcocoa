@@ -139,23 +139,9 @@ internal sealed class FractalView : NSView
 		panel.setAllowedFileTypes(NSArray.Create("png"));
 //		panel.setAllowedFileTypes(NSArray.Create("bmp", "gif", "jpeg", "png", "tiff"));
 		panel.setAllowsOtherFileTypes(false);
-		panel.beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo(
-			null,						// path
-			null,						// name (in path)
-			window(),				// docWindow
-			this,						// delegate
-			"saveTheImage",	// end selector
-			IntPtr.Zero);		// context
-	}
-	
-	public void saveTheImage(NSSavePanel panel, int returnCode, IntPtr context)
-	{
-		if (returnCode == Enums.NSOKButton)
-		{
-			NSDictionary properties = NSDictionary.Create();
-			NSData data = m_rep.representationUsingType_properties(Enums.NSPNGFileType, properties);
-			System.IO.File.WriteAllBytes(panel.filename().description(), data.bytes());
-		}
+		panel.beginSheetModalForWindow_completionHandler(
+			window(),
+			(int result) => DoSaveImage(panel, result));
 	}
 	
 	// TODO: 
@@ -202,6 +188,16 @@ internal sealed class FractalView : NSView
 		{
 			m_image.release();
 			m_image = null;
+		}
+	}
+	
+	private void DoSaveImage(NSSavePanel panel, int returnCode)
+	{
+		if (returnCode == Enums.NSOKButton)
+		{
+			NSDictionary properties = NSDictionary.Create();
+			NSData data = m_rep.representationUsingType_properties(Enums.NSPNGFileType, properties);
+			System.IO.File.WriteAllBytes(panel.URL().path().description(), data.bytes());
 		}
 	}
 	

@@ -63,7 +63,7 @@ namespace MCocoa
 		public static readonly LazyString NSFileGroupOwnerAccountID = new LazyString("NSFileGroupOwnerAccountID");
 		public static readonly LazyString NSFileBusy = new LazyString("NSFileBusy");
 	}
-
+	
 //	[ThreadModel(ThreadModel.SingleThread)] (generated class defines this)
 	public partial class NSFileManager : NSObject
 	{
@@ -80,5 +80,32 @@ namespace MCocoa
 			
 			return result_.To<NSFileManager>();
 		}
+		
+		/// <exclude/>
+		public NSDirectoryEnumerator enumeratorAtURL_includingPropertiesForKeys_options_errorHandler(
+			NSURL url,
+			NSArray keys,
+			uint mask,
+			Func<NSURL, NSError, bool> callback)
+		{
+			Func<IntPtr, IntPtr, IntPtr, byte> thunk = (IntPtr context, IntPtr urlPtr, IntPtr errorPtr) =>
+			{
+				var url2 = NSObject.Lookup(urlPtr).To<NSURL>();
+				var error = NSObject.Lookup(errorPtr).To<NSError>();
+				bool stopped = callback(url2, error);
+				return stopped ? (byte) 1 : (byte) 0;
+			};
+			
+			var block = new ExtendedBlock(thunk);
+			var e = Call("enumeratorAtURL:includingPropertiesForKeys:options:errorHandler:",
+				url,
+				keys,
+				mask,
+				block).To<NSDirectoryEnumerator>();
+			GC.KeepAlive(block);
+			
+			return e;
+		}
+		
 	}
 }
