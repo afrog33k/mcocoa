@@ -24,6 +24,10 @@ using MObjc;
 using MObjc.Helpers;
 using System;
 
+// Need this because we want to run on Leopard which means that we need to use
+// the deprecated beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo.
+#pragma warning disable 618
+
 [ExportClass("FractalView", "NSView")]
 internal sealed class FractalView : NSView
 {
@@ -139,9 +143,30 @@ internal sealed class FractalView : NSView
 		panel.setAllowedFileTypes(NSArray.Create("png"));
 //		panel.setAllowedFileTypes(NSArray.Create("bmp", "gif", "jpeg", "png", "tiff"));
 		panel.setAllowsOtherFileTypes(false);
-		panel.beginSheetModalForWindow_completionHandler(
-			window(),
-			(int result) => DoSaveImage(panel, result));
+		
+		if (ExtendedBlock.HasBlocks())
+			m_block = panel.beginSheetModalForWindow_completionHandler(
+				window(),
+				(int returnCode) => saveTheImage(panel, returnCode, IntPtr.Zero));
+		else
+			panel.beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo(
+				null,						// path
+				null,						// name (in path)
+				window(),				// docWindow
+				this,						// delegate
+				"saveTheImage",	// end selector
+				IntPtr.Zero);		// context
+	}
+	
+	public void saveTheImage(NSSavePanel panel, int returnCode, IntPtr context)
+	{
+		if (returnCode == Enums.NSOKButton)
+		{
+			NSDictionary properties = NSDictionary.Create();
+			NSData data = m_rep.representationUsingType_properties(Enums.NSPNGFileType, properties);
+			System.IO.File.WriteAllBytes(panel.URL().path().description(), data.bytes());
+		}
+		m_block = null;
 	}
 	
 	// TODO: 
@@ -188,16 +213,6 @@ internal sealed class FractalView : NSView
 		{
 			m_image.release();
 			m_image = null;
-		}
-	}
-	
-	private void DoSaveImage(NSSavePanel panel, int returnCode)
-	{
-		if (returnCode == Enums.NSOKButton)
-		{
-			NSDictionary properties = NSDictionary.Create();
-			NSData data = m_rep.representationUsingType_properties(Enums.NSPNGFileType, properties);
-			System.IO.File.WriteAllBytes(panel.URL().path().description(), data.bytes());
 		}
 	}
 	
@@ -261,5 +276,6 @@ internal sealed class FractalView : NSView
 	private NSBitmapImageRep m_rep;
 	private NSRect m_selection;
 	private bool m_refreshing;
+	private ExtendedBlock m_block;
 	#endregion
 }

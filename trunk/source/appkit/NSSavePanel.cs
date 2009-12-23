@@ -28,23 +28,23 @@ namespace MCocoa
 	public partial class NSSavePanel : NSPanel
 	{
 		/// <exclude/>
-		public void beginSheetModalForWindow_completionHandler(NSWindow window, Action<int> callback)
+		public ExtendedBlock beginSheetModalForWindow_completionHandler(NSWindow window, Action<int> callback)
 		{
 			Action<IntPtr, int> thunk = (IntPtr context, int result) => callback(result);
 			
 			var block = new ExtendedBlock(thunk);
 			Call("beginSheetModalForWindow:completionHandler:", window, block);
-			GC.KeepAlive(block);
+			return block;
 		}
 		
 		/// <exclude/>
-		public void beginWithCompletionHandler(Action<int> callback)
+		public ExtendedBlock beginWithCompletionHandler(Action<int> callback)
 		{
 			Action<IntPtr, int> thunk = (IntPtr context, int result) => callback(result);
 			
 			var block = new ExtendedBlock(thunk);
 			Call("beginWithCompletionHandler:", block);
-			GC.KeepAlive(block);
+			return block;
 		}
 	}
 }

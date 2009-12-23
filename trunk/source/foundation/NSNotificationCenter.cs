@@ -33,7 +33,8 @@ namespace MCocoa
 			NSString name,
 			NSObject obj,
 			NSOperationQueue queue,
-			Action<NSNotification> callback)
+			Action<NSNotification> callback,
+			out ExtendedBlock block)
 		{
 			Action<IntPtr, IntPtr> thunk = (IntPtr context, IntPtr notifyPtr) =>
 			{
@@ -41,7 +42,7 @@ namespace MCocoa
 				callback(notify);
 			};
 			
-			var block = new ExtendedBlock(thunk);
+			block = new ExtendedBlock(thunk);
 			NSObject result = Call("addObserverForName:object:queue:usingBlock:", name, obj, queue, block).To<NSObject>();
 			GC.KeepAlive(block);
 			

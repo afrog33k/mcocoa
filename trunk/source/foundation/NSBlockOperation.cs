@@ -28,25 +28,24 @@ namespace MCocoa
 	public partial class NSBlockOperation : NSOperation
 	{
 		/// <exclude/>
-		public NSObject blockOperationWithBlock(Action callback)
+		public NSObject blockOperationWithBlock(Action callback, out ExtendedBlock block)
 		{
 			Action<IntPtr> thunk = (IntPtr context) => callback();
 			
-			var block = new ExtendedBlock(thunk);
+			block = new ExtendedBlock(thunk);
 			NSObject result = Call("blockOperationWithBlock:", block).To<NSObject>();
-			GC.KeepAlive(block);
 			
 			return result;
 		}
 		
 		/// <exclude/>
-		public void addExecutionBlock(Action callback)
+		public ExtendedBlock addExecutionBlock(Action callback)
 		{
 			Action<IntPtr> thunk = (IntPtr context) => callback();
 			
 			var block = new ExtendedBlock(thunk);
 			Call("addExecutionBlock:", block);
-			GC.KeepAlive(block);
+			return block;
 		}
 	}
 }
