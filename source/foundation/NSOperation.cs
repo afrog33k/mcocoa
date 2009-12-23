@@ -36,13 +36,13 @@ namespace MCocoa
 		}
 		
 		/// <exclude/>
-		public void setCompletionBlock(Action callback)
+		public ExtendedBlock setCompletionBlock(Action callback)
 		{
 			Action<IntPtr> thunk = (IntPtr context) => callback();
 			
 			var block = new ExtendedBlock(thunk);
 			Call("setCompletionBlock:", block);
-			GC.KeepAlive(block);
+			return block;
 		}
 	}
 }

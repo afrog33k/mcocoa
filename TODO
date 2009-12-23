@@ -15,7 +15,7 @@ monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
    note in the README or wiki or docs.
 * Might want to get rid of _i
 * Might want a better error message if make generate was never called.
-* There are a few bugs on the web site.
+* There are a few bugs on the web site.	
 
 * Stagger windows in examples.
 * Get mandel-zoomer doing a bit better with gendarme.
