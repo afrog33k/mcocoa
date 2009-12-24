@@ -34,7 +34,7 @@ namespace MCocoa
 			NSObject obj,
 			NSOperationQueue queue,
 			Action<NSNotification> callback,
-			out ExtendedBlock block)
+			out BlockCookie cookie)
 		{
 			Action<IntPtr, IntPtr> thunk = (IntPtr context, IntPtr notifyPtr) =>
 			{
@@ -42,9 +42,8 @@ namespace MCocoa
 				callback(notify);
 			};
 			
-			block = new ExtendedBlock(thunk);
-			NSObject result = Call("addObserverForName:object:queue:usingBlock:", name, obj, queue, block).To<NSObject>();
-			GC.KeepAlive(block);
+			cookie = new BlockCookie("addObserverForName_object_queue_usingBlock", thunk);
+			NSObject result = Call("addObserverForName:object:queue:usingBlock:", name, obj, queue, cookie.Block).To<NSObject>();
 			
 			return result;
 		}

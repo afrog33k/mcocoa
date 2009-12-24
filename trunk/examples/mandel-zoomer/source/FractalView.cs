@@ -145,7 +145,7 @@ internal sealed class FractalView : NSView
 		panel.setAllowsOtherFileTypes(false);
 		
 		if (ExtendedBlock.HasBlocks())
-			m_block = panel.beginSheetModalForWindow_completionHandler(
+			m_cookie = panel.beginSheetModalForWindow_completionHandler(
 				window(),
 				(int returnCode) => saveTheImage(panel, returnCode, IntPtr.Zero));
 		else
@@ -166,7 +166,7 @@ internal sealed class FractalView : NSView
 			NSData data = m_rep.representationUsingType_properties(Enums.NSPNGFileType, properties);
 			System.IO.File.WriteAllBytes(panel.URL().path().description(), data.bytes());
 		}
-		m_block = null;
+		m_cookie.Free();
 	}
 	
 	// TODO: 
@@ -276,6 +276,6 @@ internal sealed class FractalView : NSView
 	private NSBitmapImageRep m_rep;
 	private NSRect m_selection;
 	private bool m_refreshing;
-	private ExtendedBlock m_block;
+	private BlockCookie m_cookie;
 	#endregion
 }

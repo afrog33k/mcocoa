@@ -1101,7 +1101,7 @@ internal sealed class Generate
 				}
 				else
 				{
-					if (DoBaseHasMethod(ri.Name, method.Name, true))
+					if (DoBaseHasMethod(ri.BaseName, method.Name, true))	// only use _i if the base class has a static method of the same name
 						suffix = "_i";
 				}
 			}

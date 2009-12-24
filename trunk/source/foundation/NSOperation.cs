@@ -36,13 +36,13 @@ namespace MCocoa
 		}
 		
 		/// <exclude/>
-		public ExtendedBlock setCompletionBlock(Action callback)
+		public BlockCookie setCompletionBlock(Action callback)
 		{
 			Action<IntPtr> thunk = (IntPtr context) => callback();
 			
-			var block = new ExtendedBlock(thunk);
-			Call("setCompletionBlock:", block);
-			return block;
+			var cookie = new BlockCookie("setCompletionBlock", thunk);
+			Call("setCompletionBlock:", cookie.Block);
+			return cookie;
 		}
 	}
 }

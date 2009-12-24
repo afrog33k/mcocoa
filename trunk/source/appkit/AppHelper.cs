@@ -37,6 +37,9 @@ namespace MCocoa
 #if DEBUG		
 			Contract.Assert(!ms_created, "AppHelper should be created only once");
 			ms_created = true;
+			
+			NSNotificationCenter.defaultCenter().addObserver_selector_name_object(
+				this, "terminating:", Externs.NSApplicationWillTerminateNotification, null);
 #endif
 		}
 		
@@ -51,6 +54,25 @@ namespace MCocoa
 			
 			return result;
 		}
+		
+#if DEBUG		
+		// NSApplication.Invoke won't return so we need to rely on this notification.
+		public void terminating(NSNotification notification)
+		{
+			string[] names = BlockCookie.InUse();
+			if (names != null)
+			{
+				string nl = string.Join(", ", names);
+				Console.Error.WriteLine("Free needs to be called on the following BlockCookies: {0}.", nl);
+				
+				// Users may not see an exception thrown during app exit so we'll pop
+				// up an alert instead.
+				NSString title = NSString.Create("Not all BlockCookies were freed.");
+				NSString message = NSString.Create(nl);
+				Unused.Value = Functions.NSRunAlertPanel(title, message);
+			}
+		}
+#endif
 		
 		[ThreadModel(ThreadModel.Concurrent)]
 		public void Add(Action action)

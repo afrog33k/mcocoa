@@ -28,7 +28,7 @@ using System.Threading;
 
 namespace MCocoa
 {
-	/// <summary>Also see Apple's <a href = "http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/nsapplication_Class/Reference/Reference.html">docs</a>.</summary>
+	/// <summary>Also see Apple's <a href = "http://developer.apple.com/Mac/library/documentation/Cocoa/Reference/ApplicationKit/Classes/NSApplication_Class/Reference/Reference.html">docs</a>.</summary>
 	public partial class NSApplication : NSResponder
 	{
 		static NSApplication()
@@ -66,7 +66,7 @@ namespace MCocoa
 			// Load our nib. This will instantiate all of the native objects and wire them together.
 			// The C# objects will be created the first time a managed method is called.
 			NSMutableDictionary dict = NSMutableDictionary.Create();
-			bool loaded = NSBundle.mainBundle().loadNibFile_externalNameTable_withZone_i(
+			bool loaded = NSBundle.mainBundle().loadNibFile_externalNameTable_withZone(
 				NSString.Create(nibName), dict, IntPtr.Zero);
 			
 			if (!loaded)
@@ -82,7 +82,7 @@ namespace MCocoa
 #if DEBUG
 			app.BeginInvoke(() => DoInitDebugMenu(extendDebugMenu));
 #endif
-			
+		
 			ms_startupPool.release();
 			ms_startupPool = null;
 			

@@ -39,13 +39,13 @@ namespace MCocoa
 		}
 		
 		/// <exclude/>
-		public ExtendedBlock addExecutionBlock(Action callback)
+		public BlockCookie addExecutionBlock(Action callback)
 		{
 			Action<IntPtr> thunk = (IntPtr context) => callback();
 			
-			var block = new ExtendedBlock(thunk);
-			Call("addExecutionBlock:", block);
-			return block;
+			var cookie = new BlockCookie("addExecutionBlock", thunk);
+			Call("addExecutionBlock:", cookie.Block);
+			return cookie;
 		}
 	}
 }

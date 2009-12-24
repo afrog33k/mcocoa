@@ -11,9 +11,6 @@ OpenCL (easy gpu programming)
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
-* If users are responsible for hanging onto delegates when using blocks then need a
-   note in the README or wiki or docs.
-* Might want to get rid of _i
 * Might want a better error message if make generate was never called.
 * There are a few bugs on the web site.	
 
