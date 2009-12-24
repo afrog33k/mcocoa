@@ -11,9 +11,6 @@ OpenCL (easy gpu programming)
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
-* Might want a better error message if make generate was never called.
-* There are a few bugs on the web site.	
-
 * Stagger windows in examples.
 * Get mandel-zoomer doing a bit better with gendarme.
 * Generate externs:
