@@ -28,13 +28,13 @@ namespace MCocoa
 	public partial class NSOperationQueue : NSObject
 	{
 		/// <exclude/>
-		public ExtendedBlock addOperationWithBlock(Action callback)
+		public BlockCookie addOperationWithBlock(Action callback)
 		{
 			Action<IntPtr> thunk = (IntPtr context) => callback();
 			
-			var block = new ExtendedBlock(thunk);
-			Call("addOperationWithBlock:", block);
-			return block;
+			var cookie = new BlockCookie("addOperationWithBlock", thunk);
+			Call("addOperationWithBlock:", cookie.Block);
+			return cookie;
 		}
 	}
 }

@@ -37,6 +37,12 @@ counting enabled. In particular memory management is the same so if you call a
 method whose name begins with "alloc" or "new" or contains "copy" then you are 
 responsible for releasing its reference count.
 
+Note however that if you use a method which takes an Objective-C block you will
+need to keep the associated MObjc.ExtendedBlock object around if the lifetime of
+the block is longer than the method call. For example, if you call 
+beginSheetModalForWindow_completionHandler then you should save the
+ExtendedBlock object it returns in a field and null it out in the completion handler.
+
 The Cocoa wrappers are generated when you build mcocoa. The wrappers contain
 all of the Cocoa methods except for a few which are variadic or use function pointers.
 The methods have the same name as the native methods except colons are replaced
