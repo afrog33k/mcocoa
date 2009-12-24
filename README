@@ -2,9 +2,9 @@ BUILDING
 
 You'll need to install the mobjc library which you can find at
 <http://code.google.com/p/mobjc/>. Once you've done that navigate
-to the mcocoa directory with a terminal and and type `make generate` to
-generate the wrapper classes. Then you can type `make check` which will
-run some simple unit tests as a sanity check.
+to the mcocoa directory with a terminal and and type `make` to generate
+the wrapper classes and build the library. Then you can type `make check` 
+which will run some simple unit tests as a sanity check.
 
 INSTALLING
 

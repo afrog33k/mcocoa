@@ -29,7 +29,7 @@ export version := $(strip $(version))
 
 # ------------------
 # Primary targets		
-all: lib
+all: generate lib
 
 lib: bin/mcocoa.dll
 
