@@ -54,6 +54,12 @@ mcocoa currently only ships with wrappers for Foundation and AppKit. If you want
 to use another framework you can do so with dynamic calls (NSObject.Call) or build
 custom C# wrappers. The quartz-chart example illustrates both of these techniques.
 
+If you generate the library for Snow Leopard and want your app to work on earlier
+versions of the OS you'll probably have to use some deprecated methods. These
+will be decorated with ObsoleteAttribute in mcocoa so you'll probably want to add
+a line like the below to the relevant files:
+	#pragma warning disable 618
+
 See <http://code.google.com/p/mcocoa/w/list> for more usage notes and API
 References.
 

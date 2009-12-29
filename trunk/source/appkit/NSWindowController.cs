@@ -27,29 +27,5 @@ namespace MCocoa
 {
 	public partial class NSWindowController : NSResponder
 	{
-		// Note that this won't set the nib's owner.
-		/// <exclude/>
-		[Obsolete("Use loadNibNamed_owner instead (see the natty DocWindowController for an example of how to do this).", false)]		// TODO: remove this ctor in the next version
-		public NSWindowController(string className, string nibName) :
-			base(DoCreate(className, nibName))
-		{
-		}
-		
-		private static IntPtr DoCreate(string className, string nibName)
-		{
-			Class klass = new Class(className);
-			
-			IntPtr exception = IntPtr.Zero;
-			IntPtr instance = DirectCalls.Callp(klass, new Selector("alloc"), ref exception);
-			if (exception != IntPtr.Zero)
-				CocoaException.Raise(exception);
-			
-			exception = IntPtr.Zero;
-			instance = DirectCalls.Callpp(instance, new Selector("initWithWindowNibName:"), NSString.Create(nibName), ref exception);
-			if (exception != IntPtr.Zero)
-				CocoaException.Raise(exception);
-			
-			return instance;
-		}
 	}
 }

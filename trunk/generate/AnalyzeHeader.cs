@@ -31,15 +31,9 @@ internal sealed class AnalyzeHeader
 		m_objects = objects;
 	}
 	
-//	private bool m_emitting;	// TODO: temp
-	
 	// Header := S (ForwardReference / Enum / Extern / Inline / Interface / Protocol / Struct / Typedef)*;
 	public void Header(XmlNode node, string path, bool emitting)
 	{
-//		m_emitting = emitting;
-//if (m_emitting)
-//	Console.WriteLine("\n{0}", path);
-		
 		m_enums = new List<NativeEnum>();
 		m_interfaces = new List<NativeInterface>();
 		

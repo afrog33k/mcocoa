@@ -11,6 +11,23 @@ OpenCL (easy gpu programming)
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
+* Release checklist:
+	- use svn log -r 1:HEAD > CHANGE_LOG
+	- update CHANGES file
+	- update version number
+	- sync example version numbers with the lib
+	- remove build_num file 
+	- update libraries
+	- install
+	- upload new html docs
+	- update README and wiki
+	- delete the example bin directories
+	- delete the generated code?
+	- make distclean && make tar
+	- upload a new version to googlecode
+	- send an announcement
+	- make sure everything is checked in
+
 * Stagger windows in examples.
 * Get mandel-zoomer doing a bit better with gendarme.
 * Generate externs:
@@ -33,10 +50,12 @@ monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
    chance for emitting stuff we shouldn't, and clean up the grammar.
 * Probably should add interfaces for protocols.
 * Release checklist:
+	- update-libraries
 	- search for TODO (everywhere)
 	- run gendarme
 	- make sure unit tests work
 	- make sure examples work in debug
+	- make sure an example works when launched via the finder
 	- make sure examples work in release
 	- review tar target
 	- make sure everything is checked in

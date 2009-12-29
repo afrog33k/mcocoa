@@ -93,7 +93,7 @@ internal sealed partial class NewParser
 		m_nonterminals.Add("ArraySuffix", new ParseMethod[]{this.DoParseArraySuffixRule});
 		m_nonterminals.Add("IntegralType", new ParseMethod[]{this.DoParseIntegralTypeRule});
 		m_nonterminals.Add("Union", new ParseMethod[]{this.DoParseUnionRule});
-		m_nonterminals.Add("Availability", new ParseMethod[]{this.DoParseAvailabilityRule});
+		m_nonterminals.Add("Availability", new ParseMethod[]{this.DoParseAvailability1Rule, this.DoParseAvailability2Rule, this.DoParseAvailability3Rule});
 		m_nonterminals.Add("Deprecated", new ParseMethod[]{this.DoParseDeprecated1Rule, this.DoParseDeprecated2Rule, this.DoParseDeprecated3Rule, this.DoParseDeprecated4Rule, this.DoParseDeprecated5Rule});
 		m_nonterminals.Add("Unavailable", new ParseMethod[]{this.DoParseUnavailableRule});
 		m_nonterminals.Add("Format", new ParseMethod[]{this.DoParseFormatRule});
@@ -111,7 +111,7 @@ internal sealed partial class NewParser
 		m_nonterminals.Add("IntegerSuffix", new ParseMethod[]{this.DoParseIntegerSuffixRule});
 		m_nonterminals.Add("C", new ParseMethod[]{this.DoParseCRule});
 		m_nonterminals.Add("Comment", new ParseMethod[]{this.DoParseComment1Rule, this.DoParseComment2Rule});
-		m_nonterminals.Add("Preprocessor", new ParseMethod[]{this.DoParsePreprocessor1Rule, this.DoParsePreprocessor2Rule});
+		m_nonterminals.Add("Preprocessor", new ParseMethod[]{this.DoParsePreprocessor1Rule, this.DoParsePreprocessor2Rule, this.DoParsePreprocessor3Rule, this.DoParsePreprocessor4Rule});
 		m_nonterminals.Add("PreprocessName", new ParseMethod[]{this.DoParsePreprocessNameRule});
 		m_nonterminals.Add("DefineValue", new ParseMethod[]{this.DoParseDefineValueRule});
 		m_nonterminals.Add("Continuation", new ParseMethod[]{this.DoParseContinuationRule});
@@ -2654,7 +2654,7 @@ internal sealed partial class NewParser
 	}
 	
 	// Availability := 'AVAILABLE_MAC_OS_X_VERSION_10_' [0-9]+ '_AND_LATER' S
-	private State DoParseAvailabilityRule(State _state, List<Result> _outResults)
+	private State DoParseAvailability1Rule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
@@ -2669,6 +2669,59 @@ internal sealed partial class NewParser
 		if (_state.Parsed)
 		{
 			XmlElement _node = DoCreateElementNode("Availability", _start.Index, _state.Index - _start.Index, DoGetLine(_start.Index), DoGetCol(_start.Index), (from r in results where r.Value != null select r.Value).ToArray());
+			_node.SetAttribute("alternative", "1");
+			XmlNode value = _node;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// Availability := '__OSX_AVAILABLE_STARTING' S '(' S IdentifierList ')' S
+	private State DoParseAvailability2Rule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "__OSX_AVAILABLE_STARTING");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "(");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdentifierList");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, ")");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");});
+		
+		if (_state.Parsed)
+		{
+			XmlElement _node = DoCreateElementNode("Availability", _start.Index, _state.Index - _start.Index, DoGetLine(_start.Index), DoGetCol(_start.Index), (from r in results where r.Value != null select r.Value).ToArray());
+			_node.SetAttribute("alternative", "2");
+			XmlNode value = _node;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// Availability := 'IOSFC_AVAILABLE_STARTING' S '(' S IdentifierList ')' S
+	private State DoParseAvailability3Rule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "IOSFC_AVAILABLE_STARTING");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "(");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdentifierList");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, ")");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");});
+		
+		if (_state.Parsed)
+		{
+			XmlElement _node = DoCreateElementNode("Availability", _start.Index, _state.Index - _start.Index, DoGetLine(_start.Index), DoGetCol(_start.Index), (from r in results where r.Value != null select r.Value).ToArray());
+			_node.SetAttribute("alternative", "3");
 			XmlNode value = _node;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -3382,6 +3435,48 @@ internal sealed partial class NewParser
 			expected = "preprocessor directive";
 			if (expected != null)
 				_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+		}
+		
+		return _state;
+	}
+	
+	// Preprocessor := '__BEGIN_DECLS' S
+	private State DoParsePreprocessor3Rule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "__BEGIN_DECLS");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");});
+		
+		if (_state.Parsed)
+		{
+			XmlElement _node = DoCreateElementNode("Preprocessor", _start.Index, _state.Index - _start.Index, DoGetLine(_start.Index), DoGetCol(_start.Index), (from r in results where r.Value != null select r.Value).ToArray());
+			_node.SetAttribute("alternative", "3");
+			XmlNode value = _node;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// Preprocessor := '__END_DECLS' S
+	private State DoParsePreprocessor4Rule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "__END_DECLS");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");});
+		
+		if (_state.Parsed)
+		{
+			XmlElement _node = DoCreateElementNode("Preprocessor", _start.Index, _state.Index - _start.Index, DoGetLine(_start.Index), DoGetCol(_start.Index), (from r in results where r.Value != null select r.Value).ToArray());
+			_node.SetAttribute("alternative", "4");
+			XmlNode value = _node;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		
 		return _state;
