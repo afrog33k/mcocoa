@@ -40,7 +40,7 @@ dummy := $(shell "$(GEN_VERSION)" $(version) source/AssemblyVersion.cs /dev/null
 
 # ------------------------------------------------------------------------
 # Primary targets		
-all: app
+all: generate app
 
 app: $(app-path)
 
@@ -98,6 +98,7 @@ help:
 	@echo "The primary targets are:"
 	@echo "app              - build the app"
 	@echo "run              - run the app"
+	@echo "generate         - generate the quartz wrappers"
 	@echo "update-libraries - copy the installed libs into bin"
 	@echo " "
 	@echo "Variables include:"

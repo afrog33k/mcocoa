@@ -2,7 +2,7 @@
 <Generate>
 	<Framework name = "foundation" path = "/System/Library/Frameworks/Foundation.framework/Versions/Current/Headers">
 		<Blacklist>
-			<!-- TODO: should hand write some equivalents for at least some of these -->
+			<!-- TODO: should hand write some equivalents for some more of these -->
 			<Method interface = "NSArray" method = "arrayWithObjects:" reason = "because it is variadic"/>	<!-- reason is arbitrary text included in a generated comment --> 
 			<Method interface = "NSArray" method = "initWithObjects:" reason = "because it is variadic"/>
 			<Method interface = "NSArray" method = "sortedArrayUsingFunction:context:" reason = "because there is a hand-written version"/>

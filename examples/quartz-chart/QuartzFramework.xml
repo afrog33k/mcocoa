@@ -9,6 +9,7 @@ the wrappers. -->
 		you'll need to list them here. This element may appear more than once and it remains in
 		effect for any subsequent Framework elements. -->
 		<Include path = "/System/Library/Frameworks/Foundation.framework/Versions/Current/Headers"/>
+		<Include path = "/System/Library/Frameworks/IOSurface.framework/Versions/Current/Headers"/>	<!-- needed on Snow Leopard -->
 		
 		<!-- Lists the methods for which we won't generate C# code and the reason why. The reason
 		can be arbitrary text and is included in the generated code as a comment. There are two

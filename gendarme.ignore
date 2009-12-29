@@ -120,6 +120,7 @@ M: System.Void MCocoa.AppHelper::dumpWindows(MObjc.NSObject)
 M: System.Void MCocoa.AppHelper::execute(MObjc.NSObject)
 M: System.Void MCocoa.AppHelper::dumpObjects(MObjc.NSObject)
 M: System.Void MCocoa.AppHelper::onDelayedAction(MCocoa.NSNumber)
+M: System.Void MCocoa.AppHelper::terminating(MCocoa.NSNotification)
 
 # The application object should only be created in the main thread so this is OK.
 R: Gendarme.Rules.Concurrency.WriteStaticFieldFromInstanceMethodRule
@@ -147,3 +148,6 @@ M: MObjc.NSObject MCocoa.NSEnumerator::nextObject()
 R: Gendarme.Rules.BadPractice.DoNotForgetNotImplementedMethodsRule
 T: MCocoa.GeneratedCode
 
+# This rule sucks.
+R: Gendarme.Rules.Design.AvoidVisibleNestedTypesRule
+A: mcocoa
