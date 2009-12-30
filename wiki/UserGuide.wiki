@@ -11,6 +11,11 @@ A Cocoa application normally consists of one or more executables (which in our c
 
 In our case the executables are typically built with gmcs. The nib files are created normally (except that Interface Builder won't find IBActions in the code so they need to be manually added to the appropriate targets in Interface Builder). The Info.plist file can be copied from one of mcocoa's examples (you'll need to change the CFBundleIdentifier value). And the bundle is typically generated using a tool called cocoa-pack which is distributed with mobjc.
 
+Note that manually adding outlets and actions to classes with Interface Builder has changed in Snow Leopard. Now you need to:
+1) Select the Classes tab in the Library floating window
+2) Find the class you are interested in and select it
+3) Use the outlets or action tabs.
+
 = Building =
 
 In order to build your assemblies you will need to reference the mcocoa and mobjc libraries. The easiest and safest way to do this is to use the mcocoa/mobj make files to install the libraries and then use an update-libraries build target to copy the libraries to your project. If you're using make the update-libraries target would look something like this:
