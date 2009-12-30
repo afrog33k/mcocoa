@@ -23,13 +23,13 @@ PACKAGE_DIR ?= $(INSTALL_DIR)/lib/pkgconfig
 dummy1 := $(shell mkdir bin 2> /dev/null)
 export dummy2 := $(shell if [[ "$(CSC_FLAGS)" != `cat bin/csc_flags 2> /dev/null` ]]; then echo "$(CSC_FLAGS)" > bin/csc_flags; fi)
 
-base_version := 0.6.xxx.0										# major.minor.build.revision
+base_version := 0.7.xxx.1										# major.minor.build.revision
 version := $(shell "$(GET_VERSION)" $(base_version) build_num)	# this will increment the build number stored in build_num
 export version := $(strip $(version))
 
 # ------------------
 # Primary targets		
-all: generate lib
+all: lib
 
 lib: bin/mcocoa.dll
 
@@ -86,6 +86,13 @@ distclean:
 	-rm -f build_num
 	-rm -f keys
 	-rm -f source/AssemblyVersion.cs
+	-rm -rf source/appkit/generated
+	-rm -rf source/foundation/generated
+	-rm -rf examples/animating-views/bin
+	-rm -rf examples/mandel-zoomer/bin
+	-rm -rf examples/quartz-chart/bin
+	-rm -rf examples/quartz-chart/quartz/composer
+	-rm -rf examples/quartz-chart/quartz/core
 
 help:
 	@echo "mcocoa version $(version)"

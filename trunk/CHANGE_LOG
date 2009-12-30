@@ -1050,3 +1050,306 @@ Index: examples/animating-views/Makefile
 * Added an icon.
 
 ------------------------------------------------------------------------
+r108 | jesjones@mindspring.com | 2009-06-15 22:13:25 -0700 (Mon, 15 Jun 2009) | 10 lines
+
+Index: CHANGES
+Index: CHANGE_LOG
+* Updated.
+
+Index: Makefile
+Index: examples/animating-views/Makefile
+Index: examples/mandel-zoomer/Makefile
+* Incremented version number.
+
+
+------------------------------------------------------------------------
+r109 | jesjones@mindspring.com | 2009-06-16 14:14:54 -0700 (Tue, 16 Jun 2009) | 10 lines
+
+Index: examples/animating-views/Info.plist
+* Removed duplicate CFBundleIconFile.
+
+Index: examples/animating-views/SimpleLayoutView.cs
+Index: examples/mandel-zoomer/source/FractalController.cs
+* SuperCall now takes a base class argument.
+
+Index: examples/mandel-zoomer/Makefile
+* Use app-name variable everywhere it should be used.
+
+------------------------------------------------------------------------
+r110 | jesjones@mindspring.com | 2009-06-18 18:18:14 -0700 (Thu, 18 Jun 2009) | 6 lines
+
+Index: Makefile
+Index: examples/animating-views/Makefile
+Index: examples/mandel-zoomer/Makefile
+* Added GET_VERSION and GEN_VERSION variables.
+* GENDARME variable no longer defaults to a full path.
+
+------------------------------------------------------------------------
+r111 | jesjones@mindspring.com | 2009-06-22 16:07:19 -0700 (Mon, 22 Jun 2009) | 3 lines
+
+Updated TODO.
+
+
+------------------------------------------------------------------------
+r112 | jesjones@mindspring.com | 2009-07-01 09:59:44 -0700 (Wed, 01 Jul 2009) | 7 lines
+
+Index: source/foundation/NSGeometry.cs
+* Added TopLeft and BottomRight to NSRect.
+
+Index: Makefile
+* For now set GET_VERSION and GEN_VERSION to their default full path
+   so that they work when make is not run from terminal.
+
+------------------------------------------------------------------------
+r113 | jesjones@mindspring.com | 2009-08-20 22:48:58 -0700 (Thu, 20 Aug 2009) | 6 lines
+
+Index: source/foundation/NSString.cs
+Index: source/FastPath.cs
+* When creating NSString and NSMutableString from System.String embedded
+   nulls are now replaced with the Unicode replacement character so that they are
+   not prematurely truncated.
+
+------------------------------------------------------------------------
+r114 | jesjones@mindspring.com | 2009-09-17 00:01:09 -0700 (Thu, 17 Sep 2009) | 3 lines
+
+* Renamed make targets: test check and tar dist.
+* Added distclean make target.
+
+------------------------------------------------------------------------
+r115 | jesjones@mindspring.com | 2009-09-18 08:39:54 -0700 (Fri, 18 Sep 2009) | 7 lines
+
+Index: Makefile
+* Generate target uses --debug when launching mono.
+
+Index: examples/quartz-chart/
+* Added an example which uses the quartz framework. For now this is done with
+dynamic method calls.
+
+------------------------------------------------------------------------
+r116 | jesjones@mindspring.com | 2009-09-18 08:59:41 -0700 (Fri, 18 Sep 2009) | 3 lines
+
+Whitespace.
+
+
+------------------------------------------------------------------------
+r117 | jesjones@mindspring.com | 2009-09-19 20:59:00 -0700 (Sat, 19 Sep 2009) | 37 lines
+
+Index: generate/Program.cs
+* Xml files may now have an Include element which lists frameworks that the assembly
+will reference, but not emit code for.
+
+Index: generate/ObjectModel.cs
+Index: generate/Generate.cs
+* No longer chokes for enums with values like `1U << 4`.
+* Got rid of the CIColor and CIImage special cases.
+* Class category methods on interfaces not defined in the assembly are no longer ignored
+(but they do appear in classes with weird names like NSDelayedPerformingForNSObject).
+* Instance category methods are now generated for interfaces which are not being emitted, 
+but which are included by the xml file.
+* Added more types to MapType.
+
+Index: generate/Parser.cs
+* No longer chokes for weird names like functionWithControlPoints::::.
+
+Index: generate/ProtocolParser.cs
+* No longer chokes on protocol forward references.
+
+Index: generate/Frameworks.xml
+* Removed all the TypeResult elements for init methods because init methods now
+automagically use the interface type for the return value.
+
+Index: source/appkit/CIImage.cs
+Index: source/appkit/CIColor.cs
+* Disabling these two prior to removing them altogether.
+
+Index: examples/quartz-chart/source/AppController.cs
+Index: examples/quartz-chart/QuartzFramework.xml
+Index: examples/quartz-chart/Makefile
+* Now generates wrappers for the quartz framework.
+
+Index: generate/NativeInterface.cs
+* Whitespace.
+
+
+------------------------------------------------------------------------
+r118 | jesjones@mindspring.com | 2009-09-19 21:05:49 -0700 (Sat, 19 Sep 2009) | 9 lines
+
+Index: generate/Frameworks.xml
+Index: README
+* Pointing people to quartz-chart for an example of generating custom wrappers.
+
+Index: source/appkit/CIColor.cs
+Index: source/appkit/CIImage.cs
+* Removed.
+
+
+------------------------------------------------------------------------
+r119 | jesjones@mindspring.com | 2009-09-19 21:07:54 -0700 (Sat, 19 Sep 2009) | 3 lines
+
+Checking in CGAffineTransform.cs
+
+
+------------------------------------------------------------------------
+r120 | jesjones@mindspring.com | 2009-09-19 21:09:20 -0700 (Sat, 19 Sep 2009) | 3 lines
+
+Updated ignore lists.
+
+
+------------------------------------------------------------------------
+r121 | jesjones@mindspring.com | 2009-09-19 21:21:09 -0700 (Sat, 19 Sep 2009) | 4 lines
+
+Index: generate/ObjectModel.cs
+* Instead of throwing as soon as we find an ifdef with two different values (usually because
+of an #ifdef) throw when we try to use the typedef.
+
+------------------------------------------------------------------------
+r122 | jesjones@mindspring.com | 2009-09-25 20:34:45 -0700 (Fri, 25 Sep 2009) | 26 lines
+
+Index: generate/NewParser.peg
+Index: generate/NewParser.cs
+Index: generate/AnalyzeHeader.cs
+Index: Makefile
+* Replaced the old ad-hoc parsers with a much better one generated using peg-sharp.
+
+Index: generate/ObjectModel.cs
+* #defines are now expanded within enums.
+* Added some additional type mappings to allow frameworks besides appkit and foundation
+to compile.
+ 
+Index: generate/Generate.cs
+* Fixed the enum generation so that it works with enums defined in frameworks other than
+appkit and foundation.
+* Use event_ for methods named event.
+
+Index: generate/Blacklist.cs
+* Enum values can now be blacklisted.
+
+Index: source/appkit/Enums.cs
+* Added some enums from Core Foundation and IOLLEvent.h
+
+Index: generate/Program.cs
+* Removed the --file switch.
+
+
+------------------------------------------------------------------------
+r123 | jesjones@mindspring.com | 2009-09-25 20:47:30 -0700 (Fri, 25 Sep 2009) | 3 lines
+
+Deleted the old parsers.
+
+
+------------------------------------------------------------------------
+r124 | jesjones@mindspring.com | 2009-09-25 21:40:15 -0700 (Fri, 25 Sep 2009) | 7 lines
+
+Index: Dictionary.txt
+Index: Makefile
+* Removed.
+
+Index: generate/Generate.cs
+* Fixed the NSRange* case so that it emits an out NSRange instead of an IntPtr. (This worked
+before because we didn't do as good a job expanding typedefs).
+------------------------------------------------------------------------
+r125 | jesjones@mindspring.com | 2009-09-25 22:01:12 -0700 (Fri, 25 Sep 2009) | 3 lines
+
+Index: generate/ObjectModel.cs
+* Map types to Int32 and UInt32 instead of int and uint so the generator emits direct calls.
+
+------------------------------------------------------------------------
+r126 | jesjones@mindspring.com | 2009-12-05 12:08:38 -0800 (Sat, 05 Dec 2009) | 9 lines
+
+Index: source/foundation/NSDictionary.cs
+Index: generate/Frameworks.xml
+* Added custom NSDictionary.dictionaryWithObjectsAndKeys and NSMutableDictionary.
+dictionaryWithObjectsAndKeys methods.
+
+Index: examples/quartz-chart/source/AppController.cs
+* Removed some commented out code.
+* Uses the new NSMutableDictionary.dictionaryWithObjectsAndKeys method.
+
+------------------------------------------------------------------------
+r127 | jesjones@mindspring.com | 2009-12-06 08:11:10 -0800 (Sun, 06 Dec 2009) | 3 lines
+
+Got the snow leopard headers compiling and the lib mostly working.
+
+
+------------------------------------------------------------------------
+r128 | jesjones@mindspring.com | 2009-12-06 11:21:48 -0800 (Sun, 06 Dec 2009) | 4 lines
+
+Added hand-written versions of most of the foundation and appkit 
+methods that take function pointers.
+
+
+------------------------------------------------------------------------
+r129 | jesjones@mindspring.com | 2009-12-06 19:33:26 -0800 (Sun, 06 Dec 2009) | 10 lines
+
+Index: generate/AnalyzeHeader.cs
+Index: generate/NativeMethod.cs
+Index: generate/Generate.cs
+* Instead of omitting deprecated methods from the generated code we now decorate
+ them using ObsoleteAttribute.
+ 
+Index: examples/mandel-zoomer/Makefile
+* Disabled warnaserror because the only non-deprecated methods which can be used
+with NSSavePanel in Snow Leopard require blocks which mcocoa doesn't support yet.
+
+------------------------------------------------------------------------
+r130 | jesjones@mindspring.com | 2009-12-18 08:54:36 -0800 (Fri, 18 Dec 2009) | 7 lines
+
+Index: README
+* make test target is now check.
+
+Index: Makefile
+* Added -f to some rm commands in the clean target so we don't get spurious warnings
+when trying to clean files which aren't there.
+
+------------------------------------------------------------------------
+r131 | jesjones@mindspring.com | 2009-12-22 12:09:15 -0800 (Tue, 22 Dec 2009) | 5 lines
+
+* Added hand-written versions of about half the new Snow Leopard methods which take blocks.
+* Updated the Threading element in Frameworks.xml for the updated Apple list of thread safe methods.
+* Re-enabled warnaserror in the mandel-zoomer example and changed it to use the block NSSavePanel
+method. 
+
+------------------------------------------------------------------------
+r132 | jesjones@mindspring.com | 2009-12-22 20:26:42 -0800 (Tue, 22 Dec 2009) | 7 lines
+
+* Changed some of the new block methods so that they return an ExtendedBlock so that
+ a reference to the block can be held while the block is in use.
+* mandel-zoomer sample now hangs onto the ExtendedBlock while the save image sheet 
+is up.
+* mandel-zoomer falls back onto the deprecated sheet method when on Leopard or earlier.
+
+
+------------------------------------------------------------------------
+r133 | jesjones@mindspring.com | 2009-12-23 19:58:53 -0800 (Wed, 23 Dec 2009) | 6 lines
+
+* Generator no longer adds an _i to instance methods when the class has a static method
+  with the same name (but it will if a base class has the same name).
+* Uses the new MObjc.BlockCookie class.
+* AppHelper registers a notification to catch unfreed block cookies.
+ 
+
+------------------------------------------------------------------------
+r134 | jesjones@mindspring.com | 2009-12-23 20:53:36 -0800 (Wed, 23 Dec 2009) | 2 lines
+
+make all now does a make generate.
+
+------------------------------------------------------------------------
+r135 | jesjones@mindspring.com | 2009-12-28 17:57:57 -0800 (Mon, 28 Dec 2009) | 16 lines
+
+Index: source/appkit/NSWindowController.cs
+* Removed the NSWindowController ctor (which had been marked obsolete).
+
+Index: gendarme.ignore
+* Disabled a couple of defects.
+
+Index: generate/NewParser.peg
+Index: generate/NewParser.cs
+* Added some rules for some more lame apple macros.
+
+Index: README
+* Added a note about mcocoa's usage of ObsoleteAttribute.
+
+Index: examples/quartz-chart/QuartzFramework.xml
+* Updated for snow leopard.
+
+------------------------------------------------------------------------

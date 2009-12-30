@@ -1,3 +1,33 @@
+-- Version 0.7.0.0 (r135) ----
+
+* Added hand-written versions of about half the new Snow Leopard methods which take blocks.
+* Added hand-written versions of most of the foundation and appkit methods that take 
+   function pointers.
+* Instead of omitting deprecated methods from the generated code we now decorate
+   them using ObsoleteAttribute.
+* Added custom NSDictionary.dictionaryWithObjectsAndKeys and NSMutableDictionary.
+  dictionaryWithObjectsAndKeys methods.
+* Added TopLeft and BottomRight to NSRect.
+* When creating NSString and NSMutableString from System.String embedded
+   nulls are now replaced with the Unicode replacement character so that they are
+   not prematurely truncated.
+* Generator no longer adds an _i to instance methods when the class has a static method
+  with the same name (but it will if a base class has the same name).
+* Removed the NSWindowController ctor (which had been marked obsolete).
+* Cleaned up the generate utility and updated it for Snow Leopard.
+* Added an example which uses the quartz framework.
+* Xml files may now have an Include element which lists frameworks that the assembly
+  will reference, but not emit code for.
+* Updated the Threading element in Frameworks.xml for the updated Apple list of thread safe 
+   methods.
+* Renamed make targets: test check and tar dist.
+* Added -f to some rm commands in the clean target so we don't get spurious warnings
+  when trying to clean files which aren't there.
+* Added distclean make target.
+* make all now does a make generate.
+* GENDARME variable no longer defaults to a full path in the Makefile.
+
+------------------------------------------------------------------------
 -- Version 0.6.0.0 (r107) ----
 
 * Added a missing lock to AppHelper::QueueDelayed.
