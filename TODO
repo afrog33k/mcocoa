@@ -12,20 +12,6 @@ http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
 * Release checklist:
-	- use svn log -r 1:HEAD > CHANGE_LOG
-	- update CHANGES file
-	- update version number
-	- sync example version numbers with the lib
-	- remove build_num file 
-	- update libraries
-	- install
-	- upload new html docs
-	- update README and wiki
-	- delete the example bin directories
-	- delete the generated code?
-	- make distclean && make tar
-	- upload a new version to googlecode
-	- send an announcement
 	- make sure everything is checked in
 
 * Stagger windows in examples.
@@ -70,7 +56,7 @@ monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 	- update README and wiki
 	- delete the example bin directories
 	- delete the generated code?
-	- make distclean && make tar
+	- make distclean && make dist
 	- upload a new version to googlecode
 	- send an announcement
 	- make sure everything is checked in
