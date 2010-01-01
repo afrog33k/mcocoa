@@ -1,0 +1,10 @@
+# Used by mmmdoc to spellcheck the help comments.
+appkit
+automagically
+autorelease
+foreach
+mobjc 		object
+outdent
+stderr
+struct
+trippable
