@@ -67,7 +67,7 @@ keys:
 	sn -k keys
 
 docs: lib
-	mmmdoc --out=docs --see-also='http://code.google.com/p/mobjc/w/list mobjc' --see-also='http://code.google.com/p/mcocoa/w/list mcocoa' bin/mcocoa.dll,bin/docs.xml
+	mmmdoc --out=docs --see-also='http://code.google.com/p/mobjc/w/list mobjc' --extra-dict=mcocoa.dict --see-also='http://code.google.com/p/mcocoa/w/list mcocoa' bin/mcocoa.dll,bin/docs.xml
 
 gendarme_flags := --severity all --confidence all --ignore gendarme.ignore --quiet
 gendarme: bin/mobjc.dll

@@ -11,9 +11,6 @@ OpenCL (easy gpu programming)
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
-* Release checklist:
-	- make sure everything is checked in
-
 * Stagger windows in examples.
 * Get mandel-zoomer doing a bit better with gendarme.
 * Generate externs:
@@ -27,6 +24,9 @@ monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 * Would be nice to enable CLSCompliant. One problem is that a lot of cocoa
    methods use unsigned typed. Perhaps we can fix this by generating signed
    overloads and decorating the original versions with CLSCompliant.
+* Can use the below to get info about objective-c libraries:
+	- http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/RubyPythonCocoa/Articles/GenerateFrameworkMetadata.html
+	- but I don't think this would give us info about deprecated methods
 * Might want a white list for out arguments (can't tell from the headers if they
   are supposed to be arrays or not, see NSBezierPath.getLineDashCountPhase)
 * Might want an option to emit deprecated methods.

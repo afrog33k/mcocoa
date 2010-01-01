@@ -403,7 +403,7 @@ namespace MCocoa
 			return result;
 		}
 		
-		/// <summary>Indent (or outdent) each side of the reactangle by the specified amount.</summary>
+		/// <summary>Indent (or outdent) each side of the rectangle by the specified amount.</summary>
 		[Pure]
 		public NSRect Inset(float dx, float dy)
 		{
