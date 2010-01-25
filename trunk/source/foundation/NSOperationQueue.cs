@@ -27,6 +27,7 @@ namespace MCocoa
 {
 	public partial class NSOperationQueue : NSObject
 	{
+#if MAC_OS_X_VERSION_10_6
 		/// <exclude/>
 		public BlockCookie addOperationWithBlock(Action callback)
 		{
@@ -36,5 +37,6 @@ namespace MCocoa
 			Call("addOperationWithBlock:", cookie.Block);
 			return cookie;
 		}
+#endif
 	}
 }

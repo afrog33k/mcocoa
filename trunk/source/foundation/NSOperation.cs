@@ -28,6 +28,7 @@ namespace MCocoa
 {
 	public partial class NSOperation : NSObject
 	{
+#if MAC_OS_X_VERSION_10_6
 		/// <exclude/>
 		public IntPtr completionBlock()
 		{
@@ -44,5 +45,6 @@ namespace MCocoa
 			Call("setCompletionBlock:", cookie.Block);
 			return cookie;
 		}
+#endif
 	}
 }
