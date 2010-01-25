@@ -8,6 +8,9 @@ which will copy the mobjc library from usr/local/lib, generate the wrapper
 classes, and build the mcocoa library. Then you can type `make check` 
 which will run some simple unit tests as a sanity check.
 
+If you want to build for Mac OS 10.5 you can use:
+`make OS=10.5 lib`.
+
 INSTALLING
 
 To install type `sudo make install`, to uninstall type `sudo make uninstall`.

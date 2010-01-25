@@ -28,6 +28,7 @@ namespace MCocoa
 {
 	public partial class NSNotificationCenter : NSObject
 	{
+#if MAC_OS_X_VERSION_10_6
 		/// <exclude/>
 		public NSObject addObserverForName_object_queue_usingBlock(
 			NSString name,
@@ -47,5 +48,6 @@ namespace MCocoa
 			
 			return result;
 		}
+#endif
 	}
 }

@@ -27,6 +27,7 @@ namespace MCocoa
 {
 	public partial class NSSpellChecker : NSObject
 	{
+#if MAC_OS_X_VERSION_10_6
 		// Need this because there is no System.Action which takes five arguments.
 		private delegate void RequestCheckingCallback(IntPtr context, int sequenceNumber, IntPtr resultsPtr, IntPtr orthographyPtr, int wordCount);
 		
@@ -58,5 +59,6 @@ namespace MCocoa
 			
 			return result;
 		}
+#endif
 	}
 }

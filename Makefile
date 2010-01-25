@@ -7,12 +7,19 @@ PEG-SHARP ?= peg-sharp
 GENDARME ?= gendarme
 GET_VERSION ?= /usr/local/bin/mget_version.sh
 GEN_VERSION ?= /usr/local/bin/mgen_version.sh
+OS ?= 10.6
 
 ifdef RELEASE
 	# Note that -debug+ just generates an mdb file.
 	export CSC_FLAGS ?= -checked+ -debug+ -warn:4 -nowarn:1591 -optimize+ -d:TRACE -d:CONTRACTS_PRECONDITIONS
 else
 	export CSC_FLAGS ?= -checked+ -debug+ -warnaserror+ -warn:4 -nowarn:1591 -d:DEBUG -d:TRACE -d:CONTRACTS_FULL
+endif
+
+# Note that when adding support for 10.7 we'll need to manually define the 10.6
+# macro because C# doesn't support the less than operator in the preprocessor.
+ifeq ($(OS),10.6)
+	CSC_FLAGS += -d:MAC_OS_X_VERSION_10_6
 endif
 
 INSTALL_DIR ?= /usr/local
@@ -108,6 +115,7 @@ help:
 	@echo "uninstall        - remove the dll and the pkg-config file"
 	@echo " "
 	@echo "Variables include:"
+	@echo "OS - mac os version, defaults to 10.6"
 	@echo "RELEASE - define to enable release builds, defaults to not defined"
 	@echo "INSTALL_DIR - where to put the dll, defaults to $(INSTALL_DIR)/lib"
 	@echo " "

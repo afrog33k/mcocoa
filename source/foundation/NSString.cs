@@ -88,8 +88,9 @@ namespace MCocoa
 			Marshal.FreeHGlobal(buffer);
 		}
 		
+#if MAC_OS_X_VERSION_10_6
 		/// <remarks>Callback uses a return argument for stopped since delegates cannot
-		/// have ref arguments.</remarks>
+		/// have ref arguments.</remarks> 
 		public void enumerateLinesUsingBlock(Func<NSString, bool> callback)
 		{
 			Action<IntPtr, IntPtr, IntPtr> thunk = (IntPtr context, IntPtr linePtr, IntPtr stop) =>
@@ -124,6 +125,7 @@ namespace MCocoa
 			Call("enumerateSubstringsInRange: options: usingBlock:", block);
 			GC.KeepAlive(block);
 		}
+#endif
 		
 		public char this[int index]
 		{

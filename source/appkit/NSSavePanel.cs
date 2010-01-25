@@ -27,6 +27,7 @@ namespace MCocoa
 {
 	public partial class NSSavePanel : NSPanel
 	{
+#if MAC_OS_X_VERSION_10_6
 		/// <exclude/>
 		public BlockCookie beginSheetModalForWindow_completionHandler(NSWindow window, Action<int> callback)
 		{
@@ -46,5 +47,6 @@ namespace MCocoa
 			Call("beginWithCompletionHandler:", cookie.Block);
 			return cookie;
 		}
+#endif
 	}
 }

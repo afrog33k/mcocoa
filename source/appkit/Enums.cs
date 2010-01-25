@@ -26,11 +26,13 @@ namespace MCocoa
 	/// <exclude/>
 	public partial class Enums
 	{
+#if MAC_OS_X_VERSION_10_6
 		public const uint NSTouchPhaseTouching = NSTouchPhaseBegan | NSTouchPhaseMoved | NSTouchPhaseStationary;
 		
 		public const ulong NSMappedRead = NSDataReadingMapped;
 		public const ulong NSUncachedRead = NSDataReadingUncached;
 		public const ulong NSAtomicWrite = NSDataWritingAtomic;
+#endif
 		
 		public const uint NSHashTableStrongMemory = 0;
 		public const uint NSHashTableZeroingWeakMemory = (uint) NSPointerFunctionsZeroingWeakMemory;
@@ -69,7 +71,9 @@ namespace MCocoa
 			NSXMLNodePreserveCharacterReferences |
 			0xFFF00000);
 		
+#if MAC_OS_X_VERSION_10_6
 		public const ulong NSTextCheckingAllTypes = (NSTextCheckingAllSystemTypes | NSTextCheckingAllCustomTypes);
+#endif
 		
 		public const int NX_TABLET_POINTER_UNKNOWN = 0;
 		public const int NX_TABLET_POINTER_PEN = 1;
