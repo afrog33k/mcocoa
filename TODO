@@ -11,8 +11,7 @@ OpenCL (easy gpu programming)
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
-make OS=10.5 lib
-
+* Should be a way to make stuff like NSDate IComparable.
 * Try to generate function pointer methods. Might want to use:
 	- http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/RubyPythonCocoa/Articles/GenerateFrameworkMetadata.html
 * Try to generate block methods.
