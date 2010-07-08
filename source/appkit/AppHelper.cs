@@ -124,24 +124,16 @@ namespace MCocoa
 #if DEBUG
 		internal NSMenu InitDebugMenu()
 		{
-			NSMenu debugMenu = NSMenu.Create("Debug");
+			NSMenu debugMenu = DoGetDebugMenu();
 			debugMenu.addItem(NSMenuItem.Create("Collect Garbage", "collectGarbage:", this));
 			debugMenu.addItem(NSMenuItem.Create("Dump Objects", "dumpObjects:", this));
 			debugMenu.addItem(NSMenuItem.Create("Dump Windows", "dumpWindows:", this));
-			
-			NSMenuItem debugItem = NSMenuItem.Create("Debug");
-			debugItem.setSubmenu(debugMenu);
-//			debugItem
-			
-			NSApplication.sharedApplication().mainMenu().addItem(debugItem);
 			
 			return debugMenu;
 		}
 		
 		public void collectGarbage(NSObject sender)
 		{
-			Unused.Value = sender;
-
 			//  TODO: for some reason objects hang around if we do this only once
 			// or do not do the sleep...
 			for (int i = 0; i < 4; ++i)
@@ -154,7 +146,6 @@ namespace MCocoa
 		
 		public void dumpObjects(NSObject sender)
 		{
-			Unused.Value = sender;
 			collectGarbage(null);
 			
 			List<string> lines = new List<string>();
@@ -180,10 +171,9 @@ namespace MCocoa
 			}
 		}
 #endif	// DEBUG
-
+	
 		public void execute(NSObject arg)
 		{
-			Unused.Value = arg;
 			List<Action> actions;
 			
 			lock (m_lock)
@@ -210,6 +200,30 @@ namespace MCocoa
 		
 		#region Private Methods
 #if DEBUG
+		private NSMenu DoGetDebugMenu()
+		{
+			NSMenu debugMenu = null;
+			
+			NSMenuItem debugItem = NSApplication.sharedApplication().mainMenu().itemWithTitle(NSString.Create("Debug"));
+			if (!NSObject.IsNullOrNil(debugItem))
+			{
+				debugMenu = debugItem.submenu();
+				debugMenu.addItem(NSMenuItem.separatorItem());
+			}
+			
+			if (NSObject.IsNullOrNil(debugItem))
+			{
+				debugMenu = NSMenu.Create("Debug");
+				
+				debugItem = NSMenuItem.Create("Debug");
+				debugItem.setSubmenu(debugMenu);
+				
+				NSApplication.sharedApplication().mainMenu().addItem(debugItem);
+			}
+			
+			return debugMenu;
+		}
+		
 		private void DoDump(NSResponder o, ref int indent)
 		{
 			if (NSObject.IsNullOrNil(o))
