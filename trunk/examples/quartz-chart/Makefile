@@ -38,6 +38,8 @@ version := $(strip $(version))
 build-num := $(shell echo "$(version)" | cut -d . -f 3)
 dummy := $(shell "$(GEN_VERSION)" $(version) source/AssemblyVersion.cs /dev/null)
 
+contents := $(abspath $(app-path)/Contents)
+
 # ------------------------------------------------------------------------
 # Primary targets		
 all: generate app
@@ -51,6 +53,9 @@ generate: QuartzFramework.xml
 # console output in the terminal instead of the system log.
 run: $(app-path)
 	$(app-path)/Contents/MacOS/launcher
+
+debug: app
+	osascript -e 'tell application "Continuum" to debug "$(contents)/Resources/quartz-chart.exe" using "$(contents)/MacOS/QuartzChart"'
 
 # ------------------------------------------------------------------------
 # Binary targets 	
