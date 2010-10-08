@@ -28,7 +28,7 @@ using System.Xml;
 [ThreadModel(ThreadModel.Concurrent)]
 internal struct FractalSettings : IEquatable<FractalSettings>
 {
-	public FractalSettings(XmlNode node)
+	public FractalSettings(XmlNode node) : this()
 	{
 		Contract.Requires(node != null, "node is null");
 		

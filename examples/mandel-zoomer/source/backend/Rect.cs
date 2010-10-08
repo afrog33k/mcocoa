@@ -25,13 +25,13 @@ using System;
 [ThreadModel(ThreadModel.Concurrent)]
 internal struct Rect : IEquatable<Rect>
 {
-	public Rect(BigFloat left, BigFloat top, BigFloat right, BigFloat bottom)
+	public Rect(BigFloat left, BigFloat top, BigFloat right, BigFloat bottom) : this()
 	{
 		TopLeft = new Complex(left, top);
 		BottomRight = new Complex(right, bottom);
 	}
 	
-	public Rect(Complex topLeft, Complex botRight)
+	public Rect(Complex topLeft, Complex botRight) : this()
 	{
 		TopLeft = topLeft;
 		BottomRight = botRight;

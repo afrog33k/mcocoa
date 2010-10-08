@@ -23,7 +23,7 @@ using MCocoa;
 
 internal struct Color
 {
-	public Color(byte r, byte g, byte b)
+	public Color(byte r, byte g, byte b) : this()
 	{
 		Red = r;
 		Green = g;

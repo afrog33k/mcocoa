@@ -25,7 +25,7 @@ using System;
 [ThreadModel(ThreadModel.Concurrent)]
 internal struct Complex : IEquatable<Complex>
 {
-	public Complex(BigFloat x, BigFloat y)
+	public Complex(BigFloat x, BigFloat y) : this()
 	{
 		X = x;
 		Y = y;
