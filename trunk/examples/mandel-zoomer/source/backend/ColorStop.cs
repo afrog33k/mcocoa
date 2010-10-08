@@ -27,7 +27,7 @@ internal struct ColorStop
 	{
 	}
 	
-	public ColorStop(float location, Color color)
+	public ColorStop(float location, Color color) : this()
 	{
 		Contract.Requires(location >= 0.0 && location <= 1.0, "location is oor: " + location);
 		
