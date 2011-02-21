@@ -46,6 +46,8 @@ build-num := $(shell echo "$(version)" | cut -d . -f 3)
 dummy := $(shell "$(GEN_VERSION)" $(version) source/AssemblyVersion.cs /dev/null)
 dummy := $(shell if [[ "$(GCC_FLAGS)" != `cat bin/gcc_flags 2> /dev/null` ]]; then echo "$(GCC_FLAGS)" > bin/gcc_flags; fi)
 
+contents := $(abspath $(app-path)/Contents)
+
 # ------------------------------------------------------------------------
 # Primary targets		
 all: app
@@ -56,6 +58,10 @@ app: $(app-path)
 # console output in the terminal instead of the system log.
 run: $(app-path)
 	$(app-path)/Contents/MacOS/launcher
+
+debug: app
+	-ln `which mono` "$(contents)/MacOS/$(app-name)"
+	osascript -e 'tell application "Foreshadow" to debug "$(contents)/Resources/$(exe-name).exe" using "$(contents)/MacOS/$(app-name)"'
 
 # ------------------------------------------------------------------------
 # Binary targets 	
@@ -79,7 +85,7 @@ $(app-path): $(exe-path) bin/native.dylib source/Info.plist $(nib-files) AppIcon
 	@$(PACK) --app=$(app-path) --exe=$(exe-path) \
 	--mono-flags='$(MONO_FLAGS)' \
 	--plist=source/Info.plist \
-	--resources=bin/mobjc.dll,bin/mcocoa.dll,palettes,bin/native.dylib,AppIcon.icns \
+	--resources=bin/mobjc.dll,bin/mobjc-glue.dylib,bin/mcocoa.dll,palettes,bin/native.dylib,AppIcon.icns \
 	--resources=English.lproj:$(nib-resources) \
 	--vars=APPNAME:$(app-name),VERSION:$(version),BUILDNUM:$(build-num)
 

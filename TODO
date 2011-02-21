@@ -11,6 +11,7 @@ OpenCL (easy gpu programming)
 http://elevate.codeplex.com/ (doesn't have anything monorocks doesnt have?)
 monorocks	svn co http://anonsvn.mono-project.com/source/trunk/rocks/
 
+* Might want to use DebuggerTypeProxyAttribute with cocoa containers.
 * README should point out that the generator will give warnings like 
    "it uses a block" for some methods.
 * Should be a way to make stuff like NSDate IComparable.
