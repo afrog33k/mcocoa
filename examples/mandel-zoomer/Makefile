@@ -61,7 +61,7 @@ run: $(app-path)
 
 debug: app
 	-ln `which mono` "$(contents)/MacOS/$(app-name)"
-	osascript -e 'tell application "Foreshadow" to debug "$(contents)/Resources/$(exe-name).exe" using "$(contents)/MacOS/$(app-name)"'
+	osascript -e 'tell application "Continuum" to debug "$(contents)/Resources/$(exe-name).exe" using "$(contents)/MacOS/$(app-name)"'
 
 # ------------------------------------------------------------------------
 # Binary targets 	
