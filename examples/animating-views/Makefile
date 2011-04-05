@@ -1,4 +1,6 @@
 # For new projects you will want to change exe-name and app-name.
+ 
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
 
 # ------------------
 # Public variables
