@@ -41,9 +41,11 @@ namespace MCocoa
 			psn.lowLongOfPSN = kCurrentProcess;
 			
 			int err = TransformProcessType(ref psn, kProcessTransformToForegroundApplication);
-			if (err != 0)
+			if (err != 0 && err != paramErr)
 				throw new InvalidOperationException("TransformProcessType returned " + err + ".");
 			
+			// On Lion we don't have to do the TransformProcessType (and we get a paramErr when
+			// we try).
 			err = SetFrontProcess(ref psn);
 			if (err != 0)
 				throw new InvalidOperationException("SetFrontProcess returned " + err + ".");
@@ -182,6 +184,7 @@ namespace MCocoa
 		#region P/Invokes
 		private const uint kCurrentProcess = 2;
 		private const uint kProcessTransformToForegroundApplication = 1;
+		private const int paramErr = -50;
 		
 		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		private struct ProcessSerialNumber
