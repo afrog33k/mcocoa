@@ -28,9 +28,6 @@ namespace MCocoa
 	{
 #if MAC_OS_X_VERSION_10_6
 		public const uint NSTouchPhaseTouching = NSTouchPhaseBegan | NSTouchPhaseMoved | NSTouchPhaseStationary;
-		
-		public const ulong NSMappedRead = NSDataReadingMapped;
-		public const ulong NSUncachedRead = NSDataReadingUncached;
 		public const ulong NSAtomicWrite = NSDataWritingAtomic;
 #endif
 		
@@ -92,18 +89,6 @@ namespace MCocoa
 		public const int CFByteOrderUnknown = 0;
 		public const int CFByteOrderLittleEndian =1;
 		public const int CFByteOrderBigEndian = 2;
-		
-		public const int kCFCalendarUnitEra = (1 << 1);
-		public const int kCFCalendarUnitYear = (1 << 2);
-		public const int kCFCalendarUnitMonth = (1 << 3);
-		public const int kCFCalendarUnitDay = (1 << 4);
-		public const int kCFCalendarUnitHour = (1 << 5);
-		public const int kCFCalendarUnitMinute = (1 << 6);
-		public const int kCFCalendarUnitSecond = (1 << 7);
-		public const int kCFCalendarUnitWeek = (1 << 8);
-		public const int kCFCalendarUnitWeekday = (1 << 9);
-		public const int kCFCalendarUnitWeekdayOrdinal = (1 << 10);
-		public const int kCFCalendarUnitQuarter = (1 << 11);
 		
 		public const int kCFCalendarComponentsWrap = (1 << 0);  // option for adding
 		

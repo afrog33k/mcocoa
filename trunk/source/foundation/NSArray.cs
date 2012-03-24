@@ -73,7 +73,7 @@ namespace MCocoa
 		/// <exclude/>
 		public NSArray sortedArrayUsingFunction_context(SortFunction function, IntPtr context)
 		{
-			Action<IntPtr, IntPtr, IntPtr> thunk = (IntPtr lhs, IntPtr rhs, IntPtr ctxt) =>
+			Func<IntPtr, IntPtr, IntPtr, int> thunk = (IntPtr lhs, IntPtr rhs, IntPtr ctxt) =>
 				function(NSObject.Lookup(lhs), NSObject.Lookup(rhs), ctxt);
 			
 			IntPtr fp = Marshal.GetFunctionPointerForDelegate(thunk);
