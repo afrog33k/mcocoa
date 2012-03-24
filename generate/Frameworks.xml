@@ -79,6 +79,10 @@
 			<Enum name = "NSXMLNodePreserveQuotes" reason = "because there is a hand-written version"/>
 			<Enum name = "NSXMLNodePreserveAll" reason = "because there is a hand-written version"/>
 			<Enum name = "NSTextCheckingAllTypes" reason = "because there is a hand-written version"/>
+			<Enum name = "NSDataReadingMapped" reason = "deprecated name"/>
+			<Enum name = "NSAlignAllEdgesInward" reason = "because there is a hand-written version"/>
+			<Enum name = "NSAlignAllEdgesOutward" reason = "because there is a hand-written version"/>
+			<Enum name = "NSAlignAllEdgesNearest" reason = "because there is a hand-written version"/>
 		</Blacklist>
 		
 		<!-- See http://developer.apple.com/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html -->
@@ -176,7 +180,8 @@
 			<Method interface = "NSAlert" method = "alertWithMessageText:defaultButton:alternateButton:otherButton:informativeTextWithFormat:" reason = "because it is variadic"/>
 			<Method interface = "NSGradient" method = "initWithColorsAndLocations:" reason = "because it is variadic"/>
 			<Method interface = "NSMatrix" method = "sortUsingFunction:context:" reason = "because it has a function pointer"/>
-			<Method interface = "NSSavePanel" method = "beginSheetModalForWindow:completionHandler:" reason = "because there is a hand-written version"/>
+			<Method interface = "NSObject" method = "draggedImage:endedAt:deposited:" reason = "generator generates two versions"/>
+			<Method interface = "NSSavePanel" method = "beginSheetModalForWindow:completionHandler:" reason = "because there are two declarations for this"/>
 			<Method interface = "NSSavePanel" method = "beginWithCompletionHandler:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSSpellChecker" method = "requestCheckingOfString:range:types:options:inSpellDocumentWithTag:completionHandler:" reason = "because there is a hand-written version"/>
 			<Method interface = "NSView" method = "sortSubviewsUsingFunction:context:" reason = "because there is a hand-written version"/>

@@ -27,11 +27,6 @@ using System.Globalization;
 
 namespace MCocoa
 {
-	public static partial class Enums
-	{
-		public const int NSNotFound = 0x7fffffff;
-	}
-	
 	/// <summary>Wrapper around the Cocoa's NSRange struct.</summary>
 	[Register("_NSRange")]
 	[ThreadModel(ThreadModel.Serializable)]

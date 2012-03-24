@@ -28,7 +28,14 @@ using System.Runtime.InteropServices;
 
 namespace MCocoa
 {
-	/// <summary>Wrapper around the Cocoa's NSPoint struct.</summary>
+	public partial class Enums
+	{
+		public const ulong NSAlignAllEdgesInward = NSAlignMinXInward|NSAlignMaxXInward|NSAlignMinYInward|NSAlignMaxYInward;
+		public const ulong NSAlignAllEdgesOutward = NSAlignMinXOutward|NSAlignMaxXOutward|NSAlignMinYOutward|NSAlignMaxYOutward;
+		public const ulong NSAlignAllEdgesNearest = NSAlignMinXNearest|NSAlignMaxXNearest|NSAlignMinYNearest|NSAlignMaxYNearest;
+	}
+
+	/// <summary>Wrapper around Cocoa's NSPoint struct.</summary>
 	[Register("_NSPoint")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSPoint : IEquatable<NSPoint>, IFormattable
@@ -161,7 +168,7 @@ namespace MCocoa
 		public static readonly NSPoint Zero = new NSPoint(0.0f, 0.0f);
 	}
 	
-	/// <summary>Wrapper around the Cocoa's NSSize struct.</summary>
+	/// <summary>Wrapper around Cocoa's NSSize struct.</summary>
 	[Register("_NSSize")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSSize : IEquatable<NSSize>, IFormattable
@@ -281,7 +288,7 @@ namespace MCocoa
 		public static readonly NSSize Zero = new NSSize(0.0f, 0.0f);
 	}
 	
-	/// <summary>Wrapper around the Cocoa's NSRect struct.</summary>
+	/// <summary>Wrapper around Cocoa's NSRect struct.</summary>
 	[Register("_NSRect")]
 	[ThreadModel(ThreadModel.Serializable)]
 	public struct NSRect : IEquatable<NSRect>, IFormattable
