@@ -1,0 +1,1 @@
+mcocoa provides a set of wrapper classes which allow Apple's Cocoa frameworks to be used from Mono. The wrappers are generated using the make file and rely on the [mobjc](http://code.google.com/p/mobjc/) library to handle the bridging between Objective-C and Mono.
